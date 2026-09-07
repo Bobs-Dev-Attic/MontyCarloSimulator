@@ -1,0 +1,39 @@
+# Changelog
+
+All notable changes to this project are documented here. The version shown in
+the website footer (and header badge) corresponds to the `version` field in
+`package.json` and links back to this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.1.0] - 2026-09-07
+
+### Added
+- Version number displayed in the website header (badge) and footer, linking to
+  this changelog.
+- `CHANGELOG.md` to track versions and change history.
+- App version is single-sourced from `package.json` and injected at build time
+  via `NEXT_PUBLIC_APP_VERSION`, so the displayed number can never drift from the
+  released version.
+
+## [1.0.0] - 2026-09-07
+
+### Added
+- Initial web version of the Monte Carlo financial simulator, deployable to
+  Vercel with zero configuration (Next.js App Router).
+- **Portfolio forecast (GBM)** model — Geometric Brownian Motion, ported from
+  the original `functions/montecarlo/gbm.py`.
+- **Retirement plan** model — accumulation + inflation-adjusted withdrawal with
+  probability of not running out of money, ported from `retirement.py`.
+- Aggregation layer (percentile bands, terminal histogram, summary statistics:
+  mean / median / P5 / P95 / 95% VaR / probability of loss / success rate),
+  ported from `aggregate.py`.
+- Seedable RNG (mulberry32 + Box–Muller) for reproducible runs.
+- Serverless simulation API routes (`/api/simulate/gbm`,
+  `/api/simulate/retirement`) mirroring the original client/server split.
+- Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
+  sample trajectories, terminal-value histogram, and summary stat cards.
+
+[1.1.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.1.0
+[1.0.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.0.0
