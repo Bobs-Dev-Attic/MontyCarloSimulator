@@ -9,6 +9,7 @@ import Histogram from "@/components/Histogram";
 import StatCards from "@/components/StatCards";
 import HistoryPanel from "@/components/HistoryPanel";
 import CompareView from "@/components/CompareView";
+import ReverseStress from "@/components/ReverseStress";
 import {
   type HistoryEntry,
   loadHistory,
@@ -66,7 +67,10 @@ const DEFAULT_RETIREMENT: RetirementState = {
   seed: 2026,
 };
 
+type Tab = Model | "reverse";
+
 export default function Page() {
+  const [tab, setTab] = useState<Tab>("gbm");
   const [model, setModel] = useState<Model>("gbm");
   const [gbm, setGbm] = useState<GbmState>(DEFAULT_GBM);
   const [ret, setRet] = useState<RetirementState>(DEFAULT_RETIREMENT);
@@ -162,18 +166,32 @@ export default function Page() {
       </header>
 
       {/* Model tabs */}
-      <div className="mb-6 inline-flex rounded-xl border border-line bg-panel p-1">
-        <TabButton active={model === "gbm"} onClick={() => setModel("gbm")}>
+      <div className="mb-6 inline-flex flex-wrap rounded-xl border border-line bg-panel p-1">
+        <TabButton
+          active={tab === "gbm"}
+          onClick={() => {
+            setTab("gbm");
+            setModel("gbm");
+          }}
+        >
           Portfolio forecast (GBM)
         </TabButton>
         <TabButton
-          active={model === "retirement"}
-          onClick={() => setModel("retirement")}
+          active={tab === "retirement"}
+          onClick={() => {
+            setTab("retirement");
+            setModel("retirement");
+          }}
         >
           Retirement plan
         </TabButton>
+        <TabButton active={tab === "reverse"} onClick={() => setTab("reverse")}>
+          Reverse stress test
+        </TabButton>
       </div>
 
+      {tab === "reverse" ? <ReverseStress /> : (
+      <>
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
         {/* Controls */}
         <section className="rounded-2xl border border-line bg-panel p-5">
@@ -424,6 +442,8 @@ export default function Page() {
           onCompare={() => setComparing(true)}
         />
       </div>
+      </>
+      )}
 
       <footer className="mt-10 border-t border-line pt-5 text-xs text-muted">
         <p>
