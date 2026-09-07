@@ -10,6 +10,7 @@ import StatCards from "@/components/StatCards";
 import HistoryPanel from "@/components/HistoryPanel";
 import CompareView from "@/components/CompareView";
 import ReverseStress from "@/components/ReverseStress";
+import MacroShock from "@/components/MacroShock";
 import {
   type HistoryEntry,
   loadHistory,
@@ -67,7 +68,7 @@ const DEFAULT_RETIREMENT: RetirementState = {
   seed: 2026,
 };
 
-type Tab = Model | "reverse";
+type Tab = Model | "reverse" | "macro";
 
 export default function Page() {
   const [tab, setTab] = useState<Tab>("gbm");
@@ -188,9 +189,16 @@ export default function Page() {
         <TabButton active={tab === "reverse"} onClick={() => setTab("reverse")}>
           Reverse stress test
         </TabButton>
+        <TabButton active={tab === "macro"} onClick={() => setTab("macro")}>
+          Macro shock
+        </TabButton>
       </div>
 
-      {tab === "reverse" ? <ReverseStress /> : (
+      {tab === "reverse" ? (
+        <ReverseStress />
+      ) : tab === "macro" ? (
+        <MacroShock />
+      ) : (
       <>
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
         {/* Controls */}

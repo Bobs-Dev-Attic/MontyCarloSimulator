@@ -4,7 +4,7 @@
  * unit-tested and reused.
  */
 
-import { simulateGbm } from "./gbm";
+import { simulateGbm, type ShockConfig } from "./gbm";
 import { simulateRetirement } from "./retirement";
 import {
   percentileBands,
@@ -41,7 +41,10 @@ function buildSamplePaths(
   return out;
 }
 
-export function runGbm(req: GbmRequest): SimulationResponse {
+export function runGbm(
+  req: GbmRequest,
+  shock?: ShockConfig
+): SimulationResponse {
   const nSims = clampSims(req.nSims);
   const stepsPerYear = req.stepsPerYear ?? 252;
   const result = simulateGbm({
@@ -53,6 +56,7 @@ export function runGbm(req: GbmRequest): SimulationResponse {
     nSims,
     contributionPerStep: req.contributionPerStep ?? 0,
     seed: req.seed ?? null,
+    shock,
   });
 
   const unitPerStep = 1 / stepsPerYear; // step index -> years
@@ -71,7 +75,32 @@ export function runGbm(req: GbmRequest): SimulationResponse {
       seed: req.seed ?? null,
       years: req.years,
       stepsPerYear,
+      ...(result.shockStats
+        ? {
+            fracWithShock: result.shockStats.fracWithShock,
+            avgShocks: result.shockStats.avgShocks,
+          }
+        : {}),
     },
+  };
+}
+
+export interface MacroShockResponse {
+  baseline: SimulationResponse;
+  shocked: SimulationResponse;
+}
+
+/**
+ * Run the portfolio both without and with a macro shock overlay (same seed), so
+ * the client can show the impact of the shock against the no-shock baseline.
+ */
+export function runMacroShock(
+  req: GbmRequest,
+  shock: ShockConfig
+): MacroShockResponse {
+  return {
+    baseline: runGbm(req),
+    shocked: runGbm(req, shock),
   };
 }
 
