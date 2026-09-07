@@ -7,6 +7,19 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-09-07
+
+### Added
+- **Simulation history:** every run is saved (in the browser) with its inputs
+  and results. History can be exported as **JSON** or **CSV**, and any two runs
+  can be **compared** side by side — a stat table with deltas plus overlaid
+  median trajectories.
+- Per-run delete and a Clear-all control for the history.
+
+### Changed
+- Portfolio forecast (GBM): maximum **Beginning value** raised from
+  $1,000,000 to **$5,000,000**.
+
 ## [1.1.0] - 2026-09-07
 
 ### Added
@@ -35,5 +48,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.2.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.0.0
