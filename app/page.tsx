@@ -8,6 +8,8 @@ import FanChart from "@/components/FanChart";
 import Histogram from "@/components/Histogram";
 import StatCards from "@/components/StatCards";
 
+const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? "dev";
+
 type Model = "gbm" | "retirement";
 
 interface GbmState {
@@ -104,6 +106,15 @@ export default function Page() {
           <span className="rounded-full border border-line bg-panel px-2 py-0.5 text-[11px] text-muted">
             web edition
           </span>
+          <a
+            href="https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/blob/main/CHANGELOG.md"
+            target="_blank"
+            rel="noreferrer"
+            title="View change history"
+            className="rounded-full border border-line bg-panel px-2 py-0.5 text-[11px] font-semibold tabular-nums text-accent2 transition hover:brightness-125"
+          >
+            v{APP_VERSION}
+          </a>
         </div>
         <p className="mt-1 max-w-3xl text-sm text-muted">
           Instead of a single prediction, run thousands of randomized scenarios
@@ -364,6 +375,17 @@ export default function Page() {
             Bobs-Dev-Attic/MonteCarloSimulator
           </a>
           .
+        </p>
+        <p className="mt-2 tabular-nums">
+          Version {APP_VERSION} —{" "}
+          <a
+            className="text-accent2 hover:underline"
+            href="https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/blob/main/CHANGELOG.md"
+            target="_blank"
+            rel="noreferrer"
+          >
+            change history
+          </a>
         </p>
       </footer>
     </main>
