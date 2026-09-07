@@ -7,6 +7,21 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-09-07
+
+### Added
+- **Geopolitical / macroeconomic shock simulations** (new "Macro shock" tab).
+  A jump-diffusion overlay on the portfolio model: discrete crashes strike with
+  an annual probability, each an instantaneous drop followed by a window of
+  elevated turbulence, plus an optional persistent drift drag. Includes a
+  scenario library — mild recession, 2008-style financial crisis, pandemic
+  crash, geopolitical conflict, oil shock / stagflation, rate-hike shock, and a
+  fully custom scenario — and every shock parameter is tweakable.
+- Each run is compared against the no-shock baseline: median impact, shift in
+  probability of loss and VaR, expected number of shocks, share of paths hit,
+  an overlaid baseline-vs-shocked median trajectory, and the shocked terminal
+  distribution.
+
 ## [1.3.0] - 2026-09-07
 
 ### Added
@@ -63,6 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.4.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.4.0
 [1.3.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.3.0
 [1.2.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.1.0
