@@ -7,6 +7,16 @@ import Field from "@/components/Field";
 import FanChart from "@/components/FanChart";
 import Histogram from "@/components/Histogram";
 import StatCards from "@/components/StatCards";
+import HistoryPanel from "@/components/HistoryPanel";
+import CompareView from "@/components/CompareView";
+import {
+  type HistoryEntry,
+  loadHistory,
+  addEntry,
+  removeEntry,
+  clearHistory,
+  entryFromResult,
+} from "@/lib/history";
 
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? "dev";
 
@@ -65,6 +75,20 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState<number | null>(null);
 
+  // Simulation history (persisted in the browser) + compare selection.
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [comparing, setComparing] = useState(false);
+
+  const toggleSelect = useCallback((id: string) => {
+    setSelected((prev) =>
+      prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : // Keep at most two selected (drop the oldest).
+          [...prev, id].slice(-2)
+    );
+  }, []);
+
   const run = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -80,8 +104,16 @@ export default function Page() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Simulation failed");
-      setResult(json as SimulationResponse);
+      const response = json as SimulationResponse;
+      setResult(response);
       setElapsed(performance.now() - started);
+      // Record the run in history.
+      const entry = entryFromResult(
+        model,
+        body as unknown as Record<string, number | null>,
+        response
+      );
+      setHistory((prev) => addEntry(prev, entry));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Simulation failed");
       setResult(null);
@@ -90,11 +122,16 @@ export default function Page() {
     }
   }, [model, gbm, ret]);
 
-  // Run once on first mount so the page isn't empty.
+  // Load saved history, then run once on first mount so the page isn't empty.
   useEffect(() => {
+    setHistory(loadHistory());
     run();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const compareEntries = selected
+    .map((id) => history.find((e) => e.id === id))
+    .filter((e): e is HistoryEntry => Boolean(e));
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -151,7 +188,7 @@ export default function Page() {
                 value={gbm.beginningValue}
                 onChange={(v) => setGbm({ ...gbm, beginningValue: v })}
                 min={1000}
-                max={1_000_000}
+                max={5_000_000}
                 step={1000}
                 display={formatCurrency(gbm.beginningValue)}
               />
@@ -359,6 +396,33 @@ export default function Page() {
             )}
           </div>
         </section>
+      </div>
+
+      {/* Simulation history + comparison (full width) */}
+      <div className="mt-6 space-y-6">
+        {comparing && compareEntries.length === 2 ? (
+          <CompareView
+            a={compareEntries[0]}
+            b={compareEntries[1]}
+            onClose={() => setComparing(false)}
+          />
+        ) : null}
+
+        <HistoryPanel
+          entries={history}
+          selected={selected}
+          onToggleSelect={toggleSelect}
+          onDelete={(id) => {
+            setHistory((prev) => removeEntry(prev, id));
+            setSelected((prev) => prev.filter((x) => x !== id));
+          }}
+          onClear={() => {
+            setHistory(clearHistory());
+            setSelected([]);
+            setComparing(false);
+          }}
+          onCompare={() => setComparing(true)}
+        />
       </div>
 
       <footer className="mt-10 border-t border-line pt-5 text-xs text-muted">
