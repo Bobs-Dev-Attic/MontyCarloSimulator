@@ -7,6 +7,21 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-09-07
+
+### Added
+- **Deterministic reverse stress testing** (new "Reverse stress test" tab).
+  Instead of asking what outcomes are possible, it starts from a defined failure
+  and solves — with closed-form math and monotonic root-finding, no random
+  sampling — for the scenario that causes it:
+  - **Portfolio:** for a chosen drawdown, the required constant annual return to
+    reach it, plus how far into the tail that sits under your μ/σ (z-score,
+    model-implied probability, and a "1-in-N" framing).
+  - **Retirement:** whether the plan survives at the assumed return, the required
+    return to last the full horizon, the maximum sustainable first-year
+    withdrawal, the largest one-time crash at retirement it can absorb, and how
+    long the money lasts.
+
 ## [1.2.0] - 2026-09-07
 
 ### Added
@@ -48,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.3.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.3.0
 [1.2.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.0.0
