@@ -78,6 +78,7 @@ export function runGbm(
       seed: req.seed ?? null,
       years: req.years,
       stepsPerYear,
+      beginningValue: req.beginningValue,
       dist: req.dist?.kind ?? "normal",
       nu: req.dist?.kind === "t" ? req.dist?.nu ?? 5 : null,
       ...(result.shockStats
@@ -148,6 +149,7 @@ export function runMultiAsset(req: MultiAssetRequest): SimulationResponse {
       nSims,
       seed: req.seed ?? null,
       years: req.years,
+      beginningValue: req.beginningValue,
       rebalance: req.rebalance ?? false,
       expectedReturn: result.expectedReturn,
       portfolioVol: result.portfolioVol,
@@ -204,6 +206,7 @@ export function runGlidePath(req: GlidePathRequest): SimulationResponse {
       nSims,
       seed: req.seed ?? null,
       years: req.years,
+      beginningValue: req.beginningValue,
       startAlloc: result.startAlloc,
       endAlloc: result.endAlloc,
       curve: result.curve,
@@ -244,6 +247,8 @@ export function runRetirement(req: RetirementRequest): SimulationResponse {
     meta: {
       nSims,
       seed: req.seed ?? null,
+      years: result.totalYears,
+      beginningValue: req.startingBalance,
       successRate: result.successRate,
       yearsToRetire: result.yearsToRetire,
       totalYears: result.totalYears,

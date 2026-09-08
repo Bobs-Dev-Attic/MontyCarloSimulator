@@ -7,6 +7,18 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-09-08
+
+### Added
+- **Real (inflation-adjusted) returns toggle** — a global "Real (today's $)"
+  switch in the header (with an adjustable inflation rate) restates every value
+  output in today's purchasing power. Applies across the Portfolio, Retirement,
+  Macro shock, Multi-asset, and Risk glide-path tabs — fan charts, terminal
+  histograms, and summary statistics all deflate by (1+π)ᵗ. The toggle and rate
+  persist and are captured by a Profile. Probabilities (prob-of-loss, success
+  rate) are correctly left unchanged, and a "today's $" badge marks charts shown
+  in real terms.
+
 ## [1.8.0] - 2026-09-08
 
 ### Added
@@ -133,6 +145,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.9.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.9.0
 [1.8.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.8.0
 [1.7.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.7.0
 [1.6.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.6.0

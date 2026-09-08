@@ -14,6 +14,8 @@ import {
 } from "recharts";
 import Field from "@/components/Field";
 import Histogram from "@/components/Histogram";
+import { RealBadge } from "@/components/RealToggle";
+import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import { SCENARIOS, scenarioById } from "@/lib/scenarios";
@@ -123,21 +125,26 @@ export default function MacroShock() {
 
   const scenario = scenarioById(scenarioId);
 
+  // Nominal or real (today's $) view depending on the global toggle.
+  const { adjust } = useReal();
+  const base = data ? adjust(data.baseline) : null;
+  const shock = data ? adjust(data.shocked) : null;
+
   const overlayRows = useMemo(() => {
-    if (!data) return [];
-    const b = data.baseline.bands;
-    const s = data.shocked.bands;
+    if (!base || !shock) return [];
+    const b = base.bands;
+    const s = shock.bands;
     return b.steps.map((x, i) => ({
       x,
       base: b.p50[i],
       shock: s.p50[i],
       shockBand: [s.p5[i], s.p95[i]] as [number, number],
     }));
-  }, [data]);
+  }, [base, shock]);
 
   const medianDrop =
-    data && data.baseline.summary.median > 0
-      ? 1 - data.shocked.summary.median / data.baseline.summary.median
+    base && shock && base.summary.median > 0
+      ? 1 - shock.summary.median / base.summary.median
       : 0;
 
   return (
@@ -203,39 +210,39 @@ export default function MacroShock() {
           <div className="rounded-2xl border border-bad/40 bg-bad/10 p-4 text-sm text-bad">{error}</div>
         ) : null}
 
-        {data ? (
+        {base && shock ? (
           <>
             <div className="rounded-2xl border border-line bg-gradient-to-br from-panel to-panel2 p-5">
-              <div className="text-xs uppercase tracking-wide text-muted">
-                Impact of “{scenario.name}” shocks
+              <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted">
+                Impact of “{scenario.name}” shocks <RealBadge />
               </div>
               <div className="mt-1 flex flex-wrap items-end gap-3">
                 <span className="text-4xl font-bold tabular-nums text-bad">
                   −{formatPercent(medianDrop)}
                 </span>
                 <span className="pb-1 text-sm text-muted">
-                  to the median outcome ({formatCurrency(data.baseline.summary.median)} →{" "}
-                  {formatCurrency(data.shocked.summary.median)})
+                  to the median outcome ({formatCurrency(base.summary.median)} →{" "}
+                  {formatCurrency(shock.summary.median)})
                 </span>
               </div>
               <p className="mt-2 text-sm text-slate-300">
-                Over {years} years, {formatPercent((data.shocked.meta.fracWithShock as number) ?? 0)} of paths
-                are hit by at least one shock ({((data.shocked.meta.avgShocks as number) ?? 0).toFixed(1)} on
+                Over {years} years, {formatPercent((shock.meta.fracWithShock as number) ?? 0)} of paths
+                are hit by at least one shock ({((shock.meta.avgShocks as number) ?? 0).toFixed(1)} on
                 average). The chance of ending below where you started rises from{" "}
-                <span className="font-semibold text-white">{formatPercent(data.baseline.summary.probLoss)}</span> to{" "}
-                <span className="font-semibold text-bad">{formatPercent(data.shocked.summary.probLoss)}</span>.
+                <span className="font-semibold text-white">{formatPercent(base.summary.probLoss)}</span> to{" "}
+                <span className="font-semibold text-bad">{formatPercent(shock.summary.probLoss)}</span>.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <StatCard label="Median (baseline)" value={formatCurrency(data.baseline.summary.median)} tone="good" />
-              <StatCard label="Median (shocked)" value={formatCurrency(data.shocked.summary.median)} tone="accent" />
-              <StatCard label="P5 baseline → shocked" value={formatCurrency(data.shocked.summary.p5)} sub={`from ${formatCurrency(data.baseline.summary.p5)}`} tone="bad" />
-              <StatCard label="95% VaR (shocked)" value={formatCurrency(data.shocked.summary.var95)} sub={`baseline ${formatCurrency(data.baseline.summary.var95)}`} tone="bad" />
-              <StatCard label="Prob. of loss" value={formatPercent(data.shocked.summary.probLoss)} sub={`baseline ${formatPercent(data.baseline.summary.probLoss)}`} tone="bad" />
-              <StatCard label="Paths hit by a shock" value={formatPercent((data.shocked.meta.fracWithShock as number) ?? 0)} tone="accent" />
-              <StatCard label="Avg shocks / path" value={((data.shocked.meta.avgShocks as number) ?? 0).toFixed(2)} />
-              <StatCard label="Worst case" value={formatCurrency(data.shocked.summary.min)} sub={`baseline ${formatCurrency(data.baseline.summary.min)}`} tone="bad" />
+              <StatCard label="Median (baseline)" value={formatCurrency(base.summary.median)} tone="good" />
+              <StatCard label="Median (shocked)" value={formatCurrency(shock.summary.median)} tone="accent" />
+              <StatCard label="P5 baseline → shocked" value={formatCurrency(shock.summary.p5)} sub={`from ${formatCurrency(base.summary.p5)}`} tone="bad" />
+              <StatCard label="95% VaR (shocked)" value={formatCurrency(shock.summary.var95)} sub={`baseline ${formatCurrency(base.summary.var95)}`} tone="bad" />
+              <StatCard label="Prob. of loss" value={formatPercent(shock.summary.probLoss)} sub={`baseline ${formatPercent(base.summary.probLoss)}`} tone="bad" />
+              <StatCard label="Paths hit by a shock" value={formatPercent((shock.meta.fracWithShock as number) ?? 0)} tone="accent" />
+              <StatCard label="Avg shocks / path" value={((shock.meta.avgShocks as number) ?? 0).toFixed(2)} />
+              <StatCard label="Worst case" value={formatCurrency(shock.summary.min)} sub={`baseline ${formatCurrency(base.summary.min)}`} tone="bad" />
             </div>
 
             <div className="rounded-2xl border border-line bg-panel p-5">
@@ -276,7 +283,7 @@ export default function MacroShock() {
               <h3 className="mb-3 text-sm font-semibold text-slate-200">
                 Terminal outcomes under shocks
               </h3>
-              <Histogram data={data.shocked} />
+              <Histogram data={shock} />
             </div>
           </>
         ) : (

@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import FanChart from "@/components/FanChart";
 import Histogram from "@/components/Histogram";
 import StatCards from "@/components/StatCards";
+import { RealBadge } from "@/components/RealToggle";
+import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import type { SimulationResponse } from "@/lib/types";
@@ -77,6 +79,8 @@ export default function MultiAsset() {
   const [data, setData] = useState<SimulationResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { adjust } = useReal();
+  const view = data ? adjust(data) : null;
 
   const included = useMemo(
     () => roster.map((a, i) => ({ a, i })).filter(({ a }) => a.include),
@@ -271,16 +275,16 @@ export default function MultiAsset() {
             </p>
           </div>
 
-          <StatCards data={data} />
+          <StatCards data={view!} />
 
           <div className="rounded-2xl border border-line bg-panel p-5">
-            <h3 className="mb-3 text-sm font-semibold text-slate-200">Portfolio value: trajectories &amp; percentile bands</h3>
-            <FanChart data={data} />
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-200">Portfolio value: trajectories &amp; percentile bands <RealBadge /></h3>
+            <FanChart data={view!} />
           </div>
 
           <div className="rounded-2xl border border-line bg-panel p-5">
-            <h3 className="mb-3 text-sm font-semibold text-slate-200">Distribution of terminal portfolio value</h3>
-            <Histogram data={data} />
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-200">Distribution of terminal portfolio value <RealBadge /></h3>
+            <Histogram data={view!} />
           </div>
         </>
       ) : (

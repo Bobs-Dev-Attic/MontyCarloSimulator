@@ -16,6 +16,8 @@ import FanChart from "@/components/FanChart";
 import Histogram from "@/components/Histogram";
 import StatCards from "@/components/StatCards";
 import GlidePathEditor from "@/components/GlidePathEditor";
+import { RealBadge } from "@/components/RealToggle";
+import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import type { SimulationResponse } from "@/lib/types";
@@ -51,6 +53,8 @@ export default function RiskGlidePath() {
   const [data, setData] = useState<SimulationResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { adjust } = useReal();
+  const view = data ? adjust(data) : null;
 
   const run = useCallback(async () => {
     setLoading(true);
@@ -139,7 +143,7 @@ export default function RiskGlidePath() {
             <p className="mt-1 text-sm text-slate-300">
               Risk falls from <span className="font-semibold text-accent">{formatPercent((data.meta.startAlloc as number) ?? 0)}</span> risky at the start to{" "}
               <span className="font-semibold text-accent">{formatPercent((data.meta.endAlloc as number) ?? 0)}</span> by year {years}. Median ending value{" "}
-              <span className="font-semibold text-white">{formatCurrency(data.summary.median)}</span>, with the fan below narrowing as the portfolio de-risks.
+              <span className="font-semibold text-white">{formatCurrency((view ?? data).summary.median)}</span>, with the fan below narrowing as the portfolio de-risks.
             </p>
           </div>
 
@@ -170,16 +174,16 @@ export default function RiskGlidePath() {
             </div>
           </div>
 
-          <StatCards data={data} />
+          <StatCards data={view!} />
 
           <div className="rounded-2xl border border-line bg-panel p-5">
-            <h3 className="mb-3 text-sm font-semibold text-slate-200">Portfolio value: trajectories &amp; percentile bands</h3>
-            <FanChart data={data} />
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-200">Portfolio value: trajectories &amp; percentile bands <RealBadge /></h3>
+            <FanChart data={view!} />
           </div>
 
           <div className="rounded-2xl border border-line bg-panel p-5">
-            <h3 className="mb-3 text-sm font-semibold text-slate-200">Distribution of terminal value</h3>
-            <Histogram data={data} />
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-200">Distribution of terminal value <RealBadge /></h3>
+            <Histogram data={view!} />
           </div>
         </>
       ) : (
