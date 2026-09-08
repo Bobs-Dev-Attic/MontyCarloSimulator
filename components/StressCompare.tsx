@@ -15,6 +15,7 @@ import {
   Legend,
 } from "recharts";
 import Field from "@/components/Field";
+import InfoTip from "@/components/InfoTip";
 import { RealBadge } from "@/components/RealToggle";
 import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
@@ -151,13 +152,27 @@ export default function StressCompare() {
                 <table className="w-full min-w-[640px] text-sm">
                   <thead>
                     <tr className="text-left text-[11px] uppercase tracking-wide text-muted">
-                      <th className="pb-2 font-medium">Scenario</th>
-                      <th className="pb-2 text-right font-medium">Median</th>
-                      <th className="pb-2 text-right font-medium">vs base</th>
-                      <th className="pb-2 text-right font-medium">P5</th>
-                      <th className="pb-2 text-right font-medium">Prob. loss</th>
-                      <th className="pb-2 text-right font-medium">95% VaR</th>
-                      <th className="pb-2 text-right font-medium">Paths hit</th>
+                      <th className="pb-2 font-medium">
+                        <span className="inline-flex items-center gap-1">Scenario <InfoTip term="macroShock" /></span>
+                      </th>
+                      <th className="pb-2 text-right font-medium">
+                        <span className="inline-flex items-center gap-1">Median <InfoTip term="median" /></span>
+                      </th>
+                      <th className="pb-2 text-right font-medium">
+                        <span className="inline-flex items-center gap-1">vs base <InfoTip term="deltaVsBase" /></span>
+                      </th>
+                      <th className="pb-2 text-right font-medium">
+                        <span className="inline-flex items-center gap-1">P5 <InfoTip term="percentile" /></span>
+                      </th>
+                      <th className="pb-2 text-right font-medium">
+                        <span className="inline-flex items-center gap-1">Prob. loss <InfoTip term="probLoss" /></span>
+                      </th>
+                      <th className="pb-2 text-right font-medium">
+                        <span className="inline-flex items-center gap-1">95% VaR <InfoTip term="var95" /></span>
+                      </th>
+                      <th className="pb-2 text-right font-medium">
+                        <span className="inline-flex items-center gap-1">Paths hit <InfoTip term="shockFrequency" /></span>
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="tabular-nums">

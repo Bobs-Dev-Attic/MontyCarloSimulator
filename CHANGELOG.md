@@ -7,6 +7,24 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.16.0] - 2026-09-08
+
+### Added
+- **Tooltips on result labels across every tab.** The info (ⓘ) popovers now
+  extend beyond inputs to the *outputs*: the Macro shock result cards
+  (median baseline/shocked, P5, 95% VaR, prob. of loss, paths hit, avg shocks,
+  worst case), the Reverse stress result cards (target value, required &amp;
+  total return, z-score, probability, likelihood, max withdrawal, max crash,
+  money lasts), the Stress-compare table headers, and section headers on the
+  Multi-asset (diversification, correlation matrix), Risk glide-path (glide-path
+  effect, effective allocation), and Sensitivity (tornado, ranked impact) tabs.
+- New glossary entries backing those labels: target/failure value, total
+  return, likelihood (1-in-N), maximum sustainable withdrawal, maximum
+  absorbable crash, shock frequency, worst case, and change vs. baseline.
+
+### Changed
+- Removed the "web edition" tag from the site header.
+
 ## [1.15.0] - 2026-09-08
 
 ### Changed
@@ -214,6 +232,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.16.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.16.0
 [1.15.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.15.0
 [1.14.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.14.0
 [1.13.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.13.0

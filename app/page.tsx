@@ -225,9 +225,6 @@ export default function Page() {
           <h1 className="text-2xl font-bold tracking-tight text-white">
             Monty Carlo Simulator
           </h1>
-          <span className="rounded-full border border-line bg-panel px-2 py-0.5 text-[11px] text-muted">
-            web edition
-          </span>
           <a
             href="https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/blob/main/CHANGELOG.md"
             target="_blank"
