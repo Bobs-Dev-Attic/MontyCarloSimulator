@@ -153,7 +153,7 @@ export default function Sensitivity() {
 
         <div className="mb-4">
           <Field
-            label="Vary each input by ±"
+            label="Vary each input by ±" info="sensitivity"
             value={variationPct}
             onChange={setVariationPct}
             min={0.05}
@@ -169,21 +169,21 @@ export default function Sensitivity() {
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Base case</h3>
         {model === "gbm" ? (
           <div className="space-y-4">
-            <Field label="Beginning value" value={gbm.beginningValue} onChange={(v) => setGbm({ ...gbm, beginningValue: v })} min={1000} max={5_000_000} step={1000} display={formatCurrency(gbm.beginningValue)} sharedKey="beginningValue" />
-            <Field label="Expected return (μ)" value={gbm.mu} onChange={(v) => setGbm({ ...gbm, mu: v })} min={-0.05} max={0.2} step={0.005} display={formatPercent(gbm.mu)} sharedKey="mu" />
-            <Field label="Volatility (σ)" value={gbm.sigma} onChange={(v) => setGbm({ ...gbm, sigma: v })} min={0.01} max={0.6} step={0.005} display={formatPercent(gbm.sigma)} sharedKey="sigma" />
-            <Field label="Time horizon" value={gbm.years} onChange={(v) => setGbm({ ...gbm, years: v })} min={1} max={40} step={1} display={`${gbm.years} yr`} sharedKey="years" />
+            <Field label="Beginning value" info="beginningValue" value={gbm.beginningValue} onChange={(v) => setGbm({ ...gbm, beginningValue: v })} min={1000} max={5_000_000} step={1000} display={formatCurrency(gbm.beginningValue)} sharedKey="beginningValue" />
+            <Field label="Expected return (μ)" info="mu" value={gbm.mu} onChange={(v) => setGbm({ ...gbm, mu: v })} min={-0.05} max={0.2} step={0.005} display={formatPercent(gbm.mu)} sharedKey="mu" />
+            <Field label="Volatility (σ)" info="sigma" value={gbm.sigma} onChange={(v) => setGbm({ ...gbm, sigma: v })} min={0.01} max={0.6} step={0.005} display={formatPercent(gbm.sigma)} sharedKey="sigma" />
+            <Field label="Time horizon" info="years" value={gbm.years} onChange={(v) => setGbm({ ...gbm, years: v })} min={1} max={40} step={1} display={`${gbm.years} yr`} sharedKey="years" />
           </div>
         ) : (
           <div className="space-y-4">
-            <Field label="Starting balance" value={ret.startingBalance} onChange={(v) => setRet({ ...ret, startingBalance: v })} min={0} max={2_000_000} step={5000} display={formatCurrency(ret.startingBalance)} sharedKey="beginningValue" />
-            <Field label="Annual contribution" value={ret.annualContribution} onChange={(v) => setRet({ ...ret, annualContribution: v })} min={0} max={100_000} step={1000} display={formatCurrency(ret.annualContribution)} />
-            <Field label="Years to retirement" value={ret.yearsToRetire} onChange={(v) => setRet({ ...ret, yearsToRetire: v })} min={0} max={50} step={1} display={`${ret.yearsToRetire} yr`} />
-            <Field label="Years in retirement" value={ret.retirementYears} onChange={(v) => setRet({ ...ret, retirementYears: v })} min={1} max={50} step={1} display={`${ret.retirementYears} yr`} />
-            <Field label="Annual withdrawal" value={ret.annualWithdrawal} onChange={(v) => setRet({ ...ret, annualWithdrawal: v })} min={0} max={300_000} step={2500} display={formatCurrency(ret.annualWithdrawal)} />
-            <Field label="Expected return" value={ret.meanReturn} onChange={(v) => setRet({ ...ret, meanReturn: v })} min={-0.02} max={0.15} step={0.005} display={formatPercent(ret.meanReturn)} sharedKey="mu" />
-            <Field label="Return volatility" value={ret.stdReturn} onChange={(v) => setRet({ ...ret, stdReturn: v })} min={0} max={0.4} step={0.005} display={formatPercent(ret.stdReturn)} sharedKey="sigma" />
-            <Field label="Inflation" value={ret.inflation} onChange={(v) => setRet({ ...ret, inflation: v })} min={0} max={0.1} step={0.0025} display={formatPercent(ret.inflation)} />
+            <Field label="Starting balance" info="beginningValue" value={ret.startingBalance} onChange={(v) => setRet({ ...ret, startingBalance: v })} min={0} max={2_000_000} step={5000} display={formatCurrency(ret.startingBalance)} sharedKey="beginningValue" />
+            <Field label="Annual contribution" info="contribution" value={ret.annualContribution} onChange={(v) => setRet({ ...ret, annualContribution: v })} min={0} max={100_000} step={1000} display={formatCurrency(ret.annualContribution)} />
+            <Field label="Years to retirement" info="years" value={ret.yearsToRetire} onChange={(v) => setRet({ ...ret, yearsToRetire: v })} min={0} max={50} step={1} display={`${ret.yearsToRetire} yr`} />
+            <Field label="Years in retirement" info="years" value={ret.retirementYears} onChange={(v) => setRet({ ...ret, retirementYears: v })} min={1} max={50} step={1} display={`${ret.retirementYears} yr`} />
+            <Field label="Annual withdrawal" info="withdrawal" value={ret.annualWithdrawal} onChange={(v) => setRet({ ...ret, annualWithdrawal: v })} min={0} max={300_000} step={2500} display={formatCurrency(ret.annualWithdrawal)} />
+            <Field label="Expected return" info="mu" value={ret.meanReturn} onChange={(v) => setRet({ ...ret, meanReturn: v })} min={-0.02} max={0.15} step={0.005} display={formatPercent(ret.meanReturn)} sharedKey="mu" />
+            <Field label="Return volatility" info="sigma" value={ret.stdReturn} onChange={(v) => setRet({ ...ret, stdReturn: v })} min={0} max={0.4} step={0.005} display={formatPercent(ret.stdReturn)} sharedKey="sigma" />
+            <Field label="Inflation" info="inflation" value={ret.inflation} onChange={(v) => setRet({ ...ret, inflation: v })} min={0} max={0.1} step={0.0025} display={formatPercent(ret.inflation)} />
           </div>
         )}
 

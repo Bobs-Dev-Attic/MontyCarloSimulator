@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useBroadcast, type SharedKey } from "@/lib/broadcast";
+import InfoTip from "@/components/InfoTip";
 
 interface FieldProps {
   label: string;
@@ -15,6 +16,8 @@ interface FieldProps {
   hint?: string;
   /** When set, shows an "apply to all tabs" icon that broadcasts this value. */
   sharedKey?: SharedKey;
+  /** Glossary key: shows an info tooltip with an explanation + source link. */
+  info?: string;
 }
 
 export default function Field({
@@ -27,6 +30,7 @@ export default function Field({
   display,
   hint,
   sharedKey,
+  info,
 }: FieldProps) {
   const bc = useBroadcast();
   const [flash, setFlash] = useState(false);
@@ -34,7 +38,10 @@ export default function Field({
   return (
     <div>
       <div className="flex items-baseline justify-between">
-        <label className="text-sm text-slate-200">{label}</label>
+        <span className="flex items-center gap-1.5">
+          <label className="text-sm text-slate-200">{label}</label>
+          {info ? <InfoTip term={info} /> : null}
+        </span>
         <span className="flex items-center gap-1.5">
           {sharedKey && bc ? (
             <button

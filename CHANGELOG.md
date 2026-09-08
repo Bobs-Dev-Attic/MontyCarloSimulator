@@ -7,6 +7,19 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0] - 2026-09-08
+
+### Added
+- **Info tooltips (ⓘ) on inputs and results.** Every parameter field and summary
+  statistic now has a small info icon that opens a plain-language explanation
+  plus a "Learn more" link to a reputable external source (Investopedia /
+  Wikipedia). Backed by a shared glossary (`lib/glossary.ts`) covering starting
+  amount, expected return, volatility, horizon, simulations, contributions,
+  withdrawals, inflation, real returns, correlation, diversification,
+  rebalancing, glide path, macro shocks, degrees of freedom / fat tails,
+  median / mean / percentiles / VaR / probability of loss / success rate, and
+  more. Popovers render in a portal so they never clip.
+
 ## [1.12.0] - 2026-09-08
 
 ### Added
@@ -175,6 +188,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.13.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.13.0
 [1.12.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.12.0
 [1.11.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.11.0
 [1.10.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.10.0

@@ -120,11 +120,11 @@ export default function StressCompare() {
       <section className="rounded-2xl border border-line bg-panel p-5">
         <h3 className="mb-3 text-sm font-semibold text-slate-200">Portfolio</h3>
         <div className="space-y-4">
-          <Field label="Beginning value" value={beginningValue} onChange={setBeginningValue} min={1000} max={5_000_000} step={1000} display={formatCurrency(beginningValue)} sharedKey="beginningValue" />
-          <Field label="Expected return (μ)" value={mu} onChange={setMu} min={-0.05} max={0.2} step={0.005} display={formatPercent(mu)} sharedKey="mu" />
-          <Field label="Base volatility (σ)" value={sigma} onChange={setSigma} min={0.01} max={0.6} step={0.005} display={formatPercent(sigma)} sharedKey="sigma" />
-          <Field label="Time horizon" value={years} onChange={(v) => setYears(Math.round(v))} min={1} max={40} step={1} display={`${years} yr`} sharedKey="years" />
-          <Field label="Simulations (per scenario)" value={nSims} onChange={(v) => setNSims(Math.round(v))} min={1000} max={20_000} step={1000} display={nSims.toLocaleString()} sharedKey="nSims" />
+          <Field label="Beginning value" info="beginningValue" value={beginningValue} onChange={setBeginningValue} min={1000} max={5_000_000} step={1000} display={formatCurrency(beginningValue)} sharedKey="beginningValue" />
+          <Field label="Expected return (μ)" info="mu" value={mu} onChange={setMu} min={-0.05} max={0.2} step={0.005} display={formatPercent(mu)} sharedKey="mu" />
+          <Field label="Base volatility (σ)" info="sigma" value={sigma} onChange={setSigma} min={0.01} max={0.6} step={0.005} display={formatPercent(sigma)} sharedKey="sigma" />
+          <Field label="Time horizon" info="years" value={years} onChange={(v) => setYears(Math.round(v))} min={1} max={40} step={1} display={`${years} yr`} sharedKey="years" />
+          <Field label="Simulations (per scenario)" info="nSims" value={nSims} onChange={(v) => setNSims(Math.round(v))} min={1000} max={20_000} step={1000} display={nSims.toLocaleString()} sharedKey="nSims" />
         </div>
         <button onClick={run} disabled={loading} className="mt-5 w-full rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-ink transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
           {loading ? "Running all scenarios…" : "Run stress comparison"}
