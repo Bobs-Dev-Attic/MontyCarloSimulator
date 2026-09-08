@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect } from "react";
 import { usePersistentState } from "./persist";
-import { applyTheme } from "./themes";
+import { applyTheme, themeById, type ThemeMode } from "./themes";
 import type { SharedKey } from "./broadcast";
 
 export interface ParamPref {
@@ -41,13 +41,25 @@ export const PARAM_IS_PCT: Record<SharedKey, boolean> = {
 export interface Prefs {
   theme: string;
   params: Partial<Record<SharedKey, ParamPref>>;
+  /** Last theme chosen in each mode, so the light/dark toggle can restore it. */
+  lastDark?: string;
+  lastLight?: string;
 }
 
-const DEFAULT_PREFS: Prefs = { theme: "amber", params: {} };
+const DEFAULT_PREFS: Prefs = {
+  theme: "amber",
+  params: {},
+  lastDark: "amber",
+  lastLight: "light",
+};
 
 interface PrefsCtx {
   prefs: Prefs;
   setTheme: (id: string) => void;
+  /** Current theme's mode. */
+  mode: ThemeMode;
+  /** Flip between light and dark, restoring the last theme used in that mode. */
+  toggleMode: () => void;
   setParam: (key: SharedKey, patch: Partial<ParamPref>) => void;
   resetParam: (key: SharedKey) => void;
   resetAll: () => void;
@@ -66,7 +78,30 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     applyTheme(prefs.theme);
   }, [prefs.theme]);
 
-  const setTheme = (id: string) => setPrefs((p) => ({ ...p, theme: id }));
+  const setTheme = (id: string) =>
+    setPrefs((p) => {
+      const mode = themeById(id).mode;
+      return {
+        ...p,
+        theme: id,
+        ...(mode === "dark" ? { lastDark: id } : { lastLight: id }),
+      };
+    });
+
+  const mode = themeById(prefs.theme).mode;
+
+  const toggleMode = () =>
+    setPrefs((p) => {
+      const curMode = themeById(p.theme).mode;
+      const next =
+        curMode === "dark" ? p.lastLight ?? "light" : p.lastDark ?? "amber";
+      const nextMode = themeById(next).mode;
+      return {
+        ...p,
+        theme: next,
+        ...(nextMode === "dark" ? { lastDark: next } : { lastLight: next }),
+      };
+    });
   const setParam = (key: SharedKey, patch: Partial<ParamPref>) =>
     setPrefs((p) => {
       const base = p.params[key] ?? BUILTIN_PARAMS[key];
@@ -88,7 +123,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     prefs.params[key]?.def ?? BUILTIN_PARAMS[key].def;
 
   return (
-    <Ctx.Provider value={{ prefs, setTheme, setParam, resetParam, resetAll, rangeFor, defaultFor }}>
+    <Ctx.Provider value={{ prefs, setTheme, mode, toggleMode, setParam, resetParam, resetAll, rangeFor, defaultFor }}>
       {children}
     </Ctx.Provider>
   );

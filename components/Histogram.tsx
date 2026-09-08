@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import type { SimulationResponse } from "@/lib/types";
 import { formatCompact, formatCurrency } from "@/lib/format";
+import { useChartColors } from "@/lib/chartColors";
 
 interface Props {
   data: SimulationResponse;
@@ -19,6 +20,7 @@ interface Props {
 
 export default function Histogram({ data }: Props) {
   const { histogram, summary } = data;
+  const c = useChartColors();
   const rows = histogram.counts.map((count, i) => {
     const lo = histogram.edges[i];
     const hi = histogram.edges[i + 1];
@@ -29,49 +31,49 @@ export default function Histogram({ data }: Props) {
     <div className="h-[360px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={rows} margin={{ top: 8, right: 12, bottom: 4, left: 4 }}>
-          <CartesianGrid stroke="#1e2a44" strokeDasharray="3 3" vertical={false} />
+          <CartesianGrid stroke={c.grid} strokeDasharray="3 3" vertical={false} />
           <XAxis
             dataKey="center"
-            stroke="#8ea1c0"
+            stroke={c.axis}
             tick={{ fontSize: 11 }}
             tickFormatter={(v: number) => formatCompact(v)}
             label={{
               value: "Terminal value",
               position: "insideBottom",
               offset: -2,
-              fill: "#8ea1c0",
+              fill: c.axis,
               fontSize: 11,
             }}
           />
           <YAxis
-            stroke="#8ea1c0"
+            stroke={c.axis}
             tick={{ fontSize: 11 }}
             width={48}
             label={{
               value: "Paths",
               angle: -90,
               position: "insideLeft",
-              fill: "#8ea1c0",
+              fill: c.axis,
               fontSize: 11,
             }}
           />
           <Tooltip
-            cursor={{ fill: "#ffffff08" }}
+            cursor={{ fill: c.muted, fillOpacity: 0.08 }}
             contentStyle={{
-              background: "#0e1626",
-              border: "1px solid #1e2a44",
+              background: c.tooltipBg,
+              border: `1px solid ${c.tooltipBorder}`,
               borderRadius: 8,
               fontSize: 12,
             }}
-            labelStyle={{ color: "#8ea1c0" }}
+            labelStyle={{ color: c.axis }}
             formatter={(value: number) => [`${value} paths`, "Count"]}
             labelFormatter={(v: number) => `≈ ${formatCurrency(v)}`}
           />
           <ReferenceLine
             x={summary.median}
-            stroke="#e6edf7"
+            stroke={c.text}
             strokeWidth={1.5}
-            label={{ value: "median", fill: "#e6edf7", fontSize: 10, position: "top" }}
+            label={{ value: "median", fill: c.text, fontSize: 10, position: "top" }}
           />
           <ReferenceLine
             x={summary.p5}

@@ -7,6 +7,26 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.17.0] - 2026-09-08
+
+### Added
+- **Light / dark theme toggle** in the header (sun / moon switch) that flips
+  between light and dark, remembering the last palette used in each mode.
+- **New color themes:** **Dark (neutral)**, **High Contrast** (black / white with
+  vivid accents), **Light**, and **2-Tone (mono light)** — joining Amber, Ocean,
+  Emerald, Violet, Rose, and Slate. Each theme now declares a light or dark
+  *mode*, and the Preferences theme picker groups palettes under **Dark themes**
+  and **Light themes** with a quick light/dark switch.
+
+### Changed
+- Themes now drive `color-scheme` and a set of light-mode text overrides so the
+  same UI stays legible on light backgrounds.
+- **Charts are theme-aware.** Grid lines, axes, tooltips, and median / reference
+  markers read the active theme's colors at runtime (via a shared
+  `useChartColors` hook), so the fan chart, histogram, tornado, macro, stress,
+  glide-path, and compare views render correctly in every theme — including the
+  new light palettes.
+
 ## [1.16.0] - 2026-09-08
 
 ### Added
@@ -232,6 +252,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.17.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.17.0
 [1.16.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.16.0
 [1.15.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.15.0
 [1.14.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.14.0

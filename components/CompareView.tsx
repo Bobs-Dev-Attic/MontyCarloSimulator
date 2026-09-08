@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import type { HistoryEntry } from "@/lib/history";
 import { formatCompact, formatCurrency, formatPercent } from "@/lib/format";
+import { useChartColors } from "@/lib/chartColors";
 
 const COLOR_A = "#f59e0b";
 const COLOR_B = "#38bdf8";
@@ -66,6 +67,7 @@ function buildRows(a: HistoryEntry, b: HistoryEntry): Row[] {
 
 export default function CompareView({ a, b, onClose }: Props) {
   const rows = buildRows(a, b);
+  const c = useChartColors();
 
   // Merge the two median trajectories onto a shared x-axis.
   const xs = Array.from(
@@ -149,18 +151,18 @@ export default function CompareView({ a, b, onClose }: Props) {
       <div className="h-[320px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={chartRows} margin={{ top: 8, right: 12, bottom: 4, left: 4 }}>
-            <CartesianGrid stroke="#1e2a44" strokeDasharray="3 3" />
+            <CartesianGrid stroke={c.grid} strokeDasharray="3 3" />
             <XAxis
               dataKey="x"
-              stroke="#8ea1c0"
+              stroke={c.axis}
               tick={{ fontSize: 11 }}
               tickFormatter={(v: number) => `${v % 1 === 0 ? v : v.toFixed(1)}`}
-              label={{ value: a.xAxisLabel, position: "insideBottom", offset: -2, fill: "#8ea1c0", fontSize: 11 }}
+              label={{ value: a.xAxisLabel, position: "insideBottom", offset: -2, fill: c.axis, fontSize: 11 }}
             />
-            <YAxis stroke="#8ea1c0" tick={{ fontSize: 11 }} width={64} tickFormatter={(v: number) => formatCompact(v)} />
+            <YAxis stroke={c.axis} tick={{ fontSize: 11 }} width={64} tickFormatter={(v: number) => formatCompact(v)} />
             <Tooltip
-              contentStyle={{ background: "#0e1626", border: "1px solid #1e2a44", borderRadius: 8, fontSize: 12 }}
-              labelStyle={{ color: "#8ea1c0" }}
+              contentStyle={{ background: c.tooltipBg, border: `1px solid ${c.tooltipBorder}`, borderRadius: 8, fontSize: 12 }}
+              labelStyle={{ color: c.axis }}
               formatter={(value: number, name: string) =>
                 name === "aMed" || name === "bMed"
                   ? [formatCompact(value), name === "aMed" ? "A median" : "B median"]

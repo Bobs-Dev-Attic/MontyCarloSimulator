@@ -16,6 +16,7 @@
   --bad: 248 113 113;
   --muted: 142 161 192;
   --text: 230 237 247;
+  --textSoft: 203 213 225;
   color-scheme: dark;
 }
 
@@ -23,6 +24,23 @@ html,
 body {
   background-color: rgb(var(--ink));
   color: rgb(var(--text));
+}
+
+/* Light-mode readability. Components use Tailwind's white/slate text utilities
+   for headings and body copy, which are only legible on dark panels. When a
+   light theme is active, remap those to the theme's text tokens so the same
+   markup reads correctly on light backgrounds. */
+:root[data-theme-mode="light"] .text-white {
+  color: rgb(var(--text));
+}
+:root[data-theme-mode="light"] .text-slate-100,
+:root[data-theme-mode="light"] .text-slate-200,
+:root[data-theme-mode="light"] .text-slate-300 {
+  color: rgb(var(--textSoft));
+}
+:root[data-theme-mode="light"] .text-slate-400,
+:root[data-theme-mode="light"] .text-slate-500 {
+  color: rgb(var(--muted));
 }
 
 body {

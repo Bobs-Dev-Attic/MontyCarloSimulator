@@ -1,27 +1,33 @@
 /**
- * Color themes. Each sets the app's CSS variables (space-separated RGB
- * channels). All are dark palettes that keep light text readable; they mainly
- * vary the accent hues and the panel/background tint.
+ * Color themes. Each theme sets the app's CSS variables (space-separated RGB
+ * channels so Tailwind's /opacity modifiers work) and declares a light or dark
+ * `mode`. The mode drives `color-scheme` and a set of light-mode text overrides
+ * in globals.css, so both dark and light palettes stay readable.
  */
+
+export type ThemeMode = "dark" | "light";
 
 export interface Theme {
   id: string;
   name: string;
+  mode: ThemeMode;
   /** Small swatch colors for the picker (accent, accent2). */
   swatch: [string, string];
   vars: Record<string, string>;
 }
 
-const BASE = {
+const DARK_BASE = {
   good: "52 211 153",
   bad: "248 113 113",
   text: "230 237 247",
+  textSoft: "203 213 225",
 };
 
 export const THEMES: Theme[] = [
   {
     id: "amber",
     name: "Amber (default)",
+    mode: "dark",
     swatch: ["#f59e0b", "#38bdf8"],
     vars: {
       ink: "11 18 32",
@@ -31,12 +37,32 @@ export const THEMES: Theme[] = [
       accent: "245 158 11",
       accent2: "56 189 248",
       muted: "142 161 192",
-      ...BASE,
+      ...DARK_BASE,
+    },
+  },
+  {
+    id: "dark",
+    name: "Dark (neutral)",
+    mode: "dark",
+    swatch: ["#38bdf8", "#818cf8"],
+    vars: {
+      ink: "3 7 18",
+      panel: "15 23 42",
+      panel2: "2 6 23",
+      line: "30 41 59",
+      accent: "56 189 248",
+      accent2: "129 140 248",
+      muted: "148 163 184",
+      good: "74 222 128",
+      bad: "248 113 113",
+      text: "226 232 240",
+      textSoft: "203 213 225",
     },
   },
   {
     id: "ocean",
     name: "Ocean",
+    mode: "dark",
     swatch: ["#38bdf8", "#818cf8"],
     vars: {
       ink: "8 15 28",
@@ -46,12 +72,13 @@ export const THEMES: Theme[] = [
       accent: "56 189 248",
       accent2: "129 140 248",
       muted: "138 165 199",
-      ...BASE,
+      ...DARK_BASE,
     },
   },
   {
     id: "emerald",
     name: "Emerald",
+    mode: "dark",
     swatch: ["#34d399", "#fbbf24"],
     vars: {
       ink: "9 20 18",
@@ -64,11 +91,13 @@ export const THEMES: Theme[] = [
       good: "52 211 153",
       bad: "248 113 113",
       text: "231 247 242",
+      textSoft: "197 227 217",
     },
   },
   {
     id: "violet",
     name: "Violet",
+    mode: "dark",
     swatch: ["#a78bfa", "#f472b6"],
     vars: {
       ink: "16 12 28",
@@ -81,11 +110,13 @@ export const THEMES: Theme[] = [
       good: "52 211 153",
       bad: "248 113 113",
       text: "237 233 248",
+      textSoft: "209 202 233",
     },
   },
   {
     id: "rose",
     name: "Rose",
+    mode: "dark",
     swatch: ["#fb7185", "#38bdf8"],
     vars: {
       ink: "24 12 16",
@@ -98,11 +129,13 @@ export const THEMES: Theme[] = [
       good: "52 211 153",
       bad: "248 113 113",
       text: "248 235 238",
+      textSoft: "230 205 212",
     },
   },
   {
     id: "slate",
     name: "Slate (mono)",
+    mode: "dark",
     swatch: ["#94a3b8", "#e2e8f0"],
     vars: {
       ink: "15 18 24",
@@ -115,6 +148,64 @@ export const THEMES: Theme[] = [
       good: "134 239 172",
       bad: "252 165 165",
       text: "233 238 245",
+      textSoft: "203 213 225",
+    },
+  },
+  {
+    id: "highContrast",
+    name: "High Contrast",
+    mode: "dark",
+    swatch: ["#facc15", "#22d3ee"],
+    vars: {
+      ink: "0 0 0",
+      panel: "12 12 12",
+      panel2: "0 0 0",
+      line: "120 120 120",
+      accent: "250 204 21",
+      accent2: "34 211 238",
+      muted: "214 214 214",
+      good: "74 222 128",
+      bad: "248 113 113",
+      text: "255 255 255",
+      textSoft: "235 235 235",
+    },
+  },
+  {
+    id: "light",
+    name: "Light",
+    mode: "light",
+    swatch: ["#2563eb", "#be185d"],
+    vars: {
+      ink: "246 247 249",
+      panel: "255 255 255",
+      panel2: "240 243 247",
+      line: "209 217 227",
+      accent: "37 99 235",
+      accent2: "190 24 93",
+      muted: "90 105 130",
+      good: "22 163 74",
+      bad: "220 38 38",
+      text: "15 23 42",
+      textSoft: "51 65 85",
+    },
+  },
+  {
+    id: "twoTone",
+    name: "2-Tone (mono light)",
+    mode: "light",
+    swatch: ["#18181b", "#52525b"],
+    vars: {
+      ink: "255 255 255",
+      panel: "255 255 255",
+      panel2: "244 244 245",
+      line: "24 24 27",
+      accent: "24 24 27",
+      accent2: "82 82 91",
+      muted: "82 82 91",
+      good: "21 128 61",
+      bad: "185 28 28",
+      text: "9 9 11",
+      textSoft: "63 63 70",
     },
   },
 ];
@@ -130,4 +221,6 @@ export function applyTheme(id: string) {
   for (const [k, v] of Object.entries(theme.vars)) {
     root.style.setProperty(`--${k}`, v);
   }
+  root.setAttribute("data-theme-mode", theme.mode);
+  root.style.colorScheme = theme.mode;
 }
