@@ -7,6 +7,17 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.31.2] - 2026-09-08
+
+### Added (documentation)
+- **Project review & agent docs.** Added `docs/REVIEW.md` (a multi-perspective
+  code review — software engineering, security/pen-test, UX, marketing,
+  founder/exec, legal/privacy — with severities and suggested alternatives),
+  `TODO.md` (a prioritized hardening backlog derived from it), and `AGENTS.md` +
+  `CLAUDE.md` (working guides for AI agents: repo map, conventions, the ship
+  workflow, verification recipes, and gotchas — to cut token use and rework).
+  Documentation only; no code or behavior changes.
+
 ## [1.31.1] - 2026-09-08
 
 ### Changed
@@ -490,6 +501,7 @@ Excel export's live formulas still reproduce the engine to the dollar.
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.31.2]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.31.2
 [1.31.1]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.31.1
 [1.31.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.31.0
 [1.30.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.30.0
