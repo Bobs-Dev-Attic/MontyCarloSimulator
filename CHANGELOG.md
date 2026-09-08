@@ -7,6 +7,14 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.24.0] - 2026-09-08
+
+### Added
+- **Rolling bucket vs. static tent comparison** in the Sequence risk view. Each
+  run now computes both refill modes and shows them side by side — ruin
+  probability and median ending balance across every buffer size, refill on vs.
+  off — so the trade-off is visible without flipping the toggle and re-running.
+
 ## [1.23.0] - 2026-09-08
 
 ### Added
@@ -350,6 +358,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.24.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.24.0
 [1.23.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.23.0
 [1.22.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.22.0
 [1.21.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.21.0
