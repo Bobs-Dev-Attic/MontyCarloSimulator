@@ -7,6 +7,25 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.29.0] - 2026-09-08
+
+### Added
+- **Tax & Roth view (multi-account tax sinking).** A deterministic year-by-year
+  projection across **Taxable, Tax-deferred (IRA/401k), and Tax-free (Roth)**
+  buckets that compares a naive drawdown against a tax-smart plan filling a
+  target bracket with **Roth conversions** each year. Models **RMDs** (IRS
+  Uniform Lifetime Table, starting age 73), 2024 federal ordinary brackets and
+  the standard deduction (both indexed to inflation), a flat long-term
+  capital-gains rate on realized taxable gains, and bracket-fill conversions up
+  to a chosen rate (10/12/22/24/32%). Reports the after-tax terminal-wealth gain
+  and lifetime tax saved, a naive-vs-smart strategy table (terminal wealth,
+  lifetime taxes, total RMDs, total conversions, depletion year), a stacked-area
+  chart of account balances shifting from tax-deferred into Roth over time, and
+  annual tax / RMD / conversion flows showing conversions front-loaded before the
+  RMD cliff. Records to run history and is included in export / import.
+  Educational only — not tax advice; US federal only, no state / IRMAA / NIIT /
+  ACA / Social Security taxation.
+
 ## [1.28.0] - 2026-09-08
 
 ### Added
@@ -412,6 +431,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.29.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.29.0
 [1.28.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.28.0
 [1.27.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.27.0
 [1.26.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.26.0

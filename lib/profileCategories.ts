@@ -26,6 +26,7 @@ export const PROFILE_CATEGORIES: ProfileCategory[] = [
   { id: "seqrisk", label: "Sequence risk", match: (k) => k.startsWith("seq.") },
   { id: "longevity", label: "Longevity", match: (k) => k.startsWith("long.") },
   { id: "care", label: "Long-term care", match: (k) => k.startsWith("care.") },
+  { id: "tax", label: "Tax & Roth", match: (k) => k.startsWith("tax.") },
   { id: "reverse", label: "Reverse stress test", match: (k) => k.startsWith("reverse.") },
   { id: "macro", label: "Macro shock", match: (k) => k.startsWith("macro.") },
   { id: "sensitivity", label: "Sensitivity", match: (k) => k.startsWith("sens.") },

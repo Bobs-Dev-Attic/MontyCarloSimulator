@@ -30,6 +30,12 @@ import {
   type CareResult,
 } from "./careCosts";
 import {
+  simulateTax,
+  type TaxParams,
+  type TaxResult,
+  type Filing,
+} from "./tax";
+import {
   percentileBands,
   terminalHistogram,
   summaryStats,
@@ -405,6 +411,28 @@ export function runCareCosts(req: Partial<CareParams>): CareResult {
     skilledCost: req.skilledCost ?? 110_000,
     nSims: Math.min(Math.max(1000, Math.round(req.nSims ?? 10_000)), 50_000),
     seed: req.seed ?? null,
+  });
+}
+
+export function runTax(req: Partial<TaxParams>): TaxResult {
+  const filing: Filing = req.filing === "mfj" ? "mfj" : "single";
+  const clamp01 = (v: number | undefined, d: number) =>
+    Math.min(1, Math.max(0, v ?? d));
+  return simulateTax({
+    startAge: Math.round(req.startAge ?? 62),
+    filing,
+    years: Math.min(50, Math.max(1, Math.round(req.years ?? 30))),
+    taxable: Math.max(0, req.taxable ?? 400_000),
+    taxableBasisPct: clamp01(req.taxableBasisPct, 0.6),
+    deferred: Math.max(0, req.deferred ?? 1_200_000),
+    roth: Math.max(0, req.roth ?? 150_000),
+    annualSpend: Math.max(0, req.annualSpend ?? 60_000),
+    otherIncome: Math.max(0, req.otherIncome ?? 30_000),
+    nominalReturn: req.nominalReturn ?? 0.06,
+    inflation: req.inflation ?? 0.025,
+    ltcgRate: clamp01(req.ltcgRate, 0.15),
+    conversionTopRate: clamp01(req.conversionTopRate, 0.12),
+    terminalTaxRate: clamp01(req.terminalTaxRate, 0.24),
   });
 }
 

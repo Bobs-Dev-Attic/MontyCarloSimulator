@@ -389,6 +389,36 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     href: "https://en.wikipedia.org/wiki/Markov_chain",
     source: "Wikipedia",
   },
+  rothConversion: {
+    title: "Roth conversion",
+    body: "Moving money from a tax-deferred IRA/401(k) into a tax-free Roth account, paying ordinary income tax now so it (and its growth) is never taxed again. Filling the lower brackets in early-retirement 'gap years' — after work income stops but before RMDs and Social Security begin — can cut lifetime taxes and shrink future RMDs.",
+    href: "https://www.investopedia.com/terms/i/iraconversion.asp",
+    source: "Investopedia",
+  },
+  rmd: {
+    title: "Required Minimum Distribution (RMD)",
+    body: "Starting at age 73, the IRS forces a minimum withdrawal from tax-deferred accounts each year (balance ÷ an age-based divisor from the Uniform Lifetime Table). Large IRAs can push retirees into higher brackets — the 'RMD cliff' — which earlier Roth conversions help defuse.",
+    href: "https://www.investopedia.com/terms/r/requiredminimumdistribution.asp",
+    source: "Investopedia",
+  },
+  taxBrackets: {
+    title: "Tax brackets & bracket management",
+    body: "US ordinary income is taxed in progressive slices (10/12/22/24/32/35/37%). Only the income within each slice is taxed at that rate, so 'filling a bracket' means realizing income (a conversion or withdrawal) up to the top of a low bracket without spilling into the next. Brackets and the standard deduction are indexed to inflation each year.",
+    href: "https://www.investopedia.com/terms/t/taxbracket.asp",
+    source: "Investopedia",
+  },
+  assetLocation: {
+    title: "Asset location & multi-account drawdown",
+    body: "Which account a dollar lives in — Taxable, Tax-deferred, or Tax-free (Roth) — changes how it's taxed on the way out. Coordinating withdrawals and conversions across the three buckets (rather than draining one at a time) manages your bracket year by year and leaves heirs a more tax-efficient estate.",
+    href: "https://www.investopedia.com/articles/investing/090815/basics-asset-location.asp",
+    source: "Investopedia",
+  },
+  ltcg: {
+    title: "Long-term capital gains",
+    body: "Gains on assets held over a year are taxed at preferential federal rates (0/15/20%), applied only to the gain portion of a sale — not the return of your cost basis. A higher basis fraction means less taxable gain when you sell from the brokerage account.",
+    href: "https://www.investopedia.com/terms/c/capital_gains_tax.asp",
+    source: "Investopedia",
+  },
 };
 
 export type GlossaryKey = keyof typeof GLOSSARY;
