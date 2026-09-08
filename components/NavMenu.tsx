@@ -14,10 +14,9 @@ interface Props {
   items: NavItem[];
   active: string;
   onSelect: (id: string) => void;
-  currentLabel: string;
 }
 
-export default function NavMenu({ open, onOpenChange, items, active, onSelect, currentLabel }: Props) {
+export default function NavMenu({ open, onOpenChange, items, active, onSelect }: Props) {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onOpenChange(false);
@@ -31,13 +30,12 @@ export default function NavMenu({ open, onOpenChange, items, active, onSelect, c
         onClick={() => onOpenChange(true)}
         aria-label="Open menu"
         aria-expanded={open}
-        className="inline-flex items-center gap-2 rounded-lg border border-line bg-panel px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-panel2"
+        title="Menu"
+        className="grid h-9 w-9 place-items-center rounded-lg border border-line bg-panel text-slate-200 transition hover:bg-panel2"
       >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M3 5h12M3 9h12M3 13h12" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </svg>
-        <span className="text-muted">Menu ·</span>
-        <span className="text-white">{currentLabel}</span>
       </button>
 
       {open ? (
