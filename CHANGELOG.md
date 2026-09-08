@@ -7,6 +7,19 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-09-08
+
+### Added
+- **Sensitivity analysis with a tornado chart** (new "Sensitivity" tab). Varies
+  each input one-at-a-time by ±a chosen amount around the base case and ranks the
+  inputs by their impact on a selected output metric (median, P5, probability of
+  loss for the portfolio; success rate, median, P5 for retirement). The widest
+  bar is the input the outcome is most sensitive to.
+- Uses **common random numbers** (the same seed across every run) so each bar
+  reflects the input change, not Monte Carlo sampling noise. Bars are colored by
+  direction (does a higher input raise or lower the metric) around a base-case
+  reference line, with a ranked-impact table beneath.
+
 ## [1.4.0] - 2026-09-07
 
 ### Added
@@ -78,6 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.5.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.5.0
 [1.4.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.4.0
 [1.3.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.3.0
 [1.2.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.2.0
