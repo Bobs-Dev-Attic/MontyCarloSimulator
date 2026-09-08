@@ -422,7 +422,7 @@ export function runTax(req: Partial<TaxParams>): TaxResult {
     startAge: Math.round(req.startAge ?? 62),
     filing,
     years: Math.min(50, Math.max(1, Math.round(req.years ?? 30))),
-    taxable: Math.max(0, req.taxable ?? 400_000),
+    taxable: Math.max(0, req.taxable ?? 0),
     taxableBasisPct: clamp01(req.taxableBasisPct, 0.6),
     deferred: Math.max(0, req.deferred ?? 1_200_000),
     roth: Math.max(0, req.roth ?? 150_000),

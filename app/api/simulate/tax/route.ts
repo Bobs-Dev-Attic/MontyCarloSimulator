@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       startAge: Math.round(num(body.startAge, 62)),
       filing: body.filing === "mfj" ? "mfj" : "single",
       years: Math.round(num(body.years, 30)),
-      taxable: num(body.taxable, 400_000),
+      taxable: num(body.taxable, 0),
       taxableBasisPct: num(body.taxableBasisPct, 0.6),
       deferred: num(body.deferred, 1_200_000),
       roth: num(body.roth, 150_000),

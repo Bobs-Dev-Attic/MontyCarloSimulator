@@ -25,7 +25,7 @@ function taxParams(b: Record<string, unknown>): TaxParams {
     startAge: Math.round(num(b.startAge, 62)),
     filing,
     years: Math.min(50, Math.max(1, Math.round(num(b.years, 30)))),
-    taxable: Math.max(0, num(b.taxable, 400_000)),
+    taxable: Math.max(0, num(b.taxable, 0)),
     taxableBasisPct: clamp01(b.taxableBasisPct, 0.6),
     deferred: Math.max(0, num(b.deferred, 1_200_000)),
     roth: Math.max(0, num(b.roth, 150_000)),

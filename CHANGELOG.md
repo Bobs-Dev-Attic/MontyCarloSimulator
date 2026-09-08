@@ -7,6 +7,18 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.31.1] - 2026-09-08
+
+### Changed
+- **Retirement plan** — raised the *Starting balance* slider max to **$5,000,000**
+  and the *Annual contribution* max to **$150,000**.
+- **Tax & Roth** — the *Taxable brokerage* balance now defaults to **$0**.
+
+Verified: retirement runs at the new maximums are stable and deterministic
+(same seed → identical output); the Tax & Roth model runs correctly with a $0
+taxable balance (buckets stay non-negative, internal identities hold) and its
+Excel export's live formulas still reproduce the engine to the dollar.
+
 ## [1.31.0] - 2026-09-08
 
 ### Added
@@ -478,6 +490,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.31.1]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.31.1
 [1.31.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.31.0
 [1.30.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.30.0
 [1.29.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.29.0
