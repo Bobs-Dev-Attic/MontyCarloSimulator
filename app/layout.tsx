@@ -3,6 +3,7 @@ import "./globals.css";
 import { RealProvider } from "@/lib/realContext";
 import { BroadcastProvider } from "@/lib/broadcast";
 import { PreferencesProvider } from "@/lib/preferences";
+import { ProgressProvider } from "@/lib/progress";
 import ConsentGate from "@/components/ConsentGate";
 
 export const metadata: Metadata = {
@@ -21,7 +22,9 @@ export default function RootLayout({
       <body className="min-h-screen font-sans antialiased">
         <PreferencesProvider>
           <RealProvider>
-            <BroadcastProvider>{children}</BroadcastProvider>
+            <BroadcastProvider>
+              <ProgressProvider>{children}</ProgressProvider>
+            </BroadcastProvider>
           </RealProvider>
         </PreferencesProvider>
         <ConsentGate />

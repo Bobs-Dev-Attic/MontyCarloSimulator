@@ -22,6 +22,7 @@ import { RealBadge } from "@/components/RealToggle";
 import { usePersistentState } from "@/lib/persist";
 import { useReal } from "@/lib/realContext";
 import { useApplyAllHandler } from "@/lib/broadcast";
+import { useProgress } from "@/lib/progress";
 import {
   type HistoryEntry,
   loadHistory,
@@ -113,6 +114,7 @@ export default function Page() {
   const [comparing, setComparing] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { adjust } = useReal();
+  const progress = useProgress();
 
   const selectTab = useCallback(
     (id: string) => {
@@ -156,6 +158,15 @@ export default function Page() {
     setLoading(true);
     setError(null);
     const started = performance.now();
+    const work =
+      model === "gbm"
+        ? gbm.nSims * Math.max(1, gbm.years)
+        : ret.nSims * Math.max(1, ret.yearsToRetire + ret.retirementYears);
+    const tracker = progress.track(
+      model,
+      work,
+      model === "gbm" ? "Running portfolio forecast" : "Running retirement simulation"
+    );
     try {
       const endpoint =
         model === "gbm" ? "/api/simulate/gbm" : "/api/simulate/retirement";
@@ -193,8 +204,9 @@ export default function Page() {
       setResult(null);
     } finally {
       setLoading(false);
+      tracker.done();
     }
-  }, [model, gbm, ret]);
+  }, [model, gbm, ret, progress]);
 
   // Load saved history, then run once on first mount so the page isn't empty.
   useEffect(() => {

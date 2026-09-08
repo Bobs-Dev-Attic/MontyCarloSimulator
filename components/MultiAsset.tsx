@@ -6,6 +6,7 @@ import Histogram from "@/components/Histogram";
 import StatCards from "@/components/StatCards";
 import InfoTip from "@/components/InfoTip";
 import { RealBadge } from "@/components/RealToggle";
+import { useProgress } from "@/lib/progress";
 import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
 import { useApplyAllHandler } from "@/lib/broadcast";
@@ -82,6 +83,7 @@ export default function MultiAsset() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { adjust } = useReal();
+  const progress = useProgress();
   const view = data ? adjust(data) : null;
 
   useApplyAllHandler(
@@ -114,6 +116,7 @@ export default function MultiAsset() {
   const run = useCallback(async () => {
     setLoading(true);
     setError(null);
+    const tracker = progress.track("multiasset", nSims * Math.max(1, years), "Running multi-asset simulation");
     try {
       const idxs = roster.map((a, i) => ({ a, i })).filter(({ a }) => a.include);
       const assets = idxs.map(({ a }) => ({
@@ -137,8 +140,9 @@ export default function MultiAsset() {
       setData(null);
     } finally {
       setLoading(false);
+      tracker.done();
     }
-  }, [roster, corr, beginningValue, years, nSims, rebalance]);
+  }, [roster, corr, beginningValue, years, nSims, rebalance, progress]);
 
   useEffect(() => {
     run();

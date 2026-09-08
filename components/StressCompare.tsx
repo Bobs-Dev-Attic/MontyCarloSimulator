@@ -22,6 +22,7 @@ import { usePersistentState } from "@/lib/persist";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import { useChartColors } from "@/lib/chartColors";
+import { useProgress } from "@/lib/progress";
 import type { StressCompareResponse, StressScenarioResult } from "@/lib/run";
 
 const PALETTE = ["#34d399", "#f59e0b", "#f87171", "#38bdf8", "#a78bfa", "#fb923c", "#e879f9"];
@@ -39,6 +40,7 @@ export default function StressCompare() {
 
   const { real, inflation } = useReal();
   const c = useChartColors();
+  const progress = useProgress();
 
   useApplyAllHandler(
     useCallback((key, value) => {
@@ -53,6 +55,9 @@ export default function StressCompare() {
   const run = useCallback(async () => {
     setLoading(true);
     setError(null);
+    // Runs the baseline plus every macro scenario, so the effective work is a
+    // multiple of a single run.
+    const tracker = progress.track("stress", nSims * Math.max(1, years) * 7, "Running stress comparison");
     try {
       const res = await fetch("/api/simulate/stress-compare", {
         method: "POST",
@@ -67,8 +72,9 @@ export default function StressCompare() {
       setData(null);
     } finally {
       setLoading(false);
+      tracker.done();
     }
-  }, [beginningValue, mu, sigma, years, nSims]);
+  }, [beginningValue, mu, sigma, years, nSims, progress]);
 
   useEffect(() => {
     run();

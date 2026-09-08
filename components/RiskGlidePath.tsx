@@ -23,6 +23,7 @@ import { usePersistentState } from "@/lib/persist";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import { useChartColors } from "@/lib/chartColors";
+import { useProgress } from "@/lib/progress";
 import type { SimulationResponse } from "@/lib/types";
 import type { Waypoint } from "@/lib/glidepath";
 
@@ -58,6 +59,7 @@ export default function RiskGlidePath() {
   const [error, setError] = useState<string | null>(null);
   const { adjust } = useReal();
   const c = useChartColors();
+  const progress = useProgress();
   const view = data ? adjust(data) : null;
 
   useApplyAllHandler(
@@ -73,6 +75,7 @@ export default function RiskGlidePath() {
   const run = useCallback(async () => {
     setLoading(true);
     setError(null);
+    const tracker = progress.track("glide", nSims * Math.max(1, years), "Running glide-path simulation");
     try {
       const res = await fetch("/api/simulate/glidepath", {
         method: "POST",
@@ -90,8 +93,9 @@ export default function RiskGlidePath() {
       setData(null);
     } finally {
       setLoading(false);
+      tracker.done();
     }
-  }, [riskyMu, riskySigma, safeMu, safeSigma, rho, waypoints, beginningValue, years, annualContribution, nSims]);
+  }, [riskyMu, riskySigma, safeMu, safeSigma, rho, waypoints, beginningValue, years, annualContribution, nSims, progress]);
 
   useEffect(() => {
     run();

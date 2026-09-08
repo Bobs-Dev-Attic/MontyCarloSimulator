@@ -19,6 +19,7 @@ import { RealBadge } from "@/components/RealToggle";
 import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
 import { useApplyAllHandler } from "@/lib/broadcast";
+import { useProgress } from "@/lib/progress";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import { SCENARIOS, scenarioById } from "@/lib/scenarios";
 import { useChartColors } from "@/lib/chartColors";
@@ -80,6 +81,7 @@ export default function MacroShock() {
   const [data, setData] = useState<MacroShockResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const progress = useProgress();
 
   useApplyAllHandler(
     useCallback((key, value) => {
@@ -104,6 +106,7 @@ export default function MacroShock() {
   const run = useCallback(async () => {
     setLoading(true);
     setError(null);
+    const tracker = progress.track("macro", nSims * Math.max(1, years), "Running macro shock simulation");
     try {
       const res = await fetch("/api/simulate/macro", {
         method: "POST",
@@ -133,8 +136,9 @@ export default function MacroShock() {
       setData(null);
     } finally {
       setLoading(false);
+      tracker.done();
     }
-  }, [beginningValue, mu, sigma, years, nSims, annualProb, severityMean, volMultiplier, recoveryYears, driftDelta, scenarioId]);
+  }, [beginningValue, mu, sigma, years, nSims, annualProb, severityMean, volMultiplier, recoveryYears, driftDelta, scenarioId, progress]);
 
   useEffect(() => {
     run();
