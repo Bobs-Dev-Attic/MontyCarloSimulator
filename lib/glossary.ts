@@ -251,6 +251,54 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     href: "https://www.investopedia.com/terms/s/stresstesting.asp",
     source: "Investopedia",
   },
+  withdrawalRate: {
+    title: "Withdrawal rate",
+    body: "The share of the portfolio taken out in the first year of retirement. The classic '4% rule' suggests ~4% as a starting point for a 30-year horizon.",
+    href: "https://www.investopedia.com/terms/f/four-percent-rule.asp",
+    source: "Investopedia",
+  },
+  guardrails: {
+    title: "Guyton–Klinger guardrails",
+    body: "A dynamic spending rule: the yearly inflation raise is skipped after a down market, spending is cut when the withdrawal rate drifts too high, and raised when it drifts too low — keeping the plan inside 'guardrails'.",
+    href: "https://www.investopedia.com/retirement/how-manage-timing-and-sequence-return-risk/",
+    source: "Investopedia",
+  },
+  ratchet: {
+    title: "Ratcheting spend",
+    body: "A one-way rule that never cuts spending: real spending only steps up when the portfolio has grown well beyond its starting value, locking in gains as raises.",
+    href: "https://www.kitces.com/blog/the-ratcheting-safe-withdrawal-rate-a-more-dominant-version-of-the-4-rule/",
+    source: "Kitces",
+  },
+  dynamicWithdrawal: {
+    title: "Dynamic withdrawal strategy",
+    body: "Any rule that adjusts retirement spending to how the portfolio actually performs, instead of spending a fixed inflation-adjusted amount. Flexibility usually lowers the chance of running out.",
+    href: "https://www.investopedia.com/terms/s/systematic-withdrawal-schedule.asp",
+    source: "Investopedia",
+  },
+  ruinProb: {
+    title: "Probability of ruin",
+    body: "The share of simulated retirements that run out of money before the end of the horizon. Lower is better; adaptive spending typically reduces it.",
+    href: "https://www.investopedia.com/terms/r/riskofruin.asp",
+    source: "Investopedia",
+  },
+  totalSpend: {
+    title: "Total lifetime spending",
+    body: "The sum of every year's withdrawal over the whole retirement, in today's dollars. A rule that ends with more money often spent less along the way — this shows the trade-off.",
+    href: "https://www.investopedia.com/terms/r/retirement-planning.asp",
+    source: "Investopedia",
+  },
+  spendCuts: {
+    title: "Spending cuts",
+    body: "The average number of years a strategy reduced real spending versus the year before. Fixed spending never cuts; guardrails cut in bad markets — the price of a lower ruin risk.",
+    href: "https://www.investopedia.com/terms/s/sequence-risk.asp",
+    source: "Investopedia",
+  },
+  realSpending: {
+    title: "Real spending",
+    body: "Yearly withdrawals expressed in today's purchasing power (inflation removed), so spending in year 1 and year 30 are directly comparable.",
+    href: "https://www.investopedia.com/terms/r/realincome.asp",
+    source: "Investopedia",
+  },
 };
 
 export type GlossaryKey = keyof typeof GLOSSARY;
