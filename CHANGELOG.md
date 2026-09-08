@@ -7,6 +7,15 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.0] - 2026-09-08
+
+### Added
+- **First-visit consent dialog.** On a visitor's first load, a modal requires
+  them to tick a box acknowledging the tool is **not financial advice** and is
+  for educational / entertainment purposes only before entering. The
+  acknowledgement is stored locally (outside the profile namespace, so a profile
+  reset/import doesn't clear it) and won't reappear on return visits.
+
 ## [1.11.0] - 2026-09-08
 
 ### Added
@@ -166,6 +175,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.12.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.12.0
 [1.11.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.11.0
 [1.10.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.10.0
 [1.9.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.9.0
