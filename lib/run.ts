@@ -12,7 +12,9 @@ import {
   percentileBands,
   terminalHistogram,
   summaryStats,
+  type SummaryStats,
 } from "./aggregate";
+import { SCENARIOS, scenarioById } from "./scenarios";
 import type {
   GbmRequest,
   RetirementRequest,
@@ -212,6 +214,91 @@ export function runGlidePath(req: GlidePathRequest): SimulationResponse {
       curve: result.curve,
     },
   };
+}
+
+// ---------------------------------------------------------------------------
+// Stress-test comparison: baseline + every scenario against the same portfolio
+// ---------------------------------------------------------------------------
+
+export interface StressScenarioResult {
+  id: string;
+  name: string;
+  isBaseline: boolean;
+  summary: SummaryStats;
+  fracWithShock: number;
+  avgShocks: number;
+  medianCurve: { x: number; p50: number }[];
+}
+
+export interface StressCompareRequest {
+  beginningValue: number;
+  mu: number;
+  sigma: number;
+  years: number;
+  nSims?: number;
+  seed?: number | null;
+  scenarioIds?: string[]; // defaults to all library scenarios (except "custom")
+}
+
+export interface StressCompareResponse {
+  years: number;
+  beginningValue: number;
+  nSims: number;
+  baseline: StressScenarioResult;
+  scenarios: StressScenarioResult[];
+}
+
+function runOneStress(
+  req: StressCompareRequest,
+  nSims: number,
+  stepsPerYear: number,
+  id: string,
+  name: string,
+  shock: ShockConfig | undefined
+): StressScenarioResult {
+  const result = simulateGbm({
+    beginningValue: req.beginningValue,
+    mu: req.mu,
+    sigma: req.sigma,
+    years: req.years,
+    stepsPerYear,
+    nSims,
+    seed: req.seed ?? 2026, // shared seed across scenarios (common random numbers)
+    shock,
+  });
+  const bands = percentileBands(result.steps, result.stepValues);
+  const medianCurve = bands.steps.map((s, i) => ({
+    x: s / stepsPerYear,
+    p50: bands.p50[i],
+  }));
+  return {
+    id,
+    name,
+    isBaseline: !shock,
+    summary: summaryStats(result.terminal, req.beginningValue),
+    fracWithShock: result.shockStats?.fracWithShock ?? 0,
+    avgShocks: result.shockStats?.avgShocks ?? 0,
+    medianCurve,
+  };
+}
+
+export function runStressCompare(
+  req: StressCompareRequest
+): StressCompareResponse {
+  const nSims = clampSims(req.nSims);
+  const stepsPerYear = 52; // weekly is plenty for scenario comparison and fast
+  const ids =
+    req.scenarioIds && req.scenarioIds.length > 0
+      ? req.scenarioIds
+      : SCENARIOS.filter((s) => s.id !== "custom").map((s) => s.id);
+
+  const baseline = runOneStress(req, nSims, stepsPerYear, "baseline", "No shock (baseline)", undefined);
+  const scenarios = ids.map((id) => {
+    const sc = scenarioById(id);
+    return runOneStress(req, nSims, stepsPerYear, sc.id, sc.name, sc.config);
+  });
+
+  return { years: req.years, beginningValue: req.beginningValue, nSims, baseline, scenarios };
 }
 
 export function runRetirement(req: RetirementRequest): SimulationResponse {

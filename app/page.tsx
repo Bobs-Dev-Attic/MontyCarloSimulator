@@ -14,6 +14,7 @@ import MacroShock from "@/components/MacroShock";
 import Sensitivity from "@/components/Sensitivity";
 import MultiAsset from "@/components/MultiAsset";
 import RiskGlidePath from "@/components/RiskGlidePath";
+import StressCompare from "@/components/StressCompare";
 import ProfileBar from "@/components/ProfileBar";
 import RealToggle, { RealBadge } from "@/components/RealToggle";
 import { usePersistentState } from "@/lib/persist";
@@ -79,7 +80,7 @@ const DEFAULT_RETIREMENT: RetirementState = {
   seed: 2026,
 };
 
-type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset" | "glide";
+type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset" | "glide" | "stress";
 
 export default function Page() {
   const [tab, setTab] = usePersistentState<Tab>("ui.tab", "gbm");
@@ -233,6 +234,9 @@ export default function Page() {
         <TabButton active={tab === "glide"} onClick={() => setTab("glide")}>
           Risk glide path
         </TabButton>
+        <TabButton active={tab === "stress"} onClick={() => setTab("stress")}>
+          Stress compare
+        </TabButton>
       </div>
 
       {tab === "reverse" ? (
@@ -245,6 +249,8 @@ export default function Page() {
         <MultiAsset />
       ) : tab === "glide" ? (
         <RiskGlidePath />
+      ) : tab === "stress" ? (
+        <StressCompare />
       ) : (
       <>
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
