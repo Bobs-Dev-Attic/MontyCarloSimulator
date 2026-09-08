@@ -21,6 +21,8 @@ import { useAutoRun } from "@/lib/preferences";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { useProgress } from "@/lib/progress";
 import { useChartColors } from "@/lib/chartColors";
+import { useTabHistory } from "@/lib/tabHistory";
+import TabHistoryPanel from "@/components/TabHistoryPanel";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import type { DynamicWithdrawalResult, WithdrawalStrategy } from "@/lib/dynamicWithdrawal";
 
@@ -49,6 +51,7 @@ export default function DynamicWithdrawal() {
   const [error, setError] = useState<string | null>(null);
   const progress = useProgress();
   const c = useChartColors();
+  const history = useTabHistory("dynwithdraw");
 
   useApplyAllHandler(
     useCallback((key, value) => {
@@ -74,7 +77,18 @@ export default function DynamicWithdrawal() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Simulation failed");
-      setData(json as DynamicWithdrawalResult);
+      const d = json as DynamicWithdrawalResult;
+      setData(d);
+      const f = d.strategies.find((s) => s.id === "fixed");
+      const g = d.strategies.find((s) => s.id === "guardrails");
+      history.add({
+        label: `${formatCompact(startingBalance)} · ${formatPercent(initialRate)} · ${retirementYears}y`,
+        inputs: { startingBalance, retirementYears, initialRate, meanReturn, stdReturn, inflation, guardBand, guardAdjust, ratchetThreshold, ratchetStep, ratchetEvery, nSims },
+        metrics: [
+          { label: "Fixed ruin", value: formatPercent(f?.ruinProb ?? 0) },
+          { label: "Guardrails ruin", value: formatPercent(g?.ruinProb ?? 0) },
+        ],
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Simulation failed");
       setData(null);
@@ -82,7 +96,7 @@ export default function DynamicWithdrawal() {
       setLoading(false);
       tracker.done();
     }
-  }, [startingBalance, retirementYears, initialRate, meanReturn, stdReturn, inflation, guardBand, guardAdjust, ratchetThreshold, ratchetStep, ratchetEvery, nSims, progress]);
+  }, [startingBalance, retirementYears, initialRate, meanReturn, stdReturn, inflation, guardBand, guardAdjust, ratchetThreshold, ratchetStep, ratchetEvery, nSims, progress, history]);
 
   useAutoRun(run);
 
@@ -108,6 +122,24 @@ export default function DynamicWithdrawal() {
     : [];
 
   const ruinRows = data ? data.strategies.map((s) => ({ name: s.name, id: s.id, ruin: s.ruinProb })) : [];
+
+  const restore = (inp: Record<string, unknown>) => {
+    const set = (k: string, fn: (v: number) => void) => {
+      if (typeof inp[k] === "number") fn(inp[k] as number);
+    };
+    set("startingBalance", setStartingBalance);
+    set("retirementYears", setRetirementYears);
+    set("initialRate", setInitialRate);
+    set("meanReturn", setMeanReturn);
+    set("stdReturn", setStdReturn);
+    set("inflation", setInflation);
+    set("guardBand", setGuardBand);
+    set("guardAdjust", setGuardAdjust);
+    set("ratchetThreshold", setRatchetThreshold);
+    set("ratchetStep", setRatchetStep);
+    set("ratchetEvery", setRatchetEvery);
+    set("nSims", setNSims);
+  };
 
   return (
     <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
@@ -278,6 +310,8 @@ export default function DynamicWithdrawal() {
             {loading ? "Comparing strategies…" : "Run a comparison to see results."}
           </div>
         )}
+
+        <TabHistoryPanel history={history} onRestore={restore} />
       </section>
     </div>
   );

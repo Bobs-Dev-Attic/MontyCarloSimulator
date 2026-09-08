@@ -11,7 +11,9 @@ import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
 import { useAutoRun } from "@/lib/preferences";
 import { useApplyAllHandler } from "@/lib/broadcast";
-import { formatCurrency, formatPercent } from "@/lib/format";
+import { useTabHistory } from "@/lib/tabHistory";
+import TabHistoryPanel from "@/components/TabHistoryPanel";
+import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import type { SimulationResponse } from "@/lib/types";
 
 interface RosterAsset {
@@ -85,6 +87,7 @@ export default function MultiAsset() {
   const [error, setError] = useState<string | null>(null);
   const { adjust } = useReal();
   const progress = useProgress();
+  const history = useTabHistory("multiasset");
   const view = data ? adjust(data) : null;
 
   useApplyAllHandler(
@@ -135,7 +138,16 @@ export default function MultiAsset() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Simulation failed");
-      setData(json as SimulationResponse);
+      const d = json as SimulationResponse;
+      setData(d);
+      history.add({
+        label: `${formatCompact(beginningValue)} · ${assets.length} assets · ${years}y`,
+        inputs: { roster, corr, beginningValue, years, nSims, rebalance },
+        metrics: [
+          { label: "Median", value: formatCurrency(d.summary.median) },
+          { label: "Diversification", value: `−${formatPercent((d.meta.diversificationBenefit as number) ?? 0)}` },
+        ],
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Simulation failed");
       setData(null);
@@ -143,9 +155,18 @@ export default function MultiAsset() {
       setLoading(false);
       tracker.done();
     }
-  }, [roster, corr, beginningValue, years, nSims, rebalance, progress]);
+  }, [roster, corr, beginningValue, years, nSims, rebalance, progress, history]);
 
   useAutoRun(run);
+
+  const restore = (inp: Record<string, unknown>) => {
+    if (Array.isArray(inp.roster)) setRoster(inp.roster as RosterAsset[]);
+    if (Array.isArray(inp.corr)) setCorr(inp.corr as number[][]);
+    if (typeof inp.beginningValue === "number") setBeginningValue(inp.beginningValue);
+    if (typeof inp.years === "number") setYears(inp.years);
+    if (typeof inp.nSims === "number") setNSims(inp.nSims);
+    if (typeof inp.rebalance === "boolean") setRebalance(inp.rebalance);
+  };
 
   return (
     <div className="space-y-6">
@@ -304,6 +325,8 @@ export default function MultiAsset() {
           {loading ? "Simulating correlated portfolio…" : "Run a simulation to see results."}
         </div>
       )}
+
+      <TabHistoryPanel history={history} onRestore={restore} />
     </div>
   );
 }

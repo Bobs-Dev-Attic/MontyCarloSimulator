@@ -24,6 +24,8 @@ import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import { useChartColors } from "@/lib/chartColors";
 import { useProgress } from "@/lib/progress";
+import { useTabHistory } from "@/lib/tabHistory";
+import TabHistoryPanel from "@/components/TabHistoryPanel";
 import type { StressCompareResponse, StressScenarioResult } from "@/lib/run";
 
 const PALETTE = ["#34d399", "#f59e0b", "#f87171", "#38bdf8", "#a78bfa", "#fb923c", "#e879f9"];
@@ -42,6 +44,7 @@ export default function StressCompare() {
   const { real, inflation } = useReal();
   const c = useChartColors();
   const progress = useProgress();
+  const history = useTabHistory("stress");
 
   useApplyAllHandler(
     useCallback((key, value) => {
@@ -67,7 +70,24 @@ export default function StressCompare() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Simulation failed");
-      setData(json as StressCompareResponse);
+      const d = json as StressCompareResponse;
+      setData(d);
+      const baseMed = d.baseline.summary.median;
+      const worst = d.scenarios.reduce(
+        (acc, s) => {
+          const drop = baseMed > 0 ? 1 - s.summary.median / baseMed : 0;
+          return drop > acc.drop ? { name: s.name, drop } : acc;
+        },
+        { name: "—", drop: 0 }
+      );
+      history.add({
+        label: `${formatCompact(beginningValue)} · μ${formatPercent(mu)} σ${formatPercent(sigma)} · ${years}y`,
+        inputs: { beginningValue, mu, sigma, years, nSims },
+        metrics: [
+          { label: "Baseline median", value: formatCurrency(baseMed) },
+          { label: "Worst drop", value: `−${formatPercent(worst.drop)}` },
+        ],
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Simulation failed");
       setData(null);
@@ -75,9 +95,20 @@ export default function StressCompare() {
       setLoading(false);
       tracker.done();
     }
-  }, [beginningValue, mu, sigma, years, nSims, progress]);
+  }, [beginningValue, mu, sigma, years, nSims, progress, history]);
 
   useAutoRun(run);
+
+  const restore = (inp: Record<string, unknown>) => {
+    const set = (k: string, fn: (v: number) => void) => {
+      if (typeof inp[k] === "number") fn(inp[k] as number);
+    };
+    set("beginningValue", setBeginningValue);
+    set("mu", setMu);
+    set("sigma", setSigma);
+    set("years", setYears);
+    set("nSims", setNSims);
+  };
 
   // Deflate a terminal currency value / a per-year curve value when "real" is on.
   const tf = real ? Math.pow(1 + inflation, data?.years ?? 0) : 1;
@@ -262,6 +293,8 @@ export default function StressCompare() {
             {loading ? "Running all scenarios…" : "Run a stress comparison to see results."}
           </div>
         )}
+
+        <TabHistoryPanel history={history} onRestore={restore} />
       </section>
     </div>
   );

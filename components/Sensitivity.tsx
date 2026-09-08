@@ -19,6 +19,8 @@ import Field from "@/components/Field";
 import InfoTip from "@/components/InfoTip";
 import { useChartColors } from "@/lib/chartColors";
 import { useProgress } from "@/lib/progress";
+import { useTabHistory } from "@/lib/tabHistory";
+import TabHistoryPanel from "@/components/TabHistoryPanel";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import type { TornadoResult, Metric, Fmt } from "@/lib/sensitivity";
 
@@ -63,6 +65,7 @@ export default function Sensitivity() {
   const [error, setError] = useState<string | null>(null);
   const c = useChartColors();
   const progress = useProgress();
+  const history = useTabHistory("sensitivity");
 
   useApplyAllHandler(
     useCallback((key, value) => {
@@ -108,7 +111,16 @@ export default function Sensitivity() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Sensitivity analysis failed");
-      setData(json as TornadoResult);
+      const d = json as TornadoResult;
+      setData(d);
+      history.add({
+        label: `${model === "gbm" ? "Portfolio" : "Retirement"} · ${metric} · ±${formatPercent(variationPct, 0)}`,
+        inputs: { model, metric, variationPct, gbm, ret },
+        metrics: [
+          { label: "Base", value: fmtVal(d.baseMetric, d.metricFormat) },
+          { label: "Top driver", value: d.rows[0]?.label ?? "—" },
+        ],
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sensitivity analysis failed");
       setData(null);
@@ -116,9 +128,17 @@ export default function Sensitivity() {
       setLoading(false);
       tracker.done();
     }
-  }, [model, metric, variationPct, gbm, ret, progress]);
+  }, [model, metric, variationPct, gbm, ret, progress, history]);
 
   useAutoRun(run);
+
+  const restore = (inp: Record<string, unknown>) => {
+    if (inp.model === "gbm" || inp.model === "retirement") setModel(inp.model);
+    if (typeof inp.metric === "string") setMetric(inp.metric as Metric);
+    if (typeof inp.variationPct === "number") setVariationPct(inp.variationPct);
+    if (inp.gbm && typeof inp.gbm === "object") setGbm(inp.gbm as typeof gbm);
+    if (inp.ret && typeof inp.ret === "object") setRet(inp.ret as typeof ret);
+  };
 
   const chartRows = useMemo(() => {
     if (!data) return [];
@@ -307,6 +327,8 @@ export default function Sensitivity() {
             {loading ? "Running sensitivity analysis…" : "Run a sensitivity analysis to see the tornado."}
           </div>
         )}
+
+        <TabHistoryPanel history={history} onRestore={restore} />
       </section>
     </div>
   );
