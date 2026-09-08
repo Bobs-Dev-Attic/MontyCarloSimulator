@@ -12,6 +12,7 @@ import CompareView from "@/components/CompareView";
 import ReverseStress from "@/components/ReverseStress";
 import MacroShock from "@/components/MacroShock";
 import Sensitivity from "@/components/Sensitivity";
+import MultiAsset from "@/components/MultiAsset";
 import {
   type HistoryEntry,
   loadHistory,
@@ -69,7 +70,7 @@ const DEFAULT_RETIREMENT: RetirementState = {
   seed: 2026,
 };
 
-type Tab = Model | "reverse" | "macro" | "sensitivity";
+type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset";
 
 export default function Page() {
   const [tab, setTab] = useState<Tab>("gbm");
@@ -196,6 +197,9 @@ export default function Page() {
         <TabButton active={tab === "sensitivity"} onClick={() => setTab("sensitivity")}>
           Sensitivity
         </TabButton>
+        <TabButton active={tab === "multiasset"} onClick={() => setTab("multiasset")}>
+          Multi-asset
+        </TabButton>
       </div>
 
       {tab === "reverse" ? (
@@ -204,6 +208,8 @@ export default function Page() {
         <MacroShock />
       ) : tab === "sensitivity" ? (
         <Sensitivity />
+      ) : tab === "multiasset" ? (
+        <MultiAsset />
       ) : (
       <>
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">

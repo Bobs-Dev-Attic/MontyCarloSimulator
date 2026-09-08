@@ -6,6 +6,7 @@
 
 import { simulateGbm, type ShockConfig } from "./gbm";
 import { simulateRetirement } from "./retirement";
+import { simulateMultiAsset, type Asset } from "./multiasset";
 import {
   percentileBands,
   terminalHistogram,
@@ -101,6 +102,54 @@ export function runMacroShock(
   return {
     baseline: runGbm(req),
     shocked: runGbm(req, shock),
+  };
+}
+
+export interface MultiAssetRequest {
+  assets: Asset[];
+  corr: number[][];
+  beginningValue: number;
+  years: number;
+  nSims?: number;
+  seed?: number | null;
+  rebalance?: boolean;
+}
+
+export function runMultiAsset(req: MultiAssetRequest): SimulationResponse {
+  const nSims = clampSims(req.nSims);
+  const stepsPerYear = 52;
+  const result = simulateMultiAsset({
+    assets: req.assets,
+    corr: req.corr,
+    beginningValue: req.beginningValue,
+    years: req.years,
+    stepsPerYear,
+    nSims,
+    seed: req.seed ?? null,
+    rebalance: req.rebalance ?? false,
+  });
+
+  const unitPerStep = 1 / stepsPerYear;
+  const bandsRaw = percentileBands(result.steps, result.stepValues);
+  const bands = { ...bandsRaw, steps: result.steps.map((s) => s * unitPerStep) };
+
+  return {
+    model: "gbm",
+    bands,
+    histogram: terminalHistogram(result.terminal),
+    summary: summaryStats(result.terminal, req.beginningValue),
+    samplePaths: buildSamplePaths(result.steps, result.sampleStepValues, unitPerStep),
+    xAxis: { label: "Years", unitPerStep, unit: "yr" },
+    meta: {
+      nSims,
+      seed: req.seed ?? null,
+      years: req.years,
+      rebalance: req.rebalance ?? false,
+      expectedReturn: result.expectedReturn,
+      portfolioVol: result.portfolioVol,
+      undiversifiedVol: result.undiversifiedVol,
+      diversificationBenefit: result.undiversifiedVol - result.portfolioVol,
+    },
   };
 }
 
