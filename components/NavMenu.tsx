@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
+import NavIcon from "@/components/NavIcons";
 
 export interface NavItem {
   id: string;
@@ -61,14 +62,23 @@ export default function NavMenu({ open, onOpenChange, items, active, onSelect }:
                     onSelect(it.id);
                     onOpenChange(false);
                   }}
-                  className={`mb-1 flex w-full flex-col rounded-lg px-3 py-2 text-left transition ${
+                  className={`mb-1 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition ${
                     active === it.id ? "bg-accent text-ink" : "text-slate-200 hover:bg-panel2"
                   }`}
                 >
-                  <span className="text-sm font-medium">{it.label}</span>
-                  {it.hint ? (
-                    <span className={`text-[11px] ${active === it.id ? "text-ink/70" : "text-muted"}`}>{it.hint}</span>
-                  ) : null}
+                  <span
+                    className={`grid h-8 w-8 shrink-0 place-items-center rounded-md ${
+                      active === it.id ? "bg-ink/10 text-ink" : "bg-panel2 text-accent2"
+                    }`}
+                  >
+                    <NavIcon id={it.id} size={18} />
+                  </span>
+                  <span className="flex min-w-0 flex-col">
+                    <span className="text-sm font-medium">{it.label}</span>
+                    {it.hint ? (
+                      <span className={`text-[11px] ${active === it.id ? "text-ink/70" : "text-muted"}`}>{it.hint}</span>
+                    ) : null}
+                  </span>
                 </button>
               ))}
             </div>
