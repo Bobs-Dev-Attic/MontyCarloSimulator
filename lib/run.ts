@@ -14,6 +14,11 @@ import {
   type DynamicWithdrawalResult,
 } from "./dynamicWithdrawal";
 import {
+  simulateSequenceRisk,
+  type SequenceRiskParams,
+  type SequenceRiskResult,
+} from "./sequenceRisk";
+import {
   percentileBands,
   terminalHistogram,
   summaryStats,
@@ -322,6 +327,29 @@ export function runDynamicWithdrawal(
     ratchetThreshold: req.ratchetThreshold ?? 0.5,
     ratchetStep: req.ratchetStep ?? 0.1,
     ratchetEvery: Math.round(req.ratchetEvery ?? 3),
+    nSims,
+    seed: req.seed ?? null,
+  });
+}
+
+export function runSequenceRisk(
+  req: Partial<SequenceRiskParams>
+): SequenceRiskResult {
+  const nSims = Math.min(clampSims(req.nSims), 15_000);
+  return simulateSequenceRisk({
+    startingBalance: req.startingBalance ?? 1_000_000,
+    retirementYears: Math.round(req.retirementYears ?? 30),
+    annualSpend: req.annualSpend ?? 35_000,
+    inflation: req.inflation ?? 0.025,
+    equityMean: req.equityMean ?? 0.07,
+    equityVol: req.equityVol ?? 0.16,
+    bufferYield: req.bufferYield ?? 0.03,
+    bearYears: Math.round(req.bearYears ?? 3),
+    bearMean: req.bearMean ?? -0.05,
+    bearVol: req.bearVol ?? 0.20,
+    troughDrawdown: req.troughDrawdown ?? 0.1,
+    maxBufferYears: Math.round(req.maxBufferYears ?? 8),
+    targetSellProb: req.targetSellProb ?? 0.05,
     nSims,
     seed: req.seed ?? null,
   });

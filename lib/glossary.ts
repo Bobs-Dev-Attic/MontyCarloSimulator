@@ -299,6 +299,36 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     href: "https://www.investopedia.com/terms/r/realincome.asp",
     source: "Investopedia",
   },
+  cashBuffer: {
+    title: "Cash buffer (bucket)",
+    body: "A pool of cash or short bonds, sized in years of spending, that you draw on instead of selling stocks during a downturn — giving equities time to recover.",
+    href: "https://www.investopedia.com/articles/investing/090815/how-set-cash-bucket-retirement.asp",
+    source: "Investopedia",
+  },
+  bondTent: {
+    title: "Bond tent",
+    body: "Holding extra bonds/cash right around retirement and spending them down over the first years, so a bad early market doesn't force equity sales. It reduces sequence-of-returns risk when it matters most.",
+    href: "https://www.kitces.com/blog/managing-portfolio-size-effect-with-bond-tent-in-retirement-red-zone/",
+    source: "Kitces",
+  },
+  sellAtTrough: {
+    title: "Selling at a trough",
+    body: "Being forced to sell equities while they're well below their peak to fund spending — locking in losses. Avoiding this in early retirement is the whole point of a cash buffer / bond tent.",
+    href: "https://www.investopedia.com/terms/s/sequence-risk.asp",
+    source: "Investopedia",
+  },
+  bearWindow: {
+    title: "Early bear stress window",
+    body: "The first years of retirement, here forced to a bear market (low mean, high volatility), to test the plan against the worst timing for a downturn.",
+    href: "https://www.investopedia.com/terms/b/bearmarket.asp",
+    source: "Investopedia",
+  },
+  troughDrawdown: {
+    title: "Trough threshold",
+    body: "How far equities must fall below their running peak to count as being 'in a trough'. Withdrawals taken while past this threshold are treated as selling at a loss.",
+    href: "https://www.investopedia.com/terms/d/drawdown.asp",
+    source: "Investopedia",
+  },
 };
 
 export type GlossaryKey = keyof typeof GLOSSARY;
