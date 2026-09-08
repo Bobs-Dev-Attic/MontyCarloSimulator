@@ -19,6 +19,7 @@ import GlidePathEditor from "@/components/GlidePathEditor";
 import { RealBadge } from "@/components/RealToggle";
 import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
+import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import type { SimulationResponse } from "@/lib/types";
 import type { Waypoint } from "@/lib/glidepath";
@@ -55,6 +56,16 @@ export default function RiskGlidePath() {
   const [error, setError] = useState<string | null>(null);
   const { adjust } = useReal();
   const view = data ? adjust(data) : null;
+
+  useApplyAllHandler(
+    useCallback((key, value) => {
+      if (key === "beginningValue") setBeginningValue(value);
+      else if (key === "years") setYears(Math.round(value));
+      else if (key === "nSims") setNSims(Math.round(value));
+      else if (key === "mu") setRiskyMu(value);
+      else if (key === "sigma") setRiskySigma(value);
+    }, [setBeginningValue, setYears, setNSims, setRiskyMu, setRiskySigma])
+  );
 
   const run = useCallback(async () => {
     setLoading(true);
@@ -108,8 +119,8 @@ export default function RiskGlidePath() {
           <h3 className="mb-3 text-sm font-semibold text-slate-200">Sleeves</h3>
           <div className="grid grid-cols-2 gap-x-6 gap-y-4">
             <div className="col-span-2 text-[11px] font-semibold uppercase tracking-wide text-accent">Risky sleeve (e.g. equities)</div>
-            <Field label="Return μ" value={riskyMu} onChange={setRiskyMu} min={-0.02} max={0.15} step={0.005} display={formatPercent(riskyMu)} />
-            <Field label="Volatility σ" value={riskySigma} onChange={setRiskySigma} min={0.02} max={0.4} step={0.005} display={formatPercent(riskySigma)} />
+            <Field label="Return μ" value={riskyMu} onChange={setRiskyMu} min={-0.02} max={0.15} step={0.005} display={formatPercent(riskyMu)} sharedKey="mu" />
+            <Field label="Volatility σ" value={riskySigma} onChange={setRiskySigma} min={0.02} max={0.4} step={0.005} display={formatPercent(riskySigma)} sharedKey="sigma" />
             <div className="col-span-2 mt-1 text-[11px] font-semibold uppercase tracking-wide text-accent2">Safe sleeve (e.g. bonds/cash)</div>
             <Field label="Return μ" value={safeMu} onChange={setSafeMu} min={-0.01} max={0.08} step={0.0025} display={formatPercent(safeMu)} />
             <Field label="Volatility σ" value={safeSigma} onChange={setSafeSigma} min={0} max={0.15} step={0.0025} display={formatPercent(safeSigma)} />
@@ -123,10 +134,10 @@ export default function RiskGlidePath() {
         <section className="rounded-2xl border border-line bg-panel p-5">
           <h3 className="mb-3 text-sm font-semibold text-slate-200">Plan</h3>
           <div className="space-y-4">
-            <Field label="Beginning value" value={beginningValue} onChange={setBeginningValue} min={0} max={5_000_000} step={1000} display={formatCurrency(beginningValue)} />
+            <Field label="Beginning value" value={beginningValue} onChange={setBeginningValue} min={0} max={5_000_000} step={1000} display={formatCurrency(beginningValue)} sharedKey="beginningValue" />
             <Field label="Annual contribution" value={annualContribution} onChange={setAnnualContribution} min={0} max={100_000} step={1000} display={formatCurrency(annualContribution)} />
-            <Field label="Time horizon" value={years} onChange={(v) => setYears(Math.round(v))} min={1} max={50} step={1} display={`${years} yr`} />
-            <Field label="Simulations" value={nSims} onChange={(v) => setNSims(Math.round(v))} min={1000} max={50_000} step={1000} display={nSims.toLocaleString()} />
+            <Field label="Time horizon" value={years} onChange={(v) => setYears(Math.round(v))} min={1} max={50} step={1} display={`${years} yr`} sharedKey="years" />
+            <Field label="Simulations" value={nSims} onChange={(v) => setNSims(Math.round(v))} min={1000} max={50_000} step={1000} display={nSims.toLocaleString()} sharedKey="nSims" />
           </div>
           <button onClick={run} disabled={loading} className="mt-5 w-full rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-ink transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
             {loading ? "Simulating…" : "Run glide-path simulation"}

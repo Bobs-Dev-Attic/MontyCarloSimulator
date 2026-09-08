@@ -7,6 +7,16 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-09-08
+
+### Added
+- **"Apply to all tabs"** control on shared parameters. A small icon next to
+  the starting amount, expected return, volatility, time horizon, and simulation
+  count broadcasts that value to the matching parameter in every other tab, so a
+  single portfolio can be kept consistent across Portfolio, Retirement, Reverse
+  stress, Macro shock, Sensitivity, Multi-asset, Risk glide path, and Stress
+  compare.
+
 ## [1.10.0] - 2026-09-08
 
 ### Added
@@ -156,6 +166,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.11.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.11.0
 [1.10.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.10.0
 [1.9.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.9.0
 [1.8.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.8.0

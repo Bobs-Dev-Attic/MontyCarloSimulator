@@ -17,6 +17,7 @@ import Histogram from "@/components/Histogram";
 import { RealBadge } from "@/components/RealToggle";
 import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
+import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import { SCENARIOS, scenarioById } from "@/lib/scenarios";
 import type { MacroShockResponse } from "@/lib/run";
@@ -72,6 +73,16 @@ export default function MacroShock() {
   const [data, setData] = useState<MacroShockResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useApplyAllHandler(
+    useCallback((key, value) => {
+      if (key === "beginningValue") setBeginningValue(value);
+      else if (key === "mu") setMu(value);
+      else if (key === "sigma") setSigma(value);
+      else if (key === "years") setYears(value);
+      else if (key === "nSims") setNSims(value);
+    }, [setBeginningValue, setMu, setSigma, setYears, setNSims])
+  );
 
   const applyScenario = useCallback((id: string) => {
     setScenarioId(id);
@@ -188,11 +199,11 @@ export default function MacroShock() {
           Portfolio
         </h3>
         <div className="space-y-4">
-          <Field label="Beginning value" value={beginningValue} onChange={setBeginningValue} min={1000} max={5_000_000} step={1000} display={formatCurrency(beginningValue)} />
-          <Field label="Expected return (μ)" value={mu} onChange={setMu} min={-0.05} max={0.2} step={0.005} display={formatPercent(mu)} />
-          <Field label="Base volatility (σ)" value={sigma} onChange={setSigma} min={0.01} max={0.6} step={0.005} display={formatPercent(sigma)} />
-          <Field label="Time horizon" value={years} onChange={setYears} min={1} max={40} step={1} display={`${years} yr`} />
-          <Field label="Simulations" value={nSims} onChange={setNSims} min={1000} max={50_000} step={1000} display={nSims.toLocaleString()} />
+          <Field label="Beginning value" value={beginningValue} onChange={setBeginningValue} min={1000} max={5_000_000} step={1000} display={formatCurrency(beginningValue)} sharedKey="beginningValue" />
+          <Field label="Expected return (μ)" value={mu} onChange={setMu} min={-0.05} max={0.2} step={0.005} display={formatPercent(mu)} sharedKey="mu" />
+          <Field label="Base volatility (σ)" value={sigma} onChange={setSigma} min={0.01} max={0.6} step={0.005} display={formatPercent(sigma)} sharedKey="sigma" />
+          <Field label="Time horizon" value={years} onChange={setYears} min={1} max={40} step={1} display={`${years} yr`} sharedKey="years" />
+          <Field label="Simulations" value={nSims} onChange={setNSims} min={1000} max={50_000} step={1000} display={nSims.toLocaleString()} sharedKey="nSims" />
         </div>
 
         <button

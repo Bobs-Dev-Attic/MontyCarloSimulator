@@ -7,6 +7,7 @@ import StatCards from "@/components/StatCards";
 import { RealBadge } from "@/components/RealToggle";
 import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
+import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import type { SimulationResponse } from "@/lib/types";
 
@@ -81,6 +82,14 @@ export default function MultiAsset() {
   const [error, setError] = useState<string | null>(null);
   const { adjust } = useReal();
   const view = data ? adjust(data) : null;
+
+  useApplyAllHandler(
+    useCallback((key, value) => {
+      if (key === "beginningValue") setBeginningValue(value);
+      else if (key === "years") setYears(value);
+      else if (key === "nSims") setNSims(value);
+    }, [setBeginningValue, setYears, setNSims])
+  );
 
   const included = useMemo(
     () => roster.map((a, i) => ({ a, i })).filter(({ a }) => a.include),

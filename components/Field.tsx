@@ -1,5 +1,8 @@
 "use client";
 
+import { useState } from "react";
+import { useBroadcast, type SharedKey } from "@/lib/broadcast";
+
 interface FieldProps {
   label: string;
   value: number;
@@ -10,6 +13,8 @@ interface FieldProps {
   /** Rendered display, e.g. "$10,000" or "7%". */
   display: string;
   hint?: string;
+  /** When set, shows an "apply to all tabs" icon that broadcasts this value. */
+  sharedKey?: SharedKey;
 }
 
 export default function Field({
@@ -21,13 +26,38 @@ export default function Field({
   step,
   display,
   hint,
+  sharedKey,
 }: FieldProps) {
+  const bc = useBroadcast();
+  const [flash, setFlash] = useState(false);
+
   return (
     <div>
       <div className="flex items-baseline justify-between">
         <label className="text-sm text-slate-200">{label}</label>
-        <span className="text-sm font-semibold tabular-nums text-accent">
-          {display}
+        <span className="flex items-center gap-1.5">
+          {sharedKey && bc ? (
+            <button
+              type="button"
+              onClick={() => {
+                bc.applyAll(sharedKey, value);
+                setFlash(true);
+                setTimeout(() => setFlash(false), 900);
+              }}
+              title="Apply this value to all tabs"
+              aria-label="Apply this value to all tabs"
+              className={`grid h-5 w-5 place-items-center rounded border text-[11px] leading-none transition ${
+                flash
+                  ? "border-good bg-good/20 text-good"
+                  : "border-line text-muted hover:border-accent hover:text-accent"
+              }`}
+            >
+              {flash ? "✓" : "⧉"}
+            </button>
+          ) : null}
+          <span className="text-sm font-semibold tabular-nums text-accent">
+            {display}
+          </span>
         </span>
       </div>
       <input
