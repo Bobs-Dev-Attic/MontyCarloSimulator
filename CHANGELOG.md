@@ -7,6 +7,20 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-09-08
+
+### Added
+- **Correlated multi-asset portfolio simulation** (new "Multi-asset" tab). Each
+  asset follows its own GBM (its own μ/σ), with shocks linked through an editable
+  **correlation matrix**; correlated returns are generated via Cholesky
+  decomposition. Includes a roster of assets (US/International equities, bonds,
+  gold, real estate) with editable weights, returns, volatilities, and pairwise
+  correlations, plus optional **annual rebalancing**.
+- Surfaces the **diversification benefit**: the portfolio's volatility
+  (`√(wᵀΣw)`) versus the weighted-average volatility (the perfectly-correlated
+  bound), alongside the blended expected return, fan chart, terminal-value
+  histogram, and summary statistics for the total portfolio.
+
 ## [1.5.0] - 2026-09-08
 
 ### Added
@@ -91,6 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.6.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.6.0
 [1.5.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.5.0
 [1.4.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.4.0
 [1.3.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.3.0
