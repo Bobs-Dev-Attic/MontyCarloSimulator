@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { RealProvider } from "@/lib/realContext";
 import { BroadcastProvider } from "@/lib/broadcast";
+import { PreferencesProvider } from "@/lib/preferences";
 import ConsentGate from "@/components/ConsentGate";
 
 export const metadata: Metadata = {
@@ -18,9 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen font-sans antialiased">
-        <RealProvider>
-          <BroadcastProvider>{children}</BroadcastProvider>
-        </RealProvider>
+        <PreferencesProvider>
+          <RealProvider>
+            <BroadcastProvider>{children}</BroadcastProvider>
+          </RealProvider>
+        </PreferencesProvider>
         <ConsentGate />
       </body>
     </html>
