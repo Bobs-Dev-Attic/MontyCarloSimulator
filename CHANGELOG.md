@@ -7,6 +7,29 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.30.0] - 2026-09-08
+
+### Added
+- **Per-view icons.** Every view now has a unique, representative line icon,
+  shown both in the navigation menu (in a rounded chip beside each entry) and
+  next to the page title on the view itself.
+- **Run history for Sequence risk.** The sequence-risk view now logs each run
+  (inputs + recommended buffer, no-buffer ruin, and trough-sale risk) to a
+  restorable per-view history, matching the other model views. It is included in
+  profile export / import via the existing history category. (Tax & Roth,
+  Long-term care, and Longevity already had run history.)
+
+### Changed / confirmed
+- **Complete export / import.** Confirmed the profile export sweeps *all*
+  persisted settings — every view's inputs, preferences & theme, display
+  options, run history across all views, **and the active view** (which page was
+  last open, `ui.tab` / `ui.model`) — and that import re-applies them by
+  category. Documented the guarantee.
+- **README** rewritten to cover the full app: all views, the simulation models,
+  theming, real/nominal, the progress dialog, run history, glossary tooltips,
+  auto-run, and the selective import/export of settings (including the
+  last-accessed view), plus an updated project layout and API section.
+
 ## [1.29.0] - 2026-09-08
 
 ### Added
@@ -431,6 +454,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.30.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.30.0
 [1.29.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.29.0
 [1.28.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.28.0
 [1.27.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.27.0

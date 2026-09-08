@@ -22,6 +22,7 @@ import CareCosts from "@/components/CareCosts";
 import TaxPlanner from "@/components/TaxPlanner";
 import PreferencesPage from "@/components/PreferencesPage";
 import NavMenu, { type NavItem } from "@/components/NavMenu";
+import NavIcon from "@/components/NavIcons";
 import ProfileBar from "@/components/ProfileBar";
 import { RealBadge } from "@/components/RealToggle";
 import { usePersistentState } from "@/lib/persist";
@@ -275,7 +276,10 @@ export default function Page() {
       </header>
 
       {/* Active view heading (navigation is via the menu button) */}
-      <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-panel text-accent2">
+          <NavIcon id={tab} size={20} />
+        </span>
         <h2 className="text-lg font-semibold text-white">
           {currentView?.label ?? "View"}
         </h2>

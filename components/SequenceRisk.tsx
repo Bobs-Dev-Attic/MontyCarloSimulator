@@ -20,6 +20,8 @@ import { useAutoRun } from "@/lib/preferences";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { useProgress } from "@/lib/progress";
 import { useChartColors } from "@/lib/chartColors";
+import { useTabHistory } from "@/lib/tabHistory";
+import TabHistoryPanel from "@/components/TabHistoryPanel";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import type { SequenceRiskResult } from "@/lib/sequenceRisk";
 
@@ -52,6 +54,7 @@ export default function SequenceRisk() {
   const [error, setError] = useState<string | null>(null);
   const progress = useProgress();
   const c = useChartColors();
+  const history = useTabHistory("seqrisk");
 
   useApplyAllHandler(
     useCallback((key, value) => {
@@ -78,7 +81,18 @@ export default function SequenceRisk() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Simulation failed");
-      setData(json as SequenceRiskResult);
+      const d = json as SequenceRiskResult;
+      setData(d);
+      const rec = d.recommended;
+      history.add({
+        label: `${formatCompact(startingBalance)} · ${formatCompact(annualSpend)}/yr · ${bearYears}yr bear`,
+        inputs: { startingBalance, retirementYears, annualSpend, inflation, equityMean, equityVol, bufferYield, bearYears, bearMean, bearVol, troughDrawdown, refillBuffer, maxBufferYears, targetSellProb, nSims },
+        metrics: [
+          { label: "Rec. buffer", value: rec ? `${d.recommendedBufferYears} yr` : "none" },
+          { label: "No-buffer ruin", value: formatPercent(d.noBuffer.ruinProb) },
+          { label: "Sell risk", value: formatPercent((rec ?? d.noBuffer).sellProb) },
+        ],
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Simulation failed");
       setData(null);
@@ -86,9 +100,30 @@ export default function SequenceRisk() {
       setLoading(false);
       tracker.done();
     }
-  }, [startingBalance, retirementYears, annualSpend, inflation, equityMean, equityVol, bufferYield, bearYears, bearMean, bearVol, troughDrawdown, refillBuffer, maxBufferYears, targetSellProb, nSims, progress]);
+  }, [startingBalance, retirementYears, annualSpend, inflation, equityMean, equityVol, bufferYield, bearYears, bearMean, bearVol, troughDrawdown, refillBuffer, maxBufferYears, targetSellProb, nSims, progress, history]);
 
   useAutoRun(run);
+
+  const restore = (inp: Record<string, unknown>) => {
+    const setN = (k: string, fn: (v: number) => void) => {
+      if (typeof inp[k] === "number") fn(inp[k] as number);
+    };
+    setN("startingBalance", setStartingBalance);
+    setN("retirementYears", setRetirementYears);
+    setN("annualSpend", setAnnualSpend);
+    setN("inflation", setInflation);
+    setN("equityMean", setEquityMean);
+    setN("equityVol", setEquityVol);
+    setN("bufferYield", setBufferYield);
+    setN("bearYears", setBearYears);
+    setN("bearMean", setBearMean);
+    setN("bearVol", setBearVol);
+    setN("troughDrawdown", setTroughDrawdown);
+    if (typeof inp.refillBuffer === "boolean") setRefillBuffer(inp.refillBuffer);
+    setN("maxBufferYears", setMaxBufferYears);
+    setN("targetSellProb", setTargetSellProb);
+    setN("nSims", setNSims);
+  };
 
   const sweepRows = data ? data.sweep.map((p) => ({ buffer: p.bufferYears, sell: p.sellProb, ruin: p.ruinProb })) : [];
   // Refill on vs off, aligned by buffer size, for the side-by-side comparison.
@@ -372,6 +407,8 @@ export default function SequenceRisk() {
             {loading ? "Testing buffer sizes…" : "Run the analysis to see results."}
           </div>
         )}
+
+        <TabHistoryPanel history={history} onRestore={restore} />
       </section>
     </div>
   );
