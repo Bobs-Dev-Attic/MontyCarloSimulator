@@ -12,6 +12,7 @@ import { THEMES } from "@/lib/themes";
 import { useBroadcast, type SharedKey } from "@/lib/broadcast";
 import { clearAllSettings } from "@/lib/profile";
 import ProfileDialog from "@/components/ProfileDialog";
+import RealToggle from "@/components/RealToggle";
 
 const KEYS: SharedKey[] = ["beginningValue", "mu", "sigma", "years", "nSims"];
 
@@ -68,7 +69,7 @@ export default function PreferencesPage() {
         </div>
         <p className="mb-4 text-xs text-muted">
           Applies instantly across the app and is saved with your profile. Use the
-          sun / moon toggle in the header for a quick light / dark switch.
+          sun / moon toggle in the menu for a quick light / dark switch.
         </p>
         {(["dark", "light"] as const).map((m) => (
           <div key={m} className="mb-4 last:mb-0">
@@ -94,6 +95,17 @@ export default function PreferencesPage() {
             </div>
           </div>
         ))}
+      </section>
+
+      {/* Display options */}
+      <section className="rounded-2xl border border-line bg-panel p-5">
+        <h2 className="mb-1 text-sm font-semibold text-white">Display options</h2>
+        <p className="mb-4 text-xs text-muted">
+          Show results in nominal dollars or in today&apos;s purchasing power
+          (inflation-adjusted). This applies across every view and is saved with
+          your profile.
+        </p>
+        <RealToggle />
       </section>
 
       {/* Parameter ranges & defaults */}

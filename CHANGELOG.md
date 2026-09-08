@@ -7,6 +7,23 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.19.0] - 2026-09-08
+
+### Changed
+- **Removed the current-view dropdown.** It duplicated the menu; navigation is
+  now solely the menu button, and the active view is shown as a heading above
+  the content.
+- **Moved the light/dark toggle into the menu** (an "Appearance" footer in the
+  slide-out drawer) instead of the header.
+- **Moved the nominal/real ("today's $") toggle to Preferences** under a new
+  **Display options** section. The "today's $" badge still marks charts shown in
+  real terms.
+- **More responsive layouts.** The app now uses a wider max width with larger
+  gutters on big screens (so wide monitors aren't mostly empty margin), the
+  header controls stack cleanly on small screens, and the glide-path sleeve
+  inputs collapse to one column on narrow widths. Verified free of horizontal
+  overflow from mobile (375px) through desktop (1440px).
+
 ## [1.18.0] - 2026-09-08
 
 ### Added
@@ -275,6 +292,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.19.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.19.0
 [1.18.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.18.0
 [1.17.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.17.0
 [1.16.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.16.0
