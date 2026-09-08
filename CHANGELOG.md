@@ -7,6 +7,20 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.25.0] - 2026-09-08
+
+### Changed
+- **Auto-run is now a preference, off by default.** Views no longer run a
+  simulation automatically when they open; open a view and press its Run button.
+  A new **"Auto-run simulations on load"** toggle in Preferences → Display
+  options turns the old behavior back on.
+
+### Fixed
+- When auto-run *is* enabled, it now waits for your saved inputs to load from the
+  browser before running, so it uses your actual field values instead of the
+  built-in defaults. (Previously the on-load run fired before persisted values
+  had hydrated, so it always ran with defaults.)
+
 ## [1.24.0] - 2026-09-08
 
 ### Added
@@ -358,6 +372,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.25.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.25.0
 [1.24.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.24.0
 [1.23.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.23.0
 [1.22.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.22.0

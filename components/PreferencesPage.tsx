@@ -106,6 +106,27 @@ export default function PreferencesPage() {
           your profile.
         </p>
         <RealToggle />
+
+        <div className="my-4 h-px bg-line" />
+        <label className="flex cursor-pointer items-start justify-between gap-3">
+          <span className="min-w-0">
+            <span className="text-sm font-medium text-slate-200">Auto-run simulations on load</span>
+            <span className="mt-0.5 block text-[11px] text-muted">
+              When on, a view runs automatically the first time it opens (using your saved
+              inputs). Off by default — open a view and press its Run button when ready.
+            </span>
+          </span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={prefs.autoRun}
+            aria-label="Auto-run simulations on load"
+            onClick={() => prefs.setAutoRun(!prefs.autoRun)}
+            className={`relative mt-0.5 h-5 w-9 shrink-0 rounded-full transition ${prefs.autoRun ? "bg-accent" : "bg-line"}`}
+          >
+            <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-ink transition-all ${prefs.autoRun ? "left-[18px]" : "left-0.5"}`} />
+          </button>
+        </label>
       </section>
 
       {/* Parameter ranges & defaults */}

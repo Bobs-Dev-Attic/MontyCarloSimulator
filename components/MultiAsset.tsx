@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import FanChart from "@/components/FanChart";
 import Histogram from "@/components/Histogram";
 import StatCards from "@/components/StatCards";
@@ -9,6 +9,7 @@ import { RealBadge } from "@/components/RealToggle";
 import { useProgress } from "@/lib/progress";
 import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
+import { useAutoRun } from "@/lib/preferences";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import type { SimulationResponse } from "@/lib/types";
@@ -144,10 +145,7 @@ export default function MultiAsset() {
     }
   }, [roster, corr, beginningValue, years, nSims, rebalance, progress]);
 
-  useEffect(() => {
-    run();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useAutoRun(run);
 
   return (
     <div className="space-y-6">

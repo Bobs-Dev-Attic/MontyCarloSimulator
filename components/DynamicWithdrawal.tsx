@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -17,6 +17,7 @@ import {
 import Field from "@/components/Field";
 import InfoTip from "@/components/InfoTip";
 import { usePersistentState } from "@/lib/persist";
+import { useAutoRun } from "@/lib/preferences";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { useProgress } from "@/lib/progress";
 import { useChartColors } from "@/lib/chartColors";
@@ -83,10 +84,7 @@ export default function DynamicWithdrawal() {
     }
   }, [startingBalance, retirementYears, initialRate, meanReturn, stdReturn, inflation, guardBand, guardAdjust, ratchetThreshold, ratchetStep, ratchetEvery, nSims, progress]);
 
-  useEffect(() => {
-    run();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useAutoRun(run);
 
   const fixed = data?.strategies.find((s) => s.id === "fixed");
   const guard = data?.strategies.find((s) => s.id === "guardrails");
