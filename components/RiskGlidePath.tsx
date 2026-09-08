@@ -120,14 +120,14 @@ export default function RiskGlidePath() {
         {/* Regime inputs */}
         <section className="rounded-2xl border border-line bg-panel p-5">
           <h3 className="mb-3 text-sm font-semibold text-slate-200">Sleeves</h3>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-            <div className="col-span-2 text-[11px] font-semibold uppercase tracking-wide text-accent">Risky sleeve (e.g. equities)</div>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-accent sm:col-span-2">Risky sleeve (e.g. equities)</div>
             <Field label="Return μ" info="mu" value={riskyMu} onChange={setRiskyMu} min={-0.02} max={0.15} step={0.005} display={formatPercent(riskyMu)} sharedKey="mu" />
             <Field label="Volatility σ" info="sigma" value={riskySigma} onChange={setRiskySigma} min={0.02} max={0.4} step={0.005} display={formatPercent(riskySigma)} sharedKey="sigma" />
-            <div className="col-span-2 mt-1 text-[11px] font-semibold uppercase tracking-wide text-accent2">Safe sleeve (e.g. bonds/cash)</div>
+            <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-accent2 sm:col-span-2">Safe sleeve (e.g. bonds/cash)</div>
             <Field label="Return μ" info="mu" value={safeMu} onChange={setSafeMu} min={-0.01} max={0.08} step={0.0025} display={formatPercent(safeMu)} />
             <Field label="Volatility σ" info="sigma" value={safeSigma} onChange={setSafeSigma} min={0} max={0.15} step={0.0025} display={formatPercent(safeSigma)} />
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <Field label="Correlation (risky↔safe)" info="correlation" value={rho} onChange={setRho} min={-1} max={1} step={0.05} display={rho.toFixed(2)} />
             </div>
           </div>

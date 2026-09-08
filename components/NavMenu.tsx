@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export interface NavItem {
   id: string;
@@ -70,6 +71,10 @@ export default function NavMenu({ open, onOpenChange, items, active, onSelect }:
                   ) : null}
                 </button>
               ))}
+            </div>
+            <div className="flex items-center justify-between gap-2 border-t border-line px-4 py-3">
+              <span className="text-[11px] uppercase tracking-wide text-muted">Appearance</span>
+              <ThemeToggle />
             </div>
           </nav>
         </div>

@@ -17,10 +17,8 @@ import RiskGlidePath from "@/components/RiskGlidePath";
 import StressCompare from "@/components/StressCompare";
 import PreferencesPage from "@/components/PreferencesPage";
 import NavMenu, { type NavItem } from "@/components/NavMenu";
-import ViewDropdown from "@/components/ViewDropdown";
 import ProfileBar from "@/components/ProfileBar";
-import RealToggle, { RealBadge } from "@/components/RealToggle";
-import ThemeToggle from "@/components/ThemeToggle";
+import { RealBadge } from "@/components/RealToggle";
 import { usePersistentState } from "@/lib/persist";
 import { useReal } from "@/lib/realContext";
 import { useApplyAllHandler } from "@/lib/broadcast";
@@ -96,7 +94,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "multiasset", label: "Multi-asset", hint: "Correlated portfolio" },
   { id: "glide", label: "Risk glide path", hint: "Risk tolerance over time" },
   { id: "stress", label: "Stress compare", hint: "All scenarios side by side" },
-  { id: "prefs", label: "Preferences", hint: "Themes, ranges, import/export" },
+  { id: "prefs", label: "Preferences", hint: "Themes, display, ranges, import/export" },
 ];
 
 export default function Page() {
@@ -212,8 +210,10 @@ export default function Page() {
   // Display view: nominal or real (today's $) depending on the global toggle.
   const view = result ? adjust(result) : null;
 
+  const currentView = NAV_ITEMS.find((i) => i.id === tab);
+
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <header className="mb-6">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <NavMenu
@@ -236,26 +236,27 @@ export default function Page() {
             v{APP_VERSION}
           </a>
         </div>
-        <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
+        <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <p className="max-w-3xl text-sm text-muted">
             Instead of a single prediction, run thousands of randomized scenarios
             to see the full spectrum of possible financial outcomes and their
             probabilities. Same math as the Flutter + Python original, ported to
             run on the edge.
           </p>
-          <div className="flex flex-col items-end gap-2">
-            <div className="flex items-center gap-2">
-              <ThemeToggle />
-              <RealToggle />
-            </div>
+          <div className="shrink-0 sm:flex sm:justify-end">
             <ProfileBar />
           </div>
         </div>
       </header>
 
-      {/* Current-view dropdown selector */}
-      <div className="mb-6">
-        <ViewDropdown items={NAV_ITEMS} active={tab} onSelect={selectTab} />
+      {/* Active view heading (navigation is via the menu button) */}
+      <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <h2 className="text-lg font-semibold text-white">
+          {currentView?.label ?? "View"}
+        </h2>
+        {currentView?.hint ? (
+          <span className="text-xs text-muted">{currentView.hint}</span>
+        ) : null}
       </div>
 
       {tab === "prefs" ? (
