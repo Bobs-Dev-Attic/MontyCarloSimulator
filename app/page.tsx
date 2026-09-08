@@ -15,7 +15,9 @@ import Sensitivity from "@/components/Sensitivity";
 import MultiAsset from "@/components/MultiAsset";
 import RiskGlidePath from "@/components/RiskGlidePath";
 import ProfileBar from "@/components/ProfileBar";
+import RealToggle, { RealBadge } from "@/components/RealToggle";
 import { usePersistentState } from "@/lib/persist";
+import { useReal } from "@/lib/realContext";
 import {
   type HistoryEntry,
   loadHistory,
@@ -93,6 +95,7 @@ export default function Page() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [comparing, setComparing] = useState(false);
+  const { adjust } = useReal();
 
   const toggleSelect = useCallback((id: string) => {
     setSelected((prev) =>
@@ -158,6 +161,9 @@ export default function Page() {
     .map((id) => history.find((e) => e.id === id))
     .filter((e): e is HistoryEntry => Boolean(e));
 
+  // Display view: nominal or real (today's $) depending on the global toggle.
+  const view = result ? adjust(result) : null;
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <header className="mb-6">
@@ -185,7 +191,10 @@ export default function Page() {
             probabilities. Same math as the Flutter + Python original, ported to
             run on the edge.
           </p>
-          <ProfileBar />
+          <div className="flex flex-col items-end gap-2">
+            <RealToggle />
+            <ProfileBar />
+          </div>
         </div>
       </header>
 
@@ -478,25 +487,25 @@ export default function Page() {
             </div>
           ) : null}
 
-          {result ? <StatCards data={result} /> : null}
+          {view ? <StatCards data={view} /> : null}
 
           <div className="rounded-2xl border border-line bg-panel p-5">
-            <h3 className="mb-3 text-sm font-semibold text-slate-200">
-              Trajectories &amp; percentile bands
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-200">
+              Trajectories &amp; percentile bands <RealBadge />
             </h3>
-            {result ? (
-              <FanChart data={result} />
+            {view ? (
+              <FanChart data={view} />
             ) : (
               <ChartPlaceholder loading={loading} />
             )}
           </div>
 
           <div className="rounded-2xl border border-line bg-panel p-5">
-            <h3 className="mb-3 text-sm font-semibold text-slate-200">
-              Distribution of terminal outcomes
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-200">
+              Distribution of terminal outcomes <RealBadge />
             </h3>
-            {result ? (
-              <Histogram data={result} />
+            {view ? (
+              <Histogram data={view} />
             ) : (
               <ChartPlaceholder loading={loading} />
             )}
