@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { RealProvider } from "@/lib/realContext";
 import { BroadcastProvider } from "@/lib/broadcast";
+import ConsentGate from "@/components/ConsentGate";
 
 export const metadata: Metadata = {
   title: "Monty Carlo Simulator",
@@ -20,6 +21,7 @@ export default function RootLayout({
         <RealProvider>
           <BroadcastProvider>{children}</BroadcastProvider>
         </RealProvider>
+        <ConsentGate />
       </body>
     </html>
   );
