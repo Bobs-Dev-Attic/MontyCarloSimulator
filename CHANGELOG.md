@@ -7,6 +7,30 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.31.0] - 2026-09-08
+
+### Added
+- **Export to Excel.** Three views now generate a shareable `.xlsx` workbook
+  with **native, editable Excel charts** (real chart objects bound to the data,
+  not images):
+  - **Tax & Roth** — exported as a **live-formula model**: an editable
+    Assumptions sheet drives year-by-year Naive and Tax-smart projections
+    written entirely as Excel formulas (inflation-indexed 2024 brackets, a
+    progressive-tax formula, RMD lookups on the Uniform Lifetime Table, and
+    bracket-fill Roth conversions), plus a Summary sheet with the strategy
+    comparison and three charts. Editing an assumption in Excel recomputes the
+    whole projection — a working model the recipient can use, not a data dump.
+    The formulas were verified to reproduce the app's engine to the dollar.
+  - **Sequence risk** — buffer-sweep, refill-on/off comparison, and
+    equity-path tables with vulnerability, ruin, ending-balance, and
+    bear-window charts.
+  - **Portfolio forecast** and **Retirement plan** — summary statistics,
+    percentile-band, and terminal-distribution sheets with a bands line chart
+    and a histogram column chart.
+
+  A new server route (`app/api/export/excel`) builds the workbook with ExcelJS
+  and injects the chart XML; each view has an **Export to Excel** button.
+
 ## [1.30.0] - 2026-09-08
 
 ### Added
@@ -454,6 +478,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.31.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.31.0
 [1.30.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.30.0
 [1.29.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.29.0
 [1.28.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.28.0

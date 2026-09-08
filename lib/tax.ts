@@ -20,9 +20,9 @@
 
 export type Filing = "single" | "mfj";
 
-type Bracket = { upTo: number; rate: number };
+export type Bracket = { upTo: number; rate: number };
 
-const BRACKETS_2024: Record<Filing, Bracket[]> = {
+export const BRACKETS_2024: Record<Filing, Bracket[]> = {
   single: [
     { upTo: 11_600, rate: 0.1 },
     { upTo: 47_150, rate: 0.12 },
@@ -43,10 +43,10 @@ const BRACKETS_2024: Record<Filing, Bracket[]> = {
   ],
 };
 
-const STD_DEDUCTION_2024: Record<Filing, number> = { single: 14_600, mfj: 29_200 };
+export const STD_DEDUCTION_2024: Record<Filing, number> = { single: 14_600, mfj: 29_200 };
 
 // IRS Uniform Lifetime Table divisors (2022+), age → divisor.
-const RMD_DIVISOR: Record<number, number> = {
+export const RMD_DIVISOR: Record<number, number> = {
   73: 26.5, 74: 25.5, 75: 24.6, 76: 23.7, 77: 22.9, 78: 22.0, 79: 21.1, 80: 20.2,
   81: 19.4, 82: 18.5, 83: 17.7, 84: 16.8, 85: 16.0, 86: 15.2, 87: 14.4, 88: 13.7,
   89: 12.9, 90: 12.2, 91: 11.5, 92: 10.8, 93: 10.1, 94: 9.5, 95: 8.9, 96: 8.4,

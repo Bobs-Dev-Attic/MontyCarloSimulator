@@ -1,6 +1,6 @@
 {
   "name": "monty-carlo-web",
-  "version": "1.30.0",
+  "version": "1.31.0",
   "private": true,
   "description": "Web version of the Monte Carlo financial simulator — deployable to Vercel.",
   "scripts": {
@@ -11,6 +11,8 @@
     "test": "node --test"
   },
   "dependencies": {
+    "exceljs": "^4.4.0",
+    "jszip": "^3.10.1",
     "next": "14.2.35",
     "react": "18.3.1",
     "react-dom": "18.3.1",
