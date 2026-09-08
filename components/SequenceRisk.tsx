@@ -26,6 +26,8 @@ const SELL_COLOR = "#f87171";
 const RUIN_COLOR = "#f59e0b";
 const NOBUF_COLOR = "#f87171";
 const RECBUF_COLOR = "#34d399";
+const ON_COLOR = "#34d399"; // refill on (rolling bucket)
+const OFF_COLOR = "#a78bfa"; // refill off (static bond tent)
 
 export default function SequenceRisk() {
   const [startingBalance, setStartingBalance] = usePersistentState("seq.startingBalance", 1_000_000);
@@ -91,6 +93,19 @@ export default function SequenceRisk() {
   }, []);
 
   const sweepRows = data ? data.sweep.map((p) => ({ buffer: p.bufferYears, sell: p.sellProb, ruin: p.ruinProb })) : [];
+  // Refill on vs off, aligned by buffer size, for the side-by-side comparison.
+  const compareRows = data
+    ? data.compare.on.map((on, i) => {
+        const off = data.compare.off[i];
+        return {
+          buffer: on.bufferYears,
+          ruinOn: on.ruinProb,
+          ruinOff: off?.ruinProb,
+          endOn: on.medianTerminalReal,
+          endOff: off?.medianTerminalReal,
+        };
+      })
+    : [];
   const equityRows = data
     ? data.steps.map((yr, i) => ({
         year: yr,
@@ -271,6 +286,58 @@ export default function SequenceRisk() {
                 </table>
               </div>
               <p className="mt-2 text-[11px] text-muted">★ = recommended buffer. A bigger buffer lowers trough-sale risk but parks more in low-yield cash, which can raise ruin at the far end.</p>
+            </div>
+
+            {/* Refill on vs off, side by side */}
+            <div className="rounded-2xl border border-line bg-panel p-5">
+              <h3 className="mb-1 flex items-center gap-1 text-sm font-semibold text-slate-200">
+                Rolling bucket vs. static tent <InfoTip term="bucketRefill" />
+              </h3>
+              <p className="mb-3 text-[11px] text-muted">
+                The forced-trough-sale curve is the same either way (you never refill mid-trough),
+                so the difference shows up in long-run ruin and ending wealth across buffer sizes.
+                <span className="ml-1">
+                  <span className="mr-1 inline-block h-2 w-2 rounded-sm align-middle" style={{ background: ON_COLOR }} />refill on (rolling bucket) ·
+                  <span className="mx-1 inline-block h-2 w-2 rounded-sm align-middle" style={{ background: OFF_COLOR }} />refill off (static tent)
+                </span>
+              </p>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <div className="mb-1 text-[11px] uppercase tracking-wide text-muted">Ruin probability</div>
+                  <div className="h-[240px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={compareRows} margin={{ top: 8, right: 12, bottom: 4, left: 4 }}>
+                        <CartesianGrid stroke={c.grid} strokeDasharray="3 3" />
+                        <XAxis dataKey="buffer" stroke={c.axis} tick={{ fontSize: 11 }} label={{ value: "Buffer (yrs)", position: "insideBottom", offset: -2, fill: c.axis, fontSize: 11 }} />
+                        <YAxis stroke={c.axis} tick={{ fontSize: 11 }} width={42} domain={[0, "dataMax"]} tickFormatter={(v: number) => `${Math.round(v * 100)}%`} />
+                        <Tooltip contentStyle={{ background: c.tooltipBg, border: `1px solid ${c.tooltipBorder}`, borderRadius: 8, fontSize: 12 }} labelFormatter={(v: number) => `${v}-year buffer`} formatter={(value: number, key: string) => [formatPercent(value), key === "ruinOn" ? "Refill on" : "Refill off"]} />
+                        <Line type="monotone" dataKey="ruinOn" stroke={ON_COLOR} strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />
+                        <Line type="monotone" dataKey="ruinOff" stroke={OFF_COLOR} strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div>
+                  <div className="mb-1 text-[11px] uppercase tracking-wide text-muted">Median ending balance</div>
+                  <div className="h-[240px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={compareRows} margin={{ top: 8, right: 12, bottom: 4, left: 4 }}>
+                        <CartesianGrid stroke={c.grid} strokeDasharray="3 3" />
+                        <XAxis dataKey="buffer" stroke={c.axis} tick={{ fontSize: 11 }} label={{ value: "Buffer (yrs)", position: "insideBottom", offset: -2, fill: c.axis, fontSize: 11 }} />
+                        <YAxis stroke={c.axis} tick={{ fontSize: 11 }} width={52} tickFormatter={(v: number) => formatCompact(v)} />
+                        <Tooltip contentStyle={{ background: c.tooltipBg, border: `1px solid ${c.tooltipBorder}`, borderRadius: 8, fontSize: 12 }} labelFormatter={(v: number) => `${v}-year buffer`} formatter={(value: number, key: string) => [formatCurrency(value), key === "endOn" ? "Refill on" : "Refill off"]} />
+                        <Line type="monotone" dataKey="endOn" stroke={ON_COLOR} strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />
+                        <Line type="monotone" dataKey="endOff" stroke={OFF_COLOR} strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+              <p className="mt-2 text-[11px] text-muted">
+                In a single early-bear scenario the static tent often ends richer (equities compound
+                untouched once it&apos;s spent), while the rolling bucket keeps dry powder for later
+                downturns. Refilling matters more when downturns recur through retirement.
+              </p>
             </div>
 
             {/* Equity path: no buffer vs recommended */}

@@ -56,6 +56,8 @@ export interface SequenceRiskResult {
   targetSellProb: number;
   refillBuffer: boolean;
   sweep: BufferPoint[];
+  /** Both sweeps, so refill on vs off can be compared side by side. */
+  compare: { on: BufferPoint[]; off: BufferPoint[] };
   recommendedBufferYears: number | null;
   recommendedBufferDollars: number | null;
   noBuffer: BufferPoint;
@@ -207,19 +209,29 @@ export function simulateSequenceRisk(params: SequenceRiskParams): SequenceRiskRe
 
   const maxB = Math.max(0, Math.min(20, Math.round(maxBufferYears)));
 
-  const sweep: BufferPoint[] = [];
-  for (let b = 0; b <= maxB; b++) {
-    const r = simulateOneBuffer(params, b, false);
-    sweep.push({
-      bufferYears: r.bufferYears,
-      bufferDollars: r.bufferDollars,
-      sellProb: r.sellProb,
-      ruinProb: r.ruinProb,
-      medianTerminalReal: r.medianTerminalReal,
-    });
-  }
+  const sweepFor = (refill: boolean): BufferPoint[] => {
+    const p = { ...params, refillBuffer: refill };
+    const out: BufferPoint[] = [];
+    for (let b = 0; b <= maxB; b++) {
+      const r = simulateOneBuffer(p, b, false);
+      out.push({
+        bufferYears: r.bufferYears,
+        bufferDollars: r.bufferDollars,
+        sellProb: r.sellProb,
+        ruinProb: r.ruinProb,
+        medianTerminalReal: r.medianTerminalReal,
+      });
+    }
+    return out;
+  };
 
-  // Smallest buffer whose forced-sale probability meets the target.
+  // Compute both variants so the client can show them side by side.
+  const sweepOn = sweepFor(true);
+  const sweepOff = sweepFor(false);
+  const sweep = params.refillBuffer ? sweepOn : sweepOff;
+
+  // Smallest buffer whose forced-sale probability meets the target (the
+  // sell-at-trough curve is identical for on/off, so either sweep works).
   const rec = sweep.find((p) => p.sellProb <= targetSellProb) ?? null;
 
   const steps = Array.from({ length: years + 1 }, (_, i) => i);
@@ -235,6 +247,7 @@ export function simulateSequenceRisk(params: SequenceRiskParams): SequenceRiskRe
     targetSellProb,
     refillBuffer: params.refillBuffer,
     sweep,
+    compare: { on: sweepOn, off: sweepOff },
     recommendedBufferYears: rec ? rec.bufferYears : null,
     recommendedBufferDollars: rec ? rec.bufferDollars : null,
     noBuffer: sweep[0],
