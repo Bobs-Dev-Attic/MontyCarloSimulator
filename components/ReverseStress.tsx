@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Field from "@/components/Field";
+import { usePersistentState } from "@/lib/persist";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import {
   gbmReverseStress,
@@ -41,23 +42,23 @@ function ResultCard({
 }
 
 export default function ReverseStress() {
-  const [mode, setMode] = useState<Mode>("gbm");
+  const [mode, setMode] = usePersistentState<Mode>("reverse.mode", "gbm");
 
   // Portfolio (GBM) inputs
-  const [beginningValue, setBeginningValue] = useState(100_000);
-  const [years, setYears] = useState(10);
-  const [mu, setMu] = useState(0.07);
-  const [sigma, setSigma] = useState(0.15);
-  const [lossFraction, setLossFraction] = useState(0.3);
+  const [beginningValue, setBeginningValue] = usePersistentState("reverse.beginningValue", 100_000);
+  const [years, setYears] = usePersistentState("reverse.years", 10);
+  const [mu, setMu] = usePersistentState("reverse.mu", 0.07);
+  const [sigma, setSigma] = usePersistentState("reverse.sigma", 0.15);
+  const [lossFraction, setLossFraction] = usePersistentState("reverse.lossFraction", 0.3);
 
   // Retirement inputs
-  const [startingBalance, setStartingBalance] = useState(100_000);
-  const [annualContribution, setAnnualContribution] = useState(15_000);
-  const [yearsToRetire, setYearsToRetire] = useState(25);
-  const [retirementYears, setRetirementYears] = useState(30);
-  const [annualWithdrawal, setAnnualWithdrawal] = useState(60_000);
-  const [inflation, setInflation] = useState(0.025);
-  const [meanReturn, setMeanReturn] = useState(0.06);
+  const [startingBalance, setStartingBalance] = usePersistentState("reverse.startingBalance", 100_000);
+  const [annualContribution, setAnnualContribution] = usePersistentState("reverse.annualContribution", 15_000);
+  const [yearsToRetire, setYearsToRetire] = usePersistentState("reverse.yearsToRetire", 25);
+  const [retirementYears, setRetirementYears] = usePersistentState("reverse.retirementYears", 30);
+  const [annualWithdrawal, setAnnualWithdrawal] = usePersistentState("reverse.annualWithdrawal", 60_000);
+  const [inflation, setInflation] = usePersistentState("reverse.inflation", 0.025);
+  const [meanReturn, setMeanReturn] = usePersistentState("reverse.meanReturn", 0.06);
 
   const gbm = useMemo(
     () => gbmReverseStress({ beginningValue, years, mu, sigma, lossFraction }),

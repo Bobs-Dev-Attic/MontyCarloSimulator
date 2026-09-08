@@ -58,6 +58,7 @@ export function runGbm(
     contributionPerStep: req.contributionPerStep ?? 0,
     seed: req.seed ?? null,
     shock,
+    dist: req.dist,
   });
 
   const unitPerStep = 1 / stepsPerYear; // step index -> years
@@ -76,6 +77,8 @@ export function runGbm(
       seed: req.seed ?? null,
       years: req.years,
       stepsPerYear,
+      dist: req.dist?.kind ?? "normal",
+      nu: req.dist?.kind === "t" ? req.dist?.nu ?? 5 : null,
       ...(result.shockStats
         ? {
             fracWithShock: result.shockStats.fracWithShock,

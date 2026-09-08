@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePersistentState } from "@/lib/persist";
 import {
   BarChart,
   Bar,
@@ -36,12 +37,12 @@ function fmtVal(v: number, f: Fmt): string {
 }
 
 export default function Sensitivity() {
-  const [model, setModel] = useState<Model>("gbm");
-  const [metric, setMetric] = useState<Metric>("median");
-  const [variationPct, setVariationPct] = useState(0.2);
+  const [model, setModel] = usePersistentState<Model>("sens.model", "gbm");
+  const [metric, setMetric] = usePersistentState<Metric>("sens.metric", "median");
+  const [variationPct, setVariationPct] = usePersistentState("sens.variationPct", 0.2);
 
-  const [gbm, setGbm] = useState({ beginningValue: 100_000, mu: 0.07, sigma: 0.15, years: 10 });
-  const [ret, setRet] = useState({
+  const [gbm, setGbm] = usePersistentState("sens.gbm", { beginningValue: 100_000, mu: 0.07, sigma: 0.15, years: 10 });
+  const [ret, setRet] = usePersistentState("sens.ret", {
     startingBalance: 100_000,
     annualContribution: 15_000,
     yearsToRetire: 25,
