@@ -7,6 +7,20 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.28.0] - 2026-09-08
+
+### Added
+- **Long-term care view (Markov health-state model).** Simulates yearly
+  transitions through **Active → Assisted living → Skilled nursing → Deceased**
+  with age-rising probabilities, adding large per-state care costs on top of base
+  living spend — the sudden late-life step-ups a flat spend can't capture. The
+  portfolio is run **with and without** care costs on the same paths (common
+  random numbers) to isolate the extra ruin risk. Shows the probability of ever
+  needing care, median years in care and lifetime care cost (with its long right
+  tail), a state-occupancy-by-age chart, and ruin with vs. without care. Records
+  to run history and is included in export / import. Transition rates and costs
+  are educational defaults (US ballpark), all adjustable.
+
 ## [1.27.0] - 2026-09-08
 
 ### Added
@@ -398,6 +412,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.28.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.28.0
 [1.27.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.27.0
 [1.26.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.26.0
 [1.25.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.25.0
