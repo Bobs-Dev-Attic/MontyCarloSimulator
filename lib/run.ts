@@ -19,6 +19,12 @@ import {
   type SequenceRiskResult,
 } from "./sequenceRisk";
 import {
+  simulateLongevity,
+  type LongevityParams,
+  type LongevityResult,
+  type Sex,
+} from "./mortality";
+import {
   percentileBands,
   terminalHistogram,
   summaryStats,
@@ -352,6 +358,25 @@ export function runSequenceRisk(
     maxBufferYears: Math.round(req.maxBufferYears ?? 8),
     targetSellProb: req.targetSellProb ?? 0.05,
     nSims,
+    seed: req.seed ?? null,
+  });
+}
+
+export function runLongevity(req: Partial<LongevityParams>): LongevityResult {
+  const sex = (s: unknown, d: Sex): Sex => (s === "male" || s === "female" ? s : d);
+  return simulateLongevity({
+    ageA: Math.round(req.ageA ?? 65),
+    sexA: sex(req.sexA, "male"),
+    couple: Boolean(req.couple),
+    ageB: Math.round(req.ageB ?? 63),
+    sexB: sex(req.sexB, "female"),
+    longevityAdj: req.longevityAdj ?? 0,
+    startingBalance: req.startingBalance ?? 1_000_000,
+    annualSpend: req.annualSpend ?? 45_000,
+    realReturn: req.realReturn ?? 0.035,
+    vol: req.vol ?? 0.1,
+    survivorSpend: req.survivorSpend ?? 0.75,
+    nSims: Math.min(Math.max(1000, Math.round(req.nSims ?? 10_000)), 50_000),
     seed: req.seed ?? null,
   });
 }

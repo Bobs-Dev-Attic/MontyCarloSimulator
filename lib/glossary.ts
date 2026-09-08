@@ -335,6 +335,42 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     href: "https://www.investopedia.com/articles/investing/090815/how-set-cash-bucket-retirement.asp",
     source: "Investopedia",
   },
+  longevity: {
+    title: "Longevity risk",
+    body: "The risk of outliving your savings. Planning to an average lifespan ignores the real chance of living into your late 90s — the expensive tail this view makes visible.",
+    href: "https://www.investopedia.com/terms/l/longevityrisk.asp",
+    source: "Investopedia",
+  },
+  mortalityTable: {
+    title: "Mortality curve",
+    body: "The probability of dying at each age. Here lifespans are drawn from a Gompertz law (mortality rising roughly exponentially with age) — an educational stand-in for an actuarial life table, tunable by age and sex.",
+    href: "https://en.wikipedia.org/wiki/Gompertz%E2%80%93Makeham_law_of_mortality",
+    source: "Wikipedia",
+  },
+  jointLife: {
+    title: "Joint life expectancy",
+    body: "For a couple, the plan must last until the second death (the last survivor). Because either person can be the long-lived one, a couple's plan needs to cover a longer horizon than either individual alone.",
+    href: "https://www.investopedia.com/terms/j/jointlifewithlastsurvivorannuity.asp",
+    source: "Investopedia",
+  },
+  mortalityAdj: {
+    title: "Longevity adjustment",
+    body: "Shifts the modal age at death up (healthier / longer family history) or down (health issues), to tailor the mortality curve to the individual.",
+    href: "https://www.investopedia.com/terms/l/lifeexpectancy.asp",
+    source: "Investopedia",
+  },
+  survivorSpend: {
+    title: "Survivor spending",
+    body: "How much a couple's spending falls after the first death — one household is cheaper than two, but not half. A common assumption is ~70–80% of joint spending.",
+    href: "https://www.investopedia.com/retirement/how-much-you-should-have-saved-age/",
+    source: "Investopedia",
+  },
+  outliveMoney: {
+    title: "Outliving your money",
+    body: "The share of simulated lives where the portfolio hits zero before death (the second death, for a couple). Unlike a fixed-horizon success rate, this weights each outcome by how long the person actually lives.",
+    href: "https://www.investopedia.com/terms/l/longevityrisk.asp",
+    source: "Investopedia",
+  },
 };
 
 export type GlossaryKey = keyof typeof GLOSSARY;
