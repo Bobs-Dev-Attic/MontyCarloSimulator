@@ -17,6 +17,7 @@ import {
 import Field from "@/components/Field";
 import InfoTip from "@/components/InfoTip";
 import { useChartColors } from "@/lib/chartColors";
+import { useProgress } from "@/lib/progress";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import type { TornadoResult, Metric, Fmt } from "@/lib/sensitivity";
 
@@ -60,6 +61,7 @@ export default function Sensitivity() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const c = useChartColors();
+  const progress = useProgress();
 
   useApplyAllHandler(
     useCallback((key, value) => {
@@ -87,6 +89,10 @@ export default function Sensitivity() {
   const run = useCallback(async () => {
     setLoading(true);
     setError(null);
+    // Sensitivity re-runs the model for each input varied ±, so the work is the
+    // per-run cost times roughly a dozen sub-runs.
+    const horizon = model === "gbm" ? gbm.years : ret.yearsToRetire + ret.retirementYears;
+    const tracker = progress.track("sensitivity", 4000 * Math.max(1, horizon) * 12, "Running sensitivity analysis");
     try {
       const res = await fetch("/api/simulate/sensitivity", {
         method: "POST",
@@ -107,8 +113,9 @@ export default function Sensitivity() {
       setData(null);
     } finally {
       setLoading(false);
+      tracker.done();
     }
-  }, [model, metric, variationPct, gbm, ret]);
+  }, [model, metric, variationPct, gbm, ret, progress]);
 
   useEffect(() => {
     run();

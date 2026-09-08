@@ -7,6 +7,20 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.20.0] - 2026-09-08
+
+### Added
+- **Simulation progress dialog.** While a simulation runs, a modal shows a
+  progress bar, a live percentage, and an estimated time to completion, then
+  disappears automatically when the run finishes. Because runs are a single
+  request/response with no incremental progress, the ETA is estimated from a
+  rolling record of how long recent runs took (scaled by the amount of work) and
+  self-calibrates to your device; the bar eases toward completion and only hits
+  100% when the result actually arrives. Applies to every simulated view
+  (Portfolio, Retirement, Macro shock, Sensitivity, Multi-asset, Risk glide
+  path, Stress compare). The rolling timing cache is stored locally and is not
+  part of your exported/imported profile.
+
 ## [1.19.0] - 2026-09-08
 
 ### Changed
@@ -292,6 +306,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.20.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.20.0
 [1.19.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.19.0
 [1.18.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.18.0
 [1.17.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.17.0
