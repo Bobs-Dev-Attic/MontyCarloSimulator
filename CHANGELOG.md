@@ -7,6 +7,20 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-09-08
+
+### Added
+- **Risk tolerance over time (glide path)** — new "Risk glide path" tab. An
+  interactive, draggable timeline sets the allocation to a risky sleeve vs. a
+  safe sleeve across the horizon (drag points, click to add, double-click to
+  remove; numeric editing too), with quick presets (declining target-date,
+  constant 60/40, rising equity). The simulation reads the allocation at each
+  step and runs a continuously-rebalanced two-sleeve GBM with time-varying
+  drift and volatility (`μ(t)=a·μ_risky+(1−a)·μ_safe`,
+  `σ(t)=√(a²σ_r²+(1−a)²σ_s²+2a(1−a)ρσ_rσ_s)`), including optional annual
+  contributions. Shows the effective allocation and portfolio volatility over
+  time alongside the usual fan chart, histogram, and summary statistics.
+
 ## [1.7.0] - 2026-09-08
 
 ### Added
@@ -119,6 +133,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.8.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.8.0
 [1.7.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.7.0
 [1.6.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.6.0
 [1.5.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.5.0

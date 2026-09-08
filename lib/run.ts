@@ -7,6 +7,7 @@
 import { simulateGbm, type ShockConfig } from "./gbm";
 import { simulateRetirement } from "./retirement";
 import { simulateMultiAsset, type Asset } from "./multiasset";
+import { simulateGlidePath, type Waypoint } from "./glidepath";
 import {
   percentileBands,
   terminalHistogram,
@@ -152,6 +153,60 @@ export function runMultiAsset(req: MultiAssetRequest): SimulationResponse {
       portfolioVol: result.portfolioVol,
       undiversifiedVol: result.undiversifiedVol,
       diversificationBenefit: result.undiversifiedVol - result.portfolioVol,
+    },
+  };
+}
+
+export interface GlidePathRequest {
+  riskyMu: number;
+  riskySigma: number;
+  safeMu: number;
+  safeSigma: number;
+  rho: number;
+  waypoints: Waypoint[];
+  beginningValue: number;
+  years: number;
+  annualContribution?: number;
+  nSims?: number;
+  seed?: number | null;
+}
+
+export function runGlidePath(req: GlidePathRequest): SimulationResponse {
+  const nSims = clampSims(req.nSims);
+  const stepsPerYear = 12;
+  const result = simulateGlidePath({
+    riskyMu: req.riskyMu,
+    riskySigma: req.riskySigma,
+    safeMu: req.safeMu,
+    safeSigma: req.safeSigma,
+    rho: req.rho,
+    waypoints: req.waypoints,
+    beginningValue: req.beginningValue,
+    years: req.years,
+    annualContribution: req.annualContribution ?? 0,
+    stepsPerYear,
+    nSims,
+    seed: req.seed ?? null,
+  });
+
+  const unitPerStep = 1 / stepsPerYear;
+  const bandsRaw = percentileBands(result.steps, result.stepValues);
+  const bands = { ...bandsRaw, steps: result.steps.map((s) => s * unitPerStep) };
+
+  return {
+    model: "gbm",
+    bands,
+    histogram: terminalHistogram(result.terminal),
+    summary: summaryStats(result.terminal, req.beginningValue),
+    samplePaths: buildSamplePaths(result.steps, result.sampleStepValues, unitPerStep),
+    xAxis: { label: "Years", unitPerStep, unit: "yr" },
+    meta: {
+      nSims,
+      seed: req.seed ?? null,
+      years: req.years,
+      startAlloc: result.startAlloc,
+      endAlloc: result.endAlloc,
+      curve: result.curve,
     },
   };
 }

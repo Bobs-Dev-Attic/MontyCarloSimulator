@@ -13,6 +13,7 @@ import ReverseStress from "@/components/ReverseStress";
 import MacroShock from "@/components/MacroShock";
 import Sensitivity from "@/components/Sensitivity";
 import MultiAsset from "@/components/MultiAsset";
+import RiskGlidePath from "@/components/RiskGlidePath";
 import ProfileBar from "@/components/ProfileBar";
 import { usePersistentState } from "@/lib/persist";
 import {
@@ -76,7 +77,7 @@ const DEFAULT_RETIREMENT: RetirementState = {
   seed: 2026,
 };
 
-type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset";
+type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset" | "glide";
 
 export default function Page() {
   const [tab, setTab] = usePersistentState<Tab>("ui.tab", "gbm");
@@ -220,6 +221,9 @@ export default function Page() {
         <TabButton active={tab === "multiasset"} onClick={() => setTab("multiasset")}>
           Multi-asset
         </TabButton>
+        <TabButton active={tab === "glide"} onClick={() => setTab("glide")}>
+          Risk glide path
+        </TabButton>
       </div>
 
       {tab === "reverse" ? (
@@ -230,6 +234,8 @@ export default function Page() {
         <Sensitivity />
       ) : tab === "multiasset" ? (
         <MultiAsset />
+      ) : tab === "glide" ? (
+        <RiskGlidePath />
       ) : (
       <>
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
