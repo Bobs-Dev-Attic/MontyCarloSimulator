@@ -7,6 +7,29 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.18.0] - 2026-09-08
+
+### Added
+- **Selective export / import dialogs.** Export now opens a dialog to choose
+  exactly which categories of settings to include — Preferences & theme,
+  Portfolio, Retirement, Reverse stress, Macro shock, Sensitivity, Multi-asset,
+  Risk glide path, Stress compare, Display options, Active view, and
+  **Simulation history** (shown with its run count, confirming history is part of
+  the JSON) — plus a custom file name.
+- **Import dialog with validation.** Importing lets you pick the `.json` file,
+  then *examines* it before anything is applied: it confirms the file is a valid
+  Monty Carlo profile, shows when it was exported, and reports what it skipped.
+  Foreign keys (anything not belonging to the app) are ignored and
+  prototype-polluting keys (`__proto__` / `constructor` / `prototype`) are
+  blocked, with oversized files refused. You then choose which categories to
+  import; only those are replaced — the rest of your current settings are left
+  untouched (a targeted replace instead of an all-or-nothing overwrite).
+
+### Changed
+- Settings are now organized into named categories (`lib/profileCategories.ts`)
+  shared by both dialogs. The header Profile bar and the Preferences page both
+  use the new dialogs.
+
 ## [1.17.0] - 2026-09-08
 
 ### Added
@@ -252,6 +275,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.18.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.18.0
 [1.17.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.17.0
 [1.16.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.16.0
 [1.15.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.15.0

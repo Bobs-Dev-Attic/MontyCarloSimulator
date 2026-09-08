@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   usePreferences,
   BUILTIN_PARAMS,
@@ -10,7 +10,8 @@ import {
 } from "@/lib/preferences";
 import { THEMES } from "@/lib/themes";
 import { useBroadcast, type SharedKey } from "@/lib/broadcast";
-import { downloadProfile, applyProfile, clearAllSettings } from "@/lib/profile";
+import { clearAllSettings } from "@/lib/profile";
+import ProfileDialog from "@/components/ProfileDialog";
 
 const KEYS: SharedKey[] = ["beginningValue", "mu", "sigma", "years", "nSims"];
 
@@ -43,26 +44,13 @@ function NumBox({
 export default function PreferencesPage() {
   const prefs = usePreferences();
   const bc = useBroadcast();
-  const fileRef = useRef<HTMLInputElement>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [dialog, setDialog] = useState<"export" | "import" | null>(null);
 
   if (!prefs) return null;
 
   const eff = (k: SharedKey): ParamPref => prefs.prefs.params[k] ?? BUILTIN_PARAMS[k];
-
-  const onImport = async (file: File) => {
-    setMsg(null);
-    setErr(null);
-    try {
-      const parsed = JSON.parse(await file.text());
-      const n = applyProfile(parsed);
-      setMsg(`Imported ${n} settings — reloading…`);
-      setTimeout(() => window.location.reload(), 600);
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : "Could not import that file.");
-    }
-  };
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -176,42 +164,35 @@ export default function PreferencesPage() {
       <section className="rounded-2xl border border-line bg-panel p-5">
         <h2 className="mb-1 text-sm font-semibold text-white">Export &amp; import</h2>
         <p className="mb-4 text-xs text-muted">
-          A profile file contains every setting (all tabs, preferences, theme, and your simulation history) as JSON —
-          back it up or move it to another device. (Simulation history can also be exported as CSV from the Portfolio /
-          Retirement results.)
+          A profile file stores your settings (any of: all tabs, preferences, theme, and your simulation history) as
+          JSON — back it up or move it to another device. Export lets you choose exactly what to include; import
+          examines the file for validity and lets you pick which categories to bring in. (Simulation history can also be
+          exported as CSV from the Portfolio / Retirement results.)
         </p>
         <div className="flex flex-wrap gap-2">
-          <button onClick={() => downloadProfile()} className="rounded-lg border border-line px-3 py-1.5 text-sm text-slate-200 transition hover:bg-panel2">
-            Export profile (JSON)
+          <button onClick={() => setDialog("export")} className="rounded-lg border border-line px-3 py-1.5 text-sm text-slate-200 transition hover:bg-panel2">
+            Export profile…
           </button>
-          <button onClick={() => fileRef.current?.click()} className="rounded-lg border border-line px-3 py-1.5 text-sm text-slate-200 transition hover:bg-panel2">
-            Import profile
+          <button onClick={() => setDialog("import")} className="rounded-lg border border-line px-3 py-1.5 text-sm text-slate-200 transition hover:bg-panel2">
+            Import profile…
           </button>
           <button
             onClick={() => {
               clearAllSettings();
               setMsg("All settings cleared — reloading…");
+              setErr(null);
               setTimeout(() => window.location.reload(), 500);
             }}
             className="rounded-lg border border-line px-3 py-1.5 text-sm text-muted transition hover:text-bad"
           >
             Reset all settings
           </button>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="application/json,.json"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) onImport(f);
-              e.target.value = "";
-            }}
-          />
         </div>
         {msg ? <p className="mt-3 text-xs text-good">{msg}</p> : null}
         {err ? <p className="mt-3 text-xs text-bad">{err}</p> : null}
       </section>
+
+      {dialog ? <ProfileDialog mode={dialog} onClose={() => setDialog(null)} /> : null}
     </div>
   );
 }
