@@ -37,6 +37,7 @@ export interface GbmRequest {
   nSims?: number;
   contributionPerStep?: number;
   seed?: number | null;
+  dist?: { kind: "normal" | "t"; nu?: number };
 }
 
 export interface RetirementRequest {

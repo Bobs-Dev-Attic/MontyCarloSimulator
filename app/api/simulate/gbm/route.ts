@@ -27,6 +27,10 @@ export async function POST(request: Request) {
         body.seed === null || body.seed === undefined
           ? null
           : Math.round(num(body.seed, 0)),
+      dist:
+        body.dist?.kind === "t"
+          ? { kind: "t", nu: Math.max(2.1, num(body.dist?.nu, 5)) }
+          : { kind: "normal" },
     };
 
     if (req.beginningValue <= 0)

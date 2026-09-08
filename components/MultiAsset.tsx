@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import FanChart from "@/components/FanChart";
 import Histogram from "@/components/Histogram";
 import StatCards from "@/components/StatCards";
+import { usePersistentState } from "@/lib/persist";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import type { SimulationResponse } from "@/lib/types";
 
@@ -66,12 +67,12 @@ function NumInput({
 }
 
 export default function MultiAsset() {
-  const [roster, setRoster] = useState<RosterAsset[]>(DEFAULT_ROSTER);
-  const [corr, setCorr] = useState<number[][]>(DEFAULT_CORR.map((r) => [...r]));
-  const [beginningValue, setBeginningValue] = useState(100_000);
-  const [years, setYears] = useState(20);
-  const [nSims, setNSims] = useState(10_000);
-  const [rebalance, setRebalance] = useState(true);
+  const [roster, setRoster] = usePersistentState<RosterAsset[]>("multi.roster", DEFAULT_ROSTER);
+  const [corr, setCorr] = usePersistentState<number[][]>("multi.corr", DEFAULT_CORR.map((r) => [...r]));
+  const [beginningValue, setBeginningValue] = usePersistentState("multi.beginningValue", 100_000);
+  const [years, setYears] = usePersistentState("multi.years", 20);
+  const [nSims, setNSims] = usePersistentState("multi.nSims", 10_000);
+  const [rebalance, setRebalance] = usePersistentState("multi.rebalance", true);
 
   const [data, setData] = useState<SimulationResponse | null>(null);
   const [loading, setLoading] = useState(false);

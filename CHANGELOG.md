@@ -7,6 +7,20 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-09-08
+
+### Added
+- **Fat-tailed (Student-t) returns** for the portfolio forecast. A distribution
+  selector switches the per-step shock from Normal to a unit-variance Student-t
+  with an adjustable degrees-of-freedom (ν); lower ν means fatter tails — more
+  extreme booms and crashes — at the *same* target volatility. Sampled via a
+  Marsaglia–Tsang Gamma generator for the chi-square denominator.
+- **Profiles** — save and load all app settings locally. A Profile bar in the
+  header exports every setting (inputs for all tabs plus your simulation
+  history) to a single JSON file and imports it back on any device/browser, with
+  a Reset-to-defaults control. Settings now persist in the browser between
+  visits via a `localStorage`-backed state hook.
+
 ## [1.6.0] - 2026-09-08
 
 ### Added
@@ -105,6 +119,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.7.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.7.0
 [1.6.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.6.0
 [1.5.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.5.0
 [1.4.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.4.0

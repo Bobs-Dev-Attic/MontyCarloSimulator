@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import Field from "@/components/Field";
 import Histogram from "@/components/Histogram";
+import { usePersistentState } from "@/lib/persist";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import { SCENARIOS, scenarioById } from "@/lib/scenarios";
 import type { MacroShockResponse } from "@/lib/run";
@@ -50,21 +51,21 @@ function StatCard({
 }
 
 export default function MacroShock() {
-  const [scenarioId, setScenarioId] = useState("gfc");
+  const [scenarioId, setScenarioId] = usePersistentState("macro.scenarioId", "gfc");
 
   // Base portfolio inputs
-  const [beginningValue, setBeginningValue] = useState(100_000);
-  const [mu, setMu] = useState(0.07);
-  const [sigma, setSigma] = useState(0.15);
-  const [years, setYears] = useState(20);
-  const [nSims, setNSims] = useState(10_000);
+  const [beginningValue, setBeginningValue] = usePersistentState("macro.beginningValue", 100_000);
+  const [mu, setMu] = usePersistentState("macro.mu", 0.07);
+  const [sigma, setSigma] = usePersistentState("macro.sigma", 0.15);
+  const [years, setYears] = usePersistentState("macro.years", 20);
+  const [nSims, setNSims] = usePersistentState("macro.nSims", 10_000);
 
   // Shock params (seeded from the chosen scenario, then tweakable)
-  const [annualProb, setAnnualProb] = useState(scenarioById("gfc").config.annualProb);
-  const [severityMean, setSeverityMean] = useState(scenarioById("gfc").config.severityMean);
-  const [volMultiplier, setVolMultiplier] = useState(scenarioById("gfc").config.volMultiplier);
-  const [recoveryYears, setRecoveryYears] = useState(scenarioById("gfc").config.recoveryYears);
-  const [driftDelta, setDriftDelta] = useState(scenarioById("gfc").config.annualDriftDelta ?? 0);
+  const [annualProb, setAnnualProb] = usePersistentState("macro.annualProb", scenarioById("gfc").config.annualProb);
+  const [severityMean, setSeverityMean] = usePersistentState("macro.severityMean", scenarioById("gfc").config.severityMean);
+  const [volMultiplier, setVolMultiplier] = usePersistentState("macro.volMultiplier", scenarioById("gfc").config.volMultiplier);
+  const [recoveryYears, setRecoveryYears] = usePersistentState("macro.recoveryYears", scenarioById("gfc").config.recoveryYears);
+  const [driftDelta, setDriftDelta] = usePersistentState("macro.driftDelta", scenarioById("gfc").config.annualDriftDelta ?? 0);
 
   const [data, setData] = useState<MacroShockResponse | null>(null);
   const [loading, setLoading] = useState(false);

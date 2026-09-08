@@ -29,6 +29,17 @@ export interface ShockConfig {
   annualDriftDelta?: number; // persistent shift to annual drift (e.g. -0.02)
 }
 
+/**
+ * Return-distribution for the per-step shock. "normal" is standard GBM;
+ * "t" uses a unit-variance Student-t (fat tails) with `nu` degrees of freedom —
+ * lower nu ⇒ fatter tails (more extreme booms and crashes) while keeping the
+ * same target volatility.
+ */
+export interface DistConfig {
+  kind: "normal" | "t";
+  nu?: number; // degrees of freedom for the Student-t (nu > 2)
+}
+
 export interface GbmParams {
   beginningValue: number;
   mu: number; // expected annual return (drift), e.g. 0.07
@@ -39,6 +50,7 @@ export interface GbmParams {
   contributionPerStep?: number; // optional cash added each step
   seed?: number | null;
   shock?: ShockConfig; // optional macro shock overlay
+  dist?: DistConfig; // optional fat-tailed return distribution
 }
 
 /**
@@ -86,7 +98,11 @@ export function simulateGbm(params: GbmParams): GbmResult {
     contributionPerStep = 0.0,
     seed = null,
     shock,
+    dist,
   } = params;
+
+  const useT = dist?.kind === "t";
+  const nu = dist?.nu ?? 5;
 
   if (beginningValue <= 0) throw new Error("beginningValue must be positive");
   if (sigma < 0) throw new Error("sigma must be non-negative");
@@ -128,7 +144,7 @@ export function simulateGbm(params: GbmParams): GbmResult {
       keepPos++;
     }
     for (let t = 1; t <= nSteps; t++) {
-      const z = rng.standardNormal();
+      const z = useT ? rng.standardT(nu) : rng.standardNormal();
       // During a recovery window, volatility is elevated.
       const stepVol =
         shock && recoveryLeft > 0 ? vol * shock.volMultiplier : vol;

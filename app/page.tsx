@@ -13,6 +13,8 @@ import ReverseStress from "@/components/ReverseStress";
 import MacroShock from "@/components/MacroShock";
 import Sensitivity from "@/components/Sensitivity";
 import MultiAsset from "@/components/MultiAsset";
+import ProfileBar from "@/components/ProfileBar";
+import { usePersistentState } from "@/lib/persist";
 import {
   type HistoryEntry,
   loadHistory,
@@ -33,6 +35,8 @@ interface GbmState {
   years: number;
   nSims: number;
   seed: number | null;
+  distKind: "normal" | "t";
+  nu: number;
 }
 
 interface RetirementState {
@@ -55,6 +59,8 @@ const DEFAULT_GBM: GbmState = {
   years: 10,
   nSims: 10_000,
   seed: 2026,
+  distKind: "normal",
+  nu: 5,
 };
 
 const DEFAULT_RETIREMENT: RetirementState = {
@@ -73,10 +79,10 @@ const DEFAULT_RETIREMENT: RetirementState = {
 type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset";
 
 export default function Page() {
-  const [tab, setTab] = useState<Tab>("gbm");
-  const [model, setModel] = useState<Model>("gbm");
-  const [gbm, setGbm] = useState<GbmState>(DEFAULT_GBM);
-  const [ret, setRet] = useState<RetirementState>(DEFAULT_RETIREMENT);
+  const [tab, setTab] = usePersistentState<Tab>("ui.tab", "gbm");
+  const [model, setModel] = usePersistentState<Model>("ui.model", "gbm");
+  const [gbm, setGbm] = usePersistentState<GbmState>("gbm.settings", DEFAULT_GBM);
+  const [ret, setRet] = usePersistentState<RetirementState>("ret.settings", DEFAULT_RETIREMENT);
   const [result, setResult] = useState<SimulationResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,7 +109,18 @@ export default function Page() {
     try {
       const endpoint =
         model === "gbm" ? "/api/simulate/gbm" : "/api/simulate/retirement";
-      const body = model === "gbm" ? gbm : ret;
+      const body =
+        model === "gbm"
+          ? {
+              ...gbm,
+              dist: { kind: gbm.distKind, nu: gbm.nu },
+              // Fat tails aggregate away over ~250 daily steps (CLT), so model
+              // Student-t returns at annual frequency where the heavy tails are
+              // real and visible. Normal stays daily for a smooth fan chart
+              // (its terminal distribution is identical at any step count).
+              ...(gbm.distKind === "t" ? { stepsPerYear: 1 } : {}),
+            }
+          : ret;
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -160,12 +177,15 @@ export default function Page() {
             v{APP_VERSION}
           </a>
         </div>
-        <p className="mt-1 max-w-3xl text-sm text-muted">
-          Instead of a single prediction, run thousands of randomized scenarios
-          to see the full spectrum of possible financial outcomes and their
-          probabilities. Same math as the Flutter + Python original, ported to
-          run on the edge.
-        </p>
+        <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
+          <p className="max-w-3xl text-sm text-muted">
+            Instead of a single prediction, run thousands of randomized scenarios
+            to see the full spectrum of possible financial outcomes and their
+            probabilities. Same math as the Flutter + Python original, ported to
+            run on the edge.
+          </p>
+          <ProfileBar />
+        </div>
       </header>
 
       {/* Model tabs */}
@@ -267,6 +287,48 @@ export default function Page() {
                 step={1000}
                 display={gbm.nSims.toLocaleString()}
               />
+
+              {/* Return distribution: Normal vs fat-tailed Student-t */}
+              <div>
+                <label className="text-sm text-slate-200">Return distribution</label>
+                <div className="mt-2 inline-flex rounded-lg border border-line bg-panel2 p-1">
+                  <button
+                    onClick={() => setGbm({ ...gbm, distKind: "normal" })}
+                    className={`rounded-md px-3 py-1 text-xs font-medium transition ${
+                      gbm.distKind === "normal" ? "bg-accent text-ink" : "text-muted hover:text-slate-200"
+                    }`}
+                  >
+                    Normal
+                  </button>
+                  <button
+                    onClick={() => setGbm({ ...gbm, distKind: "t" })}
+                    className={`rounded-md px-3 py-1 text-xs font-medium transition ${
+                      gbm.distKind === "t" ? "bg-accent text-ink" : "text-muted hover:text-slate-200"
+                    }`}
+                  >
+                    Fat tails (Student-t)
+                  </button>
+                </div>
+                {gbm.distKind === "t" ? (
+                  <div className="mt-4">
+                    <Field
+                      label="Degrees of freedom (ν)"
+                      value={gbm.nu}
+                      onChange={(v) => setGbm({ ...gbm, nu: v })}
+                      min={2.5}
+                      max={30}
+                      step={0.5}
+                      display={gbm.nu.toFixed(1)}
+                      hint="Lower ν → fatter tails (more extreme booms & crashes) on annual returns, at the same volatility."
+                    />
+                  </div>
+                ) : (
+                  <p className="mt-2 text-[11px] text-muted">
+                    Standard log-normal returns. Switch to Student-t to model
+                    heavier tails at the same volatility.
+                  </p>
+                )}
+              </div>
             </div>
           ) : (
             <div className="space-y-5">
