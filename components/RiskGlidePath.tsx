@@ -22,9 +22,11 @@ import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
 import { useAutoRun } from "@/lib/preferences";
 import { useApplyAllHandler } from "@/lib/broadcast";
-import { formatCurrency, formatPercent } from "@/lib/format";
+import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import { useChartColors } from "@/lib/chartColors";
 import { useProgress } from "@/lib/progress";
+import { useTabHistory } from "@/lib/tabHistory";
+import TabHistoryPanel from "@/components/TabHistoryPanel";
 import type { SimulationResponse } from "@/lib/types";
 import type { Waypoint } from "@/lib/glidepath";
 
@@ -61,6 +63,7 @@ export default function RiskGlidePath() {
   const { adjust } = useReal();
   const c = useChartColors();
   const progress = useProgress();
+  const history = useTabHistory("glide");
   const view = data ? adjust(data) : null;
 
   useApplyAllHandler(
@@ -88,7 +91,16 @@ export default function RiskGlidePath() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Simulation failed");
-      setData(json as SimulationResponse);
+      const d = json as SimulationResponse;
+      setData(d);
+      history.add({
+        label: `${formatCompact(beginningValue)} · ${years}y · ${formatPercent((d.meta.startAlloc as number) ?? 0)}→${formatPercent((d.meta.endAlloc as number) ?? 0)}`,
+        inputs: { riskyMu, riskySigma, safeMu, safeSigma, rho, waypoints, beginningValue, years, annualContribution, nSims },
+        metrics: [
+          { label: "Median", value: formatCurrency(d.summary.median) },
+          { label: "Risky", value: `${formatPercent((d.meta.startAlloc as number) ?? 0)} → ${formatPercent((d.meta.endAlloc as number) ?? 0)}` },
+        ],
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Simulation failed");
       setData(null);
@@ -96,9 +108,25 @@ export default function RiskGlidePath() {
       setLoading(false);
       tracker.done();
     }
-  }, [riskyMu, riskySigma, safeMu, safeSigma, rho, waypoints, beginningValue, years, annualContribution, nSims, progress]);
+  }, [riskyMu, riskySigma, safeMu, safeSigma, rho, waypoints, beginningValue, years, annualContribution, nSims, progress, history]);
 
   useAutoRun(run);
+
+  const restore = (inp: Record<string, unknown>) => {
+    const set = (k: string, fn: (v: number) => void) => {
+      if (typeof inp[k] === "number") fn(inp[k] as number);
+    };
+    set("riskyMu", setRiskyMu);
+    set("riskySigma", setRiskySigma);
+    set("safeMu", setSafeMu);
+    set("safeSigma", setSafeSigma);
+    set("rho", setRho);
+    set("beginningValue", setBeginningValue);
+    set("years", setYears);
+    set("annualContribution", setAnnualContribution);
+    set("nSims", setNSims);
+    if (Array.isArray(inp.waypoints)) setWaypoints(inp.waypoints as Waypoint[]);
+  };
 
   const curve: CurvePoint[] = (data?.meta.curve as CurvePoint[] | undefined) ?? [];
 
@@ -207,6 +235,8 @@ export default function RiskGlidePath() {
           {loading ? "Simulating glide path…" : "Run a simulation to see results."}
         </div>
       )}
+
+      <TabHistoryPanel history={history} onRestore={restore} />
     </div>
   );
 }

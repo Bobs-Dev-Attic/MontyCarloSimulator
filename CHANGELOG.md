@@ -7,6 +7,18 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.26.0] - 2026-09-08
+
+### Added
+- **Run history on more views.** Dynamic withdrawals, Sensitivity, Multi-asset,
+  Risk glide path, and Stress compare now each keep a history of past runs
+  (timestamp, a label, and headline metrics), with **Restore** to load a run's
+  inputs back into the form, plus per-entry delete and clear-all. Stored per view
+  under `mcs.history.<view>.v1`.
+- These histories are included in **profile export / import** under the existing
+  "Simulation history" category, and the export/import dialog's run count now
+  sums runs across every view's history (not just Portfolio / Retirement).
+
 ## [1.25.0] - 2026-09-08
 
 ### Changed
@@ -372,6 +384,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.26.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.26.0
 [1.25.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.25.0
 [1.24.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.24.0
 [1.23.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.23.0

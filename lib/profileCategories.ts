@@ -71,8 +71,12 @@ export function summarizeData(data: Record<string, unknown>): CategorySummary[] 
     if (n === 0) continue;
     let detail: string | undefined;
     if (c.id === "history") {
-      const h = data[PERSIST_PREFIX + "history.v1"];
-      if (Array.isArray(h)) detail = `${h.length} run${h.length === 1 ? "" : "s"}`;
+      // Sum runs across every history log (portfolio/retirement + per-view).
+      let runs = 0;
+      for (const [k, v] of Object.entries(data)) {
+        if (categoryForKey(k) === "history" && Array.isArray(v)) runs += v.length;
+      }
+      detail = `${runs} run${runs === 1 ? "" : "s"}`;
     }
     out.push({ id: c.id, label: c.label, hint: c.hint, keyCount: n, detail });
   }
