@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   ComposedChart,
   Area,
@@ -18,6 +18,7 @@ import InfoTip from "@/components/InfoTip";
 import { RealBadge } from "@/components/RealToggle";
 import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
+import { useAutoRun } from "@/lib/preferences";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { useProgress } from "@/lib/progress";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
@@ -140,10 +141,7 @@ export default function MacroShock() {
     }
   }, [beginningValue, mu, sigma, years, nSims, annualProb, severityMean, volMultiplier, recoveryYears, driftDelta, scenarioId, progress]);
 
-  useEffect(() => {
-    run();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useAutoRun(run);
 
   const scenario = scenarioById(scenarioId);
 

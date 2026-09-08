@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ComposedChart,
   Line,
@@ -16,6 +16,7 @@ import {
 import Field from "@/components/Field";
 import InfoTip from "@/components/InfoTip";
 import { usePersistentState } from "@/lib/persist";
+import { useAutoRun } from "@/lib/preferences";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { useProgress } from "@/lib/progress";
 import { useChartColors } from "@/lib/chartColors";
@@ -87,10 +88,7 @@ export default function SequenceRisk() {
     }
   }, [startingBalance, retirementYears, annualSpend, inflation, equityMean, equityVol, bufferYield, bearYears, bearMean, bearVol, troughDrawdown, refillBuffer, maxBufferYears, targetSellProb, nSims, progress]);
 
-  useEffect(() => {
-    run();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useAutoRun(run);
 
   const sweepRows = data ? data.sweep.map((p) => ({ buffer: p.bufferYears, sell: p.sellProb, ruin: p.ruinProb })) : [];
   // Refill on vs off, aligned by buffer size, for the side-by-side comparison.

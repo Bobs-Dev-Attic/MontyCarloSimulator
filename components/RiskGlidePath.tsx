@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ComposedChart,
   Line,
@@ -20,6 +20,7 @@ import GlidePathEditor from "@/components/GlidePathEditor";
 import { RealBadge } from "@/components/RealToggle";
 import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
+import { useAutoRun } from "@/lib/preferences";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import { useChartColors } from "@/lib/chartColors";
@@ -97,10 +98,7 @@ export default function RiskGlidePath() {
     }
   }, [riskyMu, riskySigma, safeMu, safeSigma, rho, waypoints, beginningValue, years, annualContribution, nSims, progress]);
 
-  useEffect(() => {
-    run();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useAutoRun(run);
 
   const curve: CurvePoint[] = (data?.meta.curve as CurvePoint[] | undefined) ?? [];
 

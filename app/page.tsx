@@ -25,6 +25,7 @@ import { usePersistentState } from "@/lib/persist";
 import { useReal } from "@/lib/realContext";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { useProgress } from "@/lib/progress";
+import { useAutoRun } from "@/lib/preferences";
 import {
   type HistoryEntry,
   loadHistory,
@@ -212,12 +213,14 @@ export default function Page() {
     }
   }, [model, gbm, ret, progress]);
 
-  // Load saved history, then run once on first mount so the page isn't empty.
+  // Load saved history on first mount.
   useEffect(() => {
     setHistory(loadHistory());
-    run();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Optionally auto-run once inputs have hydrated (off by default).
+  useAutoRun(run);
 
   const compareEntries = selected
     .map((id) => history.find((e) => e.id === id))

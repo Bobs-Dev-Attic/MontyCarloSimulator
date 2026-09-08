@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -19,6 +19,7 @@ import InfoTip from "@/components/InfoTip";
 import { RealBadge } from "@/components/RealToggle";
 import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
+import { useAutoRun } from "@/lib/preferences";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import { useChartColors } from "@/lib/chartColors";
@@ -76,10 +77,7 @@ export default function StressCompare() {
     }
   }, [beginningValue, mu, sigma, years, nSims, progress]);
 
-  useEffect(() => {
-    run();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useAutoRun(run);
 
   // Deflate a terminal currency value / a per-year curve value when "real" is on.
   const tf = real ? Math.pow(1 + inflation, data?.years ?? 0) : 1;

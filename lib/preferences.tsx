@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { usePersistentState } from "./persist";
 import { applyTheme, themeById, type ThemeMode } from "./themes";
 import type { SharedKey } from "./broadcast";
@@ -44,6 +44,8 @@ export interface Prefs {
   /** Last theme chosen in each mode, so the light/dark toggle can restore it. */
   lastDark?: string;
   lastLight?: string;
+  /** Run a simulation automatically when a view first loads. */
+  autoRun?: boolean;
 }
 
 const DEFAULT_PREFS: Prefs = {
@@ -51,6 +53,7 @@ const DEFAULT_PREFS: Prefs = {
   params: {},
   lastDark: "amber",
   lastLight: "light",
+  autoRun: false,
 };
 
 interface PrefsCtx {
@@ -60,6 +63,9 @@ interface PrefsCtx {
   mode: ThemeMode;
   /** Flip between light and dark, restoring the last theme used in that mode. */
   toggleMode: () => void;
+  /** Whether views auto-run a simulation on load. */
+  autoRun: boolean;
+  setAutoRun: (on: boolean) => void;
   setParam: (key: SharedKey, patch: Partial<ParamPref>) => void;
   resetParam: (key: SharedKey) => void;
   resetAll: () => void;
@@ -114,6 +120,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
       return { ...p, params: next };
     });
   const resetAll = () => setPrefs((p) => ({ ...p, params: {} }));
+  const setAutoRun = (on: boolean) => setPrefs((p) => ({ ...p, autoRun: on }));
 
   const rangeFor = (key: SharedKey) => {
     const o = prefs.params[key];
@@ -123,7 +130,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     prefs.params[key]?.def ?? BUILTIN_PARAMS[key].def;
 
   return (
-    <Ctx.Provider value={{ prefs, setTheme, mode, toggleMode, setParam, resetParam, resetAll, rangeFor, defaultFor }}>
+    <Ctx.Provider value={{ prefs, setTheme, mode, toggleMode, autoRun: prefs.autoRun ?? false, setAutoRun, setParam, resetParam, resetAll, rangeFor, defaultFor }}>
       {children}
     </Ctx.Provider>
   );
@@ -131,4 +138,28 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
 
 export function usePreferences(): PrefsCtx | null {
   return useContext(Ctx);
+}
+
+/**
+ * Run `run` once on load, but only if the user has enabled auto-run AND only
+ * after persisted field values have hydrated from localStorage. Firing on the
+ * raw first render would use the built-in defaults (the stored values load in an
+ * effect), so we wait one commit for `hydrated` to flip true — by then the
+ * `usePersistentState` load effects have applied the saved values and `run`
+ * closes over them.
+ */
+export function useAutoRun(run: () => void): void {
+  const prefs = usePreferences();
+  const autoRun = prefs?.autoRun ?? false;
+  const [hydrated, setHydrated] = useState(false);
+  const fired = useRef(false);
+
+  useEffect(() => setHydrated(true), []);
+
+  useEffect(() => {
+    if (!hydrated || fired.current) return;
+    fired.current = true;
+    if (autoRun) run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated]);
 }
