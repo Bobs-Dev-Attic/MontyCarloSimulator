@@ -15,6 +15,7 @@ import Field from "@/components/Field";
 import FanChart from "@/components/FanChart";
 import Histogram from "@/components/Histogram";
 import StatCards from "@/components/StatCards";
+import InfoTip from "@/components/InfoTip";
 import GlidePathEditor from "@/components/GlidePathEditor";
 import { RealBadge } from "@/components/RealToggle";
 import { useReal } from "@/lib/realContext";
@@ -102,7 +103,7 @@ export default function RiskGlidePath() {
       {/* Glide path editor */}
       <section className="rounded-2xl border border-line bg-panel p-5">
         <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="text-sm font-semibold text-slate-200">Risk tolerance over time (glide path)</h3>
+          <h3 className="flex items-center gap-1 text-sm font-semibold text-slate-200">Risk tolerance over time (glide path) <InfoTip term="glidePath" /></h3>
           <span className="text-xs text-muted">risky-asset allocation across {years} years</span>
         </div>
         <GlidePathEditor waypoints={waypoints} horizon={years} onChange={setWaypoints} />
@@ -150,7 +151,7 @@ export default function RiskGlidePath() {
       {data ? (
         <>
           <div className="rounded-2xl border border-line bg-gradient-to-br from-panel to-panel2 p-5">
-            <div className="text-xs uppercase tracking-wide text-muted">Glide path effect</div>
+            <div className="flex items-center gap-1 text-xs uppercase tracking-wide text-muted">Glide path effect <InfoTip term="glidePath" /></div>
             <p className="mt-1 text-sm text-slate-300">
               Risk falls from <span className="font-semibold text-accent">{formatPercent((data.meta.startAlloc as number) ?? 0)}</span> risky at the start to{" "}
               <span className="font-semibold text-accent">{formatPercent((data.meta.endAlloc as number) ?? 0)}</span> by year {years}. Median ending value{" "}
@@ -160,7 +161,7 @@ export default function RiskGlidePath() {
 
           {/* Blended risk/return over time */}
           <div className="rounded-2xl border border-line bg-panel p-5">
-            <h3 className="mb-3 text-sm font-semibold text-slate-200">Effective allocation &amp; volatility over time</h3>
+            <h3 className="mb-3 flex items-center gap-1 text-sm font-semibold text-slate-200">Effective allocation &amp; volatility over time <InfoTip term="rebalance" /></h3>
             <div className="h-[240px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={curve} margin={{ top: 8, right: 44, bottom: 4, left: 4 }}>

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import FanChart from "@/components/FanChart";
 import Histogram from "@/components/Histogram";
 import StatCards from "@/components/StatCards";
+import InfoTip from "@/components/InfoTip";
 import { RealBadge } from "@/components/RealToggle";
 import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
@@ -185,7 +186,7 @@ export default function MultiAsset() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Correlation matrix */}
         <section className="rounded-2xl border border-line bg-panel p-5">
-          <h3 className="mb-3 text-sm font-semibold text-slate-200">Correlation matrix</h3>
+          <h3 className="mb-3 flex items-center gap-1 text-sm font-semibold text-slate-200">Correlation matrix <InfoTip term="correlation" /></h3>
           {included.length < 2 ? (
             <p className="text-sm text-muted">Include at least two assets to set correlations.</p>
           ) : (
@@ -267,7 +268,7 @@ export default function MultiAsset() {
       {data ? (
         <>
           <div className="rounded-2xl border border-line bg-gradient-to-br from-panel to-panel2 p-5">
-            <div className="text-xs uppercase tracking-wide text-muted">Diversification</div>
+            <div className="flex items-center gap-1 text-xs uppercase tracking-wide text-muted">Diversification <InfoTip term="diversification" /></div>
             <div className="mt-1 flex flex-wrap items-end gap-3">
               <span className="text-3xl font-bold tabular-nums text-good">
                 −{formatPercent(((data.meta.diversificationBenefit as number) ?? 0))}

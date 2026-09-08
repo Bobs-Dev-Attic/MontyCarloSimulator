@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import Field from "@/components/Field";
 import Histogram from "@/components/Histogram";
+import InfoTip from "@/components/InfoTip";
 import { RealBadge } from "@/components/RealToggle";
 import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
@@ -30,11 +31,13 @@ function StatCard({
   value,
   sub,
   tone = "default",
+  info,
 }: {
   label: string;
   value: string;
   sub?: string;
   tone?: "default" | "good" | "bad" | "accent";
+  info?: string;
 }) {
   const toneClass =
     tone === "good"
@@ -46,7 +49,10 @@ function StatCard({
       : "text-white";
   return (
     <div className="rounded-xl border border-line bg-panel2 p-4">
-      <div className="text-[11px] uppercase tracking-wide text-muted">{label}</div>
+      <div className="flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted">
+        {label}
+        {info ? <InfoTip term={info} /> : null}
+      </div>
       <div className={`mt-1 text-xl font-semibold tabular-nums ${toneClass}`}>{value}</div>
       {sub ? <div className="mt-0.5 text-[11px] text-muted">{sub}</div> : null}
     </div>
@@ -246,14 +252,14 @@ export default function MacroShock() {
             </div>
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <StatCard label="Median (baseline)" value={formatCurrency(base.summary.median)} tone="good" />
-              <StatCard label="Median (shocked)" value={formatCurrency(shock.summary.median)} tone="accent" />
-              <StatCard label="P5 baseline → shocked" value={formatCurrency(shock.summary.p5)} sub={`from ${formatCurrency(base.summary.p5)}`} tone="bad" />
-              <StatCard label="95% VaR (shocked)" value={formatCurrency(shock.summary.var95)} sub={`baseline ${formatCurrency(base.summary.var95)}`} tone="bad" />
-              <StatCard label="Prob. of loss" value={formatPercent(shock.summary.probLoss)} sub={`baseline ${formatPercent(base.summary.probLoss)}`} tone="bad" />
-              <StatCard label="Paths hit by a shock" value={formatPercent((shock.meta.fracWithShock as number) ?? 0)} tone="accent" />
-              <StatCard label="Avg shocks / path" value={((shock.meta.avgShocks as number) ?? 0).toFixed(2)} />
-              <StatCard label="Worst case" value={formatCurrency(shock.summary.min)} sub={`baseline ${formatCurrency(base.summary.min)}`} tone="bad" />
+              <StatCard label="Median (baseline)" value={formatCurrency(base.summary.median)} tone="good" info="median" />
+              <StatCard label="Median (shocked)" value={formatCurrency(shock.summary.median)} tone="accent" info="median" />
+              <StatCard label="P5 baseline → shocked" value={formatCurrency(shock.summary.p5)} sub={`from ${formatCurrency(base.summary.p5)}`} tone="bad" info="percentile" />
+              <StatCard label="95% VaR (shocked)" value={formatCurrency(shock.summary.var95)} sub={`baseline ${formatCurrency(base.summary.var95)}`} tone="bad" info="var95" />
+              <StatCard label="Prob. of loss" value={formatPercent(shock.summary.probLoss)} sub={`baseline ${formatPercent(base.summary.probLoss)}`} tone="bad" info="probLoss" />
+              <StatCard label="Paths hit by a shock" value={formatPercent((shock.meta.fracWithShock as number) ?? 0)} tone="accent" info="shockFrequency" />
+              <StatCard label="Avg shocks / path" value={((shock.meta.avgShocks as number) ?? 0).toFixed(2)} info="shockFrequency" />
+              <StatCard label="Worst case" value={formatCurrency(shock.summary.min)} sub={`baseline ${formatCurrency(base.summary.min)}`} tone="bad" info="worstCase" />
             </div>
 
             <div className="rounded-2xl border border-line bg-panel p-5">

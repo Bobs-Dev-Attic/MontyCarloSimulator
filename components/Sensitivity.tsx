@@ -15,6 +15,7 @@ import {
   ReferenceLine,
 } from "recharts";
 import Field from "@/components/Field";
+import InfoTip from "@/components/InfoTip";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import type { TornadoResult, Metric, Fmt } from "@/lib/sensitivity";
 
@@ -204,9 +205,12 @@ export default function Sensitivity() {
           <>
             <div className="rounded-2xl border border-line bg-panel p-5">
               <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2">
-                <h3 className="text-sm font-semibold text-slate-200">
-                  Tornado — sensitivity of{" "}
-                  <span className="text-accent2">{metrics.find((m) => m.id === metric)?.label}</span>
+                <h3 className="flex items-center gap-1 text-sm font-semibold text-slate-200">
+                  <span>
+                    Tornado — sensitivity of{" "}
+                    <span className="text-accent2">{metrics.find((m) => m.id === metric)?.label}</span>
+                  </span>
+                  <InfoTip term="sensitivity" />
                 </h3>
                 <span className="text-xs text-muted">
                   base {fmtVal(data.baseMetric, data.metricFormat)} · ±{formatPercent(variationPct, 0)} each · {data.nSims.toLocaleString()} sims
@@ -260,7 +264,7 @@ export default function Sensitivity() {
             </div>
 
             <div className="rounded-2xl border border-line bg-panel p-5">
-              <h3 className="mb-3 text-sm font-semibold text-slate-200">Ranked impact</h3>
+              <h3 className="mb-3 flex items-center gap-1 text-sm font-semibold text-slate-200">Ranked impact <InfoTip term="sensitivity" /></h3>
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[560px] text-sm">
                   <thead>

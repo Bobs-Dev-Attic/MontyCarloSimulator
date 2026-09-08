@@ -203,6 +203,54 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     href: "https://www.investopedia.com/terms/r/requiredrateofreturn.asp",
     source: "Investopedia",
   },
+  targetValue: {
+    title: "Target (failure) value",
+    body: "The ending balance that counts as the failure you're stress-testing — your starting amount less the chosen drawdown. The analysis solves for the path that lands exactly here.",
+    href: "https://www.investopedia.com/terms/d/drawdown.asp",
+    source: "Investopedia",
+  },
+  totalReturn: {
+    title: "Total return",
+    body: "The cumulative percentage change over the whole horizon (not annualized) — the required annual return compounded across every year.",
+    href: "https://www.investopedia.com/terms/t/totalreturn.asp",
+    source: "Investopedia",
+  },
+  likelihood: {
+    title: "Likelihood (1-in-N)",
+    body: "The model-implied odds of the failure scenario, restated as a '1 in N' frequency. A larger N means a rarer, more extreme event under your μ/σ assumptions.",
+    href: "https://www.investopedia.com/terms/p/probabilitydistribution.asp",
+    source: "Investopedia",
+  },
+  maxWithdrawal: {
+    title: "Maximum sustainable withdrawal",
+    body: "The largest first-year withdrawal (grown with inflation thereafter) that your assumed return can support without running out of money before the horizon ends.",
+    href: "https://www.investopedia.com/terms/f/four-percent-rule.asp",
+    source: "Investopedia",
+  },
+  maxCrash: {
+    title: "Maximum absorbable crash",
+    body: "The biggest one-time market drop, striking on the first day of retirement, that the plan can still survive to the end of the horizon — a measure of sequence-of-returns resilience.",
+    href: "https://www.investopedia.com/terms/s/sequence-risk.asp",
+    source: "Investopedia",
+  },
+  shockFrequency: {
+    title: "Shock frequency",
+    body: "How often crashes strike across the simulation — the share of paths hit by at least one shock, and the average number of shocks per path, given the annual shock probability.",
+    href: "https://en.wikipedia.org/wiki/Poisson_distribution",
+    source: "Wikipedia",
+  },
+  worstCase: {
+    title: "Worst case",
+    body: "The single lowest ending value across all simulated paths — the most extreme outcome the run produced. It's a sample minimum, so it shifts with the number of simulations.",
+    href: "https://www.investopedia.com/terms/t/tailrisk.asp",
+    source: "Investopedia",
+  },
+  deltaVsBase: {
+    title: "Change vs. baseline",
+    body: "How far each scenario's median ending value falls below the no-shock baseline, as a percentage — the headline damage the scenario does.",
+    href: "https://www.investopedia.com/terms/s/stresstesting.asp",
+    source: "Investopedia",
+  },
 };
 
 export type GlossaryKey = keyof typeof GLOSSARY;

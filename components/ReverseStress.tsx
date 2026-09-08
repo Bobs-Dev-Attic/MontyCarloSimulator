@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo } from "react";
 import Field from "@/components/Field";
+import InfoTip from "@/components/InfoTip";
 import { usePersistentState } from "@/lib/persist";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatPercent } from "@/lib/format";
@@ -17,11 +18,13 @@ function ResultCard({
   value,
   tone = "default",
   hint,
+  info,
 }: {
   label: string;
   value: string;
   tone?: "default" | "good" | "bad" | "accent";
   hint?: string;
+  info?: string;
 }) {
   const toneClass =
     tone === "good"
@@ -33,7 +36,10 @@ function ResultCard({
       : "text-white";
   return (
     <div className="rounded-xl border border-line bg-panel2 p-4">
-      <div className="text-[11px] uppercase tracking-wide text-muted">{label}</div>
+      <div className="flex items-center gap-1 text-[11px] uppercase tracking-wide text-muted">
+        {label}
+        {info ? <InfoTip term={info} /> : null}
+      </div>
       <div className={`mt-1 text-xl font-semibold tabular-nums ${toneClass}`}>
         {value}
       </div>
@@ -220,12 +226,12 @@ export default function ReverseStress() {
             </div>
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <ResultCard label="Target value" value={formatCurrency(gbm.targetValue)} tone="bad" hint={`from ${formatCurrency(beginningValue)}`} />
-              <ResultCard label="Required annual return" value={formatPercent(gbm.requiredCagr)} tone="bad" />
-              <ResultCard label="Total return" value={formatPercent(gbm.requiredTotalReturn)} />
-              <ResultCard label="Severity (z-score)" value={`${gbm.zScore.toFixed(2)}σ`} tone="accent" hint="below assumed mean" />
-              <ResultCard label="Probability ≤ target" value={formatPercent(gbm.probability, 2)} tone="accent" />
-              <ResultCard label="Likelihood" value={oneInNText(gbm.oneInN)} />
+              <ResultCard label="Target value" value={formatCurrency(gbm.targetValue)} tone="bad" hint={`from ${formatCurrency(beginningValue)}`} info="targetValue" />
+              <ResultCard label="Required annual return" value={formatPercent(gbm.requiredCagr)} tone="bad" info="requiredReturn" />
+              <ResultCard label="Total return" value={formatPercent(gbm.requiredTotalReturn)} info="totalReturn" />
+              <ResultCard label="Severity (z-score)" value={`${gbm.zScore.toFixed(2)}σ`} tone="accent" hint="below assumed mean" info="zscore" />
+              <ResultCard label="Probability ≤ target" value={formatPercent(gbm.probability, 2)} tone="accent" info="probLoss" />
+              <ResultCard label="Likelihood" value={oneInNText(gbm.oneInN)} info="likelihood" />
             </div>
 
             <div className="rounded-2xl border border-line bg-panel p-5 text-sm text-slate-300">
@@ -303,18 +309,21 @@ export default function ReverseStress() {
                 value={ret.requiredReturn !== null ? formatPercent(ret.requiredReturn) : "—"}
                 tone={ret.requiredReturn !== null && ret.assumedReturn >= ret.requiredReturn ? "good" : "bad"}
                 hint="to end at $0"
+                info="requiredReturn"
               />
               <ResultCard
                 label="Max withdrawal (yr 1)"
                 value={ret.maxWithdrawal !== null ? formatCurrency(ret.maxWithdrawal) : "—"}
                 tone={ret.maxWithdrawal !== null && ret.maxWithdrawal >= ret.currentWithdrawal ? "good" : "bad"}
                 hint={`you draw ${formatCurrency(ret.currentWithdrawal)}`}
+                info="maxWithdrawal"
               />
               <ResultCard
                 label="Max crash at retirement"
                 value={ret.maxRetirementShock !== null ? formatPercent(ret.maxRetirementShock) : "—"}
                 tone="accent"
                 hint="one-time, absorbable"
+                info="maxCrash"
               />
               <ResultCard
                 label="Money lasts"
@@ -326,6 +335,7 @@ export default function ReverseStress() {
                     : "Depletes early"
                 }
                 tone={ret.depletionRetirementYear === null ? "good" : "bad"}
+                info="sequenceRisk"
               />
             </div>
 
