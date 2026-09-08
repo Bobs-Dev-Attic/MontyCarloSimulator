@@ -22,6 +22,7 @@ import { useProgress } from "@/lib/progress";
 import { useChartColors } from "@/lib/chartColors";
 import { useTabHistory } from "@/lib/tabHistory";
 import TabHistoryPanel from "@/components/TabHistoryPanel";
+import { exportToExcel } from "@/lib/excelExport";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import type { TaxResult } from "@/lib/tax";
 
@@ -61,6 +62,7 @@ export default function TaxPlanner() {
   const [data, setData] = useState<TaxResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
   const progress = useProgress();
   const c = useChartColors();
   const history = useTabHistory("tax");
@@ -109,6 +111,25 @@ export default function TaxPlanner() {
   }, [startAge, filing, years, taxable, taxableBasisPct, deferred, roth, annualSpend, otherIncome, nominalReturn, inflation, ltcgRate, conversionTopRate, terminalTaxRate, progress, history]);
 
   useAutoRun(run);
+
+  const doExport = useCallback(async () => {
+    setExporting(true);
+    setError(null);
+    try {
+      await exportToExcel({
+        kind: "tax",
+        inputs: {
+          startAge, filing, years, taxable, taxableBasisPct, deferred, roth,
+          annualSpend, otherIncome, nominalReturn, inflation, ltcgRate,
+          conversionTopRate, terminalTaxRate,
+        },
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export failed");
+    } finally {
+      setExporting(false);
+    }
+  }, [startAge, filing, years, taxable, taxableBasisPct, deferred, roth, annualSpend, otherIncome, nominalReturn, inflation, ltcgRate, conversionTopRate, terminalTaxRate]);
 
   const restore = (inp: Record<string, unknown>) => {
     const setN = (k: string, fn: (v: number) => void) => {
@@ -199,6 +220,11 @@ export default function TaxPlanner() {
         <button onClick={run} disabled={loading} className="mt-6 w-full rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-ink transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
           {loading ? "Projecting…" : "Run tax projection"}
         </button>
+        <button onClick={doExport} disabled={exporting} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-panel2 px-4 py-2 text-sm font-medium text-slate-200 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          {exporting ? "Building workbook…" : "Export to Excel"}
+        </button>
+        <p className="mt-1.5 text-[11px] text-muted">Excel export uses live formulas — edit the assumptions and it recomputes.</p>
         <p className="mt-3 text-[11px] text-muted">
           Deterministic year-by-year projection at the assumed return. Compares a
           naive drawdown against a plan that fills a target bracket with Roth

@@ -81,6 +81,11 @@ The additional views add their own models in `lib/`:
 - **Import / export** — save all settings, per-view inputs, theme, display
   options, run history, **and which view you last had open** to a JSON file, and
   re-import selectively (see below).
+- **Export to Excel** — Tax & Roth, Sequence risk, and the Portfolio /
+  Retirement forecast each generate a shareable `.xlsx` with **native, editable
+  Excel charts**. Tax & Roth is written as a **live-formula model** (editable
+  assumptions drive year-by-year formulas), so the recipient can change an
+  assumption in Excel and the whole projection — and its charts — recompute.
 - **Auto-run** — an off-by-default preference that runs a view once after its
   inputs hydrate.
 
@@ -104,6 +109,28 @@ the correct format tag, and any foreign keys, prototype-polluting keys
 reported before anything is written. Importing a category does a targeted
 replace of only that category, so importing (say) a theme won't wipe your
 history.
+
+## Export to Excel
+
+Three views can generate a `.xlsx` workbook (via the `app/api/export/excel`
+route, built server-side with ExcelJS) carrying **native Excel charts** — real,
+editable chart objects bound to the cells, so they redraw if the recipient edits
+the data:
+
+- **Tax & Roth** is exported as a **working model**, not a data dump: an editable
+  *Assumptions* sheet drives *Naive* and *Tax-smart* sheets whose entire
+  year-by-year projection is Excel formulas (inflation-indexed 2024 brackets, a
+  progressive-tax formula, RMD lookups, bracket-fill Roth conversions), plus a
+  *Summary* sheet with the strategy comparison and charts. Change an assumption
+  in Excel and everything recomputes. The formulas reproduce the app's own
+  engine to the dollar.
+- **Sequence risk** and the **Portfolio / Retirement forecast** export their
+  result tables (buffer sweeps, percentile bands, histograms, summary stats)
+  with matching charts.
+
+ExcelJS cannot emit native charts, so `lib/excel/charts.ts` injects the chart /
+drawing OOXML into the generated workbook; `lib/excel/workbooks.ts` builds the
+per-view sheets and chart definitions.
 
 ## Architecture
 

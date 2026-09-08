@@ -23,6 +23,7 @@ import TaxPlanner from "@/components/TaxPlanner";
 import PreferencesPage from "@/components/PreferencesPage";
 import NavMenu, { type NavItem } from "@/components/NavMenu";
 import NavIcon from "@/components/NavIcons";
+import { exportToExcel } from "@/lib/excelExport";
 import ProfileBar from "@/components/ProfileBar";
 import { RealBadge } from "@/components/RealToggle";
 import { usePersistentState } from "@/lib/persist";
@@ -119,6 +120,7 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState<number | null>(null);
+  const [exporting, setExporting] = useState(false);
 
   // Simulation history (persisted in the browser) + compare selection.
   const [history, setHistory] = useState<HistoryEntry[]>([]);
@@ -219,6 +221,26 @@ export default function Page() {
       tracker.done();
     }
   }, [model, gbm, ret, progress]);
+
+  const doExport = useCallback(async () => {
+    setExporting(true);
+    setError(null);
+    try {
+      const inputs =
+        model === "gbm"
+          ? {
+              ...gbm,
+              dist: { kind: gbm.distKind, nu: gbm.nu },
+              ...(gbm.distKind === "t" ? { stepsPerYear: 1 } : {}),
+            }
+          : ret;
+      await exportToExcel({ kind: "forecast", model, inputs });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export failed");
+    } finally {
+      setExporting(false);
+    }
+  }, [model, gbm, ret]);
 
   // Load saved history on first mount.
   useEffect(() => {
@@ -514,6 +536,15 @@ export default function Page() {
             className="mt-6 w-full rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-ink transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? "Simulating…" : "Run simulation"}
+          </button>
+
+          <button
+            onClick={doExport}
+            disabled={exporting}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-panel2 px-4 py-2 text-sm font-medium text-slate-200 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            {exporting ? "Building workbook…" : "Export to Excel"}
           </button>
 
           <div className="mt-3 flex items-center justify-between text-[11px] text-muted">
