@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import Field from "@/components/Field";
 import { usePersistentState } from "@/lib/persist";
+import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import {
   gbmReverseStress,
@@ -59,6 +60,15 @@ export default function ReverseStress() {
   const [annualWithdrawal, setAnnualWithdrawal] = usePersistentState("reverse.annualWithdrawal", 60_000);
   const [inflation, setInflation] = usePersistentState("reverse.inflation", 0.025);
   const [meanReturn, setMeanReturn] = usePersistentState("reverse.meanReturn", 0.06);
+
+  useApplyAllHandler(
+    useCallback((key, value) => {
+      if (key === "beginningValue") { setBeginningValue(value); setStartingBalance(value); }
+      else if (key === "mu") { setMu(value); setMeanReturn(value); }
+      else if (key === "sigma") setSigma(value);
+      else if (key === "years") setYears(value);
+    }, [setBeginningValue, setStartingBalance, setMu, setMeanReturn, setSigma, setYears])
+  );
 
   const gbm = useMemo(
     () => gbmReverseStress({ beginningValue, years, mu, sigma, lossFraction }),
@@ -123,6 +133,7 @@ export default function ReverseStress() {
               max={5_000_000}
               step={1000}
               display={formatCurrency(beginningValue)}
+              sharedKey="beginningValue"
             />
             <Field
               label="Time horizon"
@@ -132,6 +143,7 @@ export default function ReverseStress() {
               max={40}
               step={1}
               display={`${years} yr`}
+              sharedKey="years"
             />
             <Field
               label="Assumed return (μ)"
@@ -141,6 +153,7 @@ export default function ReverseStress() {
               max={0.2}
               step={0.005}
               display={formatPercent(mu)}
+              sharedKey="mu"
             />
             <Field
               label="Assumed volatility (σ)"
@@ -150,6 +163,7 @@ export default function ReverseStress() {
               max={0.6}
               step={0.005}
               display={formatPercent(sigma)}
+              sharedKey="sigma"
             />
             <div className="rounded-lg border border-bad/30 bg-bad/5 p-3">
               <Field
@@ -166,13 +180,13 @@ export default function ReverseStress() {
           </div>
         ) : (
           <div className="space-y-5">
-            <Field label="Starting balance" value={startingBalance} onChange={setStartingBalance} min={0} max={2_000_000} step={5000} display={formatCurrency(startingBalance)} />
+            <Field label="Starting balance" value={startingBalance} onChange={setStartingBalance} min={0} max={2_000_000} step={5000} display={formatCurrency(startingBalance)} sharedKey="beginningValue" />
             <Field label="Annual contribution" value={annualContribution} onChange={setAnnualContribution} min={0} max={100_000} step={1000} display={formatCurrency(annualContribution)} />
             <Field label="Years until retirement" value={yearsToRetire} onChange={setYearsToRetire} min={0} max={50} step={1} display={`${yearsToRetire} yr`} />
             <Field label="Years in retirement" value={retirementYears} onChange={setRetirementYears} min={1} max={50} step={1} display={`${retirementYears} yr`} />
             <Field label="Annual withdrawal (yr 1)" value={annualWithdrawal} onChange={setAnnualWithdrawal} min={0} max={300_000} step={2500} display={formatCurrency(annualWithdrawal)} />
             <Field label="Inflation" value={inflation} onChange={setInflation} min={0} max={0.1} step={0.0025} display={formatPercent(inflation)} />
-            <Field label="Assumed return" value={meanReturn} onChange={setMeanReturn} min={-0.02} max={0.15} step={0.005} display={formatPercent(meanReturn)} />
+            <Field label="Assumed return" value={meanReturn} onChange={setMeanReturn} min={-0.02} max={0.15} step={0.005} display={formatPercent(meanReturn)} sharedKey="mu" />
           </div>
         )}
 

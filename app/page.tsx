@@ -19,6 +19,7 @@ import ProfileBar from "@/components/ProfileBar";
 import RealToggle, { RealBadge } from "@/components/RealToggle";
 import { usePersistentState } from "@/lib/persist";
 import { useReal } from "@/lib/realContext";
+import { useApplyAllHandler } from "@/lib/broadcast";
 import {
   type HistoryEntry,
   loadHistory,
@@ -97,6 +98,27 @@ export default function Page() {
   const [selected, setSelected] = useState<string[]>([]);
   const [comparing, setComparing] = useState(false);
   const { adjust } = useReal();
+
+  // Receive "apply to all tabs" broadcasts and map them onto both models.
+  useApplyAllHandler(
+    useCallback((key, value) => {
+      setGbm((p) => ({
+        ...p,
+        ...(key === "beginningValue" ? { beginningValue: value } : {}),
+        ...(key === "mu" ? { mu: value } : {}),
+        ...(key === "sigma" ? { sigma: value } : {}),
+        ...(key === "years" ? { years: value } : {}),
+        ...(key === "nSims" ? { nSims: value } : {}),
+      }));
+      setRet((p) => ({
+        ...p,
+        ...(key === "beginningValue" ? { startingBalance: value } : {}),
+        ...(key === "mu" ? { meanReturn: value } : {}),
+        ...(key === "sigma" ? { stdReturn: value } : {}),
+        ...(key === "nSims" ? { nSims: value } : {}),
+      }));
+    }, [setGbm, setRet])
+  );
 
   const toggleSelect = useCallback((id: string) => {
     setSelected((prev) =>
@@ -270,6 +292,7 @@ export default function Page() {
                 max={5_000_000}
                 step={1000}
                 display={formatCurrency(gbm.beginningValue)}
+                sharedKey="beginningValue"
               />
               <Field
                 label="Expected annual return (μ)"
@@ -279,6 +302,7 @@ export default function Page() {
                 max={0.2}
                 step={0.005}
                 display={formatPercent(gbm.mu)}
+                sharedKey="mu"
               />
               <Field
                 label="Volatility (σ)"
@@ -289,6 +313,7 @@ export default function Page() {
                 step={0.005}
                 display={formatPercent(gbm.sigma)}
                 hint="Annualized standard deviation of returns"
+                sharedKey="sigma"
               />
               <Field
                 label="Time horizon"
@@ -298,6 +323,7 @@ export default function Page() {
                 max={40}
                 step={1}
                 display={`${gbm.years} yr`}
+                sharedKey="years"
               />
               <Field
                 label="Simulations"
@@ -307,6 +333,7 @@ export default function Page() {
                 max={50_000}
                 step={1000}
                 display={gbm.nSims.toLocaleString()}
+                sharedKey="nSims"
               />
 
               {/* Return distribution: Normal vs fat-tailed Student-t */}
@@ -361,6 +388,7 @@ export default function Page() {
                 max={2_000_000}
                 step={5000}
                 display={formatCurrency(ret.startingBalance)}
+                sharedKey="beginningValue"
               />
               <Field
                 label="Annual contribution"
@@ -407,6 +435,7 @@ export default function Page() {
                 max={0.15}
                 step={0.005}
                 display={formatPercent(ret.meanReturn)}
+                sharedKey="mu"
               />
               <Field
                 label="Return volatility"
@@ -416,6 +445,7 @@ export default function Page() {
                 max={0.4}
                 step={0.005}
                 display={formatPercent(ret.stdReturn)}
+                sharedKey="sigma"
               />
               <Field
                 label="Inflation"
@@ -434,6 +464,7 @@ export default function Page() {
                 max={50_000}
                 step={1000}
                 display={ret.nSims.toLocaleString()}
+                sharedKey="nSims"
               />
             </div>
           )}
