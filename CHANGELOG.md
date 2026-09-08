@@ -7,6 +7,20 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.27.0] - 2026-09-08
+
+### Added
+- **Longevity & mortality view** — replaces a fixed retirement horizon with a
+  stochastic lifespan drawn from a Gompertz mortality curve (tunable by age, sex,
+  and a health/longevity adjustment). For **couples** it models **joint life** —
+  the plan lasting until the second death — with an adjustable survivor-spending
+  drop after the first death. Surfaces longevity tail-risk (probability of
+  reaching 85 / 90 / 95 / 100, individually and either-survivor), the
+  distribution of how many years the plan must last, and the **chance of
+  outliving your money** from a real decumulation over the sampled lifespans.
+  Records to run history and is included in export / import. The mortality curve
+  is an educational approximation, not a specific actuarial table.
+
 ## [1.26.0] - 2026-09-08
 
 ### Added
@@ -384,6 +398,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.27.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.27.0
 [1.26.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.26.0
 [1.25.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.25.0
 [1.24.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.24.0
