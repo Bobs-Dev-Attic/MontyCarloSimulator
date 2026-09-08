@@ -17,6 +17,7 @@ import RiskGlidePath from "@/components/RiskGlidePath";
 import StressCompare from "@/components/StressCompare";
 import PreferencesPage from "@/components/PreferencesPage";
 import NavMenu, { type NavItem } from "@/components/NavMenu";
+import ViewDropdown from "@/components/ViewDropdown";
 import ProfileBar from "@/components/ProfileBar";
 import RealToggle, { RealBadge } from "@/components/RealToggle";
 import { usePersistentState } from "@/lib/persist";
@@ -96,7 +97,6 @@ const NAV_ITEMS: NavItem[] = [
   { id: "stress", label: "Stress compare", hint: "All scenarios side by side" },
   { id: "prefs", label: "Preferences", hint: "Themes, ranges, import/export" },
 ];
-const NAV_LABEL: Record<string, string> = Object.fromEntries(NAV_ITEMS.map((i) => [i.id, i.label]));
 
 export default function Page() {
   const [tab, setTab] = usePersistentState<Tab>("ui.tab", "gbm");
@@ -215,6 +215,13 @@ export default function Page() {
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <header className="mb-6">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <NavMenu
+            open={menuOpen}
+            onOpenChange={setMenuOpen}
+            items={NAV_ITEMS}
+            active={tab}
+            onSelect={selectTab}
+          />
           <h1 className="text-2xl font-bold tracking-tight text-white">
             Monty Carlo Simulator
           </h1>
@@ -245,16 +252,9 @@ export default function Page() {
         </div>
       </header>
 
-      {/* Nav: hamburger + flyout drawer */}
+      {/* Current-view dropdown selector */}
       <div className="mb-6">
-        <NavMenu
-          open={menuOpen}
-          onOpenChange={setMenuOpen}
-          items={NAV_ITEMS}
-          active={tab}
-          onSelect={selectTab}
-          currentLabel={NAV_LABEL[tab] ?? "Menu"}
-        />
+        <ViewDropdown items={NAV_ITEMS} active={tab} onSelect={selectTab} />
       </div>
 
       {tab === "prefs" ? (
