@@ -21,6 +21,7 @@ import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
+import { useChartColors } from "@/lib/chartColors";
 import type { StressCompareResponse, StressScenarioResult } from "@/lib/run";
 
 const PALETTE = ["#34d399", "#f59e0b", "#f87171", "#38bdf8", "#a78bfa", "#fb923c", "#e879f9"];
@@ -37,6 +38,7 @@ export default function StressCompare() {
   const [error, setError] = useState<string | null>(null);
 
   const { real, inflation } = useReal();
+  const c = useChartColors();
 
   useApplyAllHandler(
     useCallback((key, value) => {
@@ -205,12 +207,12 @@ export default function StressCompare() {
               <div className="h-[280px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart layout="vertical" data={dropRows} margin={{ top: 8, right: 24, bottom: 4, left: 8 }}>
-                    <CartesianGrid stroke="#1e2a44" strokeDasharray="3 3" horizontal={false} />
-                    <XAxis type="number" stroke="#8ea1c0" tick={{ fontSize: 11 }} tickFormatter={(v: number) => `−${Math.round(v * 100)}%`} />
-                    <YAxis type="category" dataKey="name" stroke="#8ea1c0" tick={{ fontSize: 11 }} width={150} />
+                    <CartesianGrid stroke={c.grid} strokeDasharray="3 3" horizontal={false} />
+                    <XAxis type="number" stroke={c.axis} tick={{ fontSize: 11 }} tickFormatter={(v: number) => `−${Math.round(v * 100)}%`} />
+                    <YAxis type="category" dataKey="name" stroke={c.axis} tick={{ fontSize: 11 }} width={150} />
                     <Tooltip
-                      cursor={{ fill: "#ffffff08" }}
-                      contentStyle={{ background: "#0e1626", border: "1px solid #1e2a44", borderRadius: 8, fontSize: 12 }}
+                      cursor={{ fill: c.muted, fillOpacity: 0.08 }}
+                      contentStyle={{ background: c.tooltipBg, border: `1px solid ${c.tooltipBorder}`, borderRadius: 8, fontSize: 12 }}
                       formatter={(v: number) => [`−${formatPercent(v)}`, "Median drop"]}
                     />
                     <Bar dataKey="drop" isAnimationActive={false} radius={2}>
@@ -231,11 +233,11 @@ export default function StressCompare() {
               <div className="h-[320px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trajRows} margin={{ top: 8, right: 16, bottom: 4, left: 4 }}>
-                    <CartesianGrid stroke="#1e2a44" strokeDasharray="3 3" />
-                    <XAxis dataKey="x" stroke="#8ea1c0" tick={{ fontSize: 11 }} tickFormatter={(v: number) => `${Math.round(v)}`} label={{ value: "Years", position: "insideBottom", offset: -2, fill: "#8ea1c0", fontSize: 11 }} />
-                    <YAxis stroke="#8ea1c0" tick={{ fontSize: 11 }} width={64} tickFormatter={(v: number) => formatCompact(v)} />
+                    <CartesianGrid stroke={c.grid} strokeDasharray="3 3" />
+                    <XAxis dataKey="x" stroke={c.axis} tick={{ fontSize: 11 }} tickFormatter={(v: number) => `${Math.round(v)}`} label={{ value: "Years", position: "insideBottom", offset: -2, fill: c.axis, fontSize: 11 }} />
+                    <YAxis stroke={c.axis} tick={{ fontSize: 11 }} width={64} tickFormatter={(v: number) => formatCompact(v)} />
                     <Tooltip
-                      contentStyle={{ background: "#0e1626", border: "1px solid #1e2a44", borderRadius: 8, fontSize: 12 }}
+                      contentStyle={{ background: c.tooltipBg, border: `1px solid ${c.tooltipBorder}`, borderRadius: 8, fontSize: 12 }}
                       labelFormatter={(v: number) => `Year ${Math.round(v)}`}
                       formatter={(value: number, key: string) => {
                         const s = seriesList.find((x) => x.id === key);

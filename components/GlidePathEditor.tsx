@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import type { Waypoint } from "@/lib/glidepath";
+import { useChartColors } from "@/lib/chartColors";
 
 interface Props {
   waypoints: Waypoint[];
@@ -22,6 +23,7 @@ export default function GlidePathEditor({ waypoints, horizon, onChange }: Props)
   const svgRef = useRef<SVGSVGElement>(null);
   const [drag, setDrag] = useState<number | null>(null);
   const [sel, setSel] = useState<number | null>(null);
+  const c = useChartColors();
 
   const sorted = [...waypoints]
     .map((w, i) => ({ ...w, i }))
@@ -89,19 +91,19 @@ export default function GlidePathEditor({ waypoints, horizon, onChange }: Props)
         {/* horizontal gridlines: 0/25/50/75/100% */}
         {[0, 0.25, 0.5, 0.75, 1].map((a) => (
           <g key={a}>
-            <line x1={L} y1={yOf(a)} x2={W - R} y2={yOf(a)} stroke="#1e2a44" strokeDasharray="3 3" />
-            <text x={L - 6} y={yOf(a) + 3} textAnchor="end" fontSize="10" fill="#8ea1c0">
+            <line x1={L} y1={yOf(a)} x2={W - R} y2={yOf(a)} stroke={c.grid} strokeDasharray="3 3" />
+            <text x={L - 6} y={yOf(a) + 3} textAnchor="end" fontSize="10" fill={c.axis}>
               {Math.round(a * 100)}%
             </text>
           </g>
         ))}
         {/* year ticks */}
         {yearTicks(horizon).map((yr) => (
-          <text key={yr} x={xOf(yr)} y={H - 10} textAnchor="middle" fontSize="10" fill="#8ea1c0">
+          <text key={yr} x={xOf(yr)} y={H - 10} textAnchor="middle" fontSize="10" fill={c.axis}>
             {yr}
           </text>
         ))}
-        <text x={(L + W - R) / 2} y={H - 0} textAnchor="middle" fontSize="10" fill="#8ea1c0">
+        <text x={(L + W - R) / 2} y={H - 0} textAnchor="middle" fontSize="10" fill={c.axis}>
           Years
         </text>
 

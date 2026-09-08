@@ -22,6 +22,7 @@ import { useReal } from "@/lib/realContext";
 import { usePersistentState } from "@/lib/persist";
 import { useApplyAllHandler } from "@/lib/broadcast";
 import { formatCurrency, formatPercent } from "@/lib/format";
+import { useChartColors } from "@/lib/chartColors";
 import type { SimulationResponse } from "@/lib/types";
 import type { Waypoint } from "@/lib/glidepath";
 
@@ -56,6 +57,7 @@ export default function RiskGlidePath() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { adjust } = useReal();
+  const c = useChartColors();
   const view = data ? adjust(data) : null;
 
   useApplyAllHandler(
@@ -165,13 +167,13 @@ export default function RiskGlidePath() {
             <div className="h-[240px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={curve} margin={{ top: 8, right: 44, bottom: 4, left: 4 }}>
-                  <CartesianGrid stroke="#1e2a44" strokeDasharray="3 3" />
-                  <XAxis dataKey="year" stroke="#8ea1c0" tick={{ fontSize: 11 }} label={{ value: "Years", position: "insideBottom", offset: -2, fill: "#8ea1c0", fontSize: 11 }} />
+                  <CartesianGrid stroke={c.grid} strokeDasharray="3 3" />
+                  <XAxis dataKey="year" stroke={c.axis} tick={{ fontSize: 11 }} label={{ value: "Years", position: "insideBottom", offset: -2, fill: c.axis, fontSize: 11 }} />
                   <YAxis yAxisId="a" stroke="#f59e0b" tick={{ fontSize: 11 }} width={44} domain={[0, 1]} tickFormatter={(v: number) => `${Math.round(v * 100)}%`} />
                   <YAxis yAxisId="v" orientation="right" stroke="#38bdf8" tick={{ fontSize: 11 }} width={44} tickFormatter={(v: number) => `${Math.round(v * 100)}%`} />
                   <Tooltip
-                    contentStyle={{ background: "#0e1626", border: "1px solid #1e2a44", borderRadius: 8, fontSize: 12 }}
-                    labelStyle={{ color: "#8ea1c0" }}
+                    contentStyle={{ background: c.tooltipBg, border: `1px solid ${c.tooltipBorder}`, borderRadius: 8, fontSize: 12 }}
+                    labelStyle={{ color: c.axis }}
                     formatter={(v: number, n: string) => [formatPercent(v), n === "alloc" ? "Risky allocation" : "Portfolio volatility"]}
                     labelFormatter={(y: number) => `Year ${y}`}
                   />

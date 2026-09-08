@@ -20,6 +20,7 @@ import NavMenu, { type NavItem } from "@/components/NavMenu";
 import ViewDropdown from "@/components/ViewDropdown";
 import ProfileBar from "@/components/ProfileBar";
 import RealToggle, { RealBadge } from "@/components/RealToggle";
+import ThemeToggle from "@/components/ThemeToggle";
 import { usePersistentState } from "@/lib/persist";
 import { useReal } from "@/lib/realContext";
 import { useApplyAllHandler } from "@/lib/broadcast";
@@ -243,7 +244,10 @@ export default function Page() {
             run on the edge.
           </p>
           <div className="flex flex-col items-end gap-2">
-            <RealToggle />
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <RealToggle />
+            </div>
             <ProfileBar />
           </div>
         </div>

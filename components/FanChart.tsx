@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import type { SimulationResponse } from "@/lib/types";
 import { formatCompact } from "@/lib/format";
+import { useChartColors } from "@/lib/chartColors";
 
 interface Props {
   data: SimulationResponse;
@@ -20,6 +21,7 @@ interface Props {
 
 export default function FanChart({ data }: Props) {
   const { bands, samplePaths, xAxis } = data;
+  const c = useChartColors();
 
   // One row per step; ranges are encoded as [low, high] tuples for Area.
   const rows = bands.steps.map((x, i) => {
@@ -40,34 +42,34 @@ export default function FanChart({ data }: Props) {
     <div className="h-[360px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={rows} margin={{ top: 8, right: 12, bottom: 4, left: 4 }}>
-          <CartesianGrid stroke="#1e2a44" strokeDasharray="3 3" />
+          <CartesianGrid stroke={c.grid} strokeDasharray="3 3" />
           <XAxis
             dataKey="x"
-            stroke="#8ea1c0"
+            stroke={c.axis}
             tick={{ fontSize: 11 }}
             tickFormatter={(v: number) => `${v % 1 === 0 ? v : v.toFixed(1)}`}
             label={{
               value: xAxis.label,
               position: "insideBottom",
               offset: -2,
-              fill: "#8ea1c0",
+              fill: c.axis,
               fontSize: 11,
             }}
           />
           <YAxis
-            stroke="#8ea1c0"
+            stroke={c.axis}
             tick={{ fontSize: 11 }}
             width={64}
             tickFormatter={(v: number) => formatCompact(v)}
           />
           <Tooltip
             contentStyle={{
-              background: "#0e1626",
-              border: "1px solid #1e2a44",
+              background: c.tooltipBg,
+              border: `1px solid ${c.tooltipBorder}`,
               borderRadius: 8,
               fontSize: 12,
             }}
-            labelStyle={{ color: "#8ea1c0" }}
+            labelStyle={{ color: c.axis }}
             formatter={(value: number | number[], name: string) => {
               if (name.startsWith("s")) return [null, null] as never;
               if (Array.isArray(value)) {
@@ -85,7 +87,7 @@ export default function FanChart({ data }: Props) {
             payload={[
               { value: "p5–p95", type: "rect", color: "#f59e0b", id: "b90" },
               { value: "p25–p75", type: "rect", color: "#38bdf8", id: "b50" },
-              { value: "Median", type: "line", color: "#e6edf7", id: "med" },
+              { value: "Median", type: "line", color: c.text, id: "med" },
             ]}
           />
 
@@ -124,7 +126,7 @@ export default function FanChart({ data }: Props) {
           <Line
             type="monotone"
             dataKey="p50"
-            stroke="#e6edf7"
+            stroke={c.text}
             strokeWidth={2}
             dot={false}
             isAnimationActive={false}

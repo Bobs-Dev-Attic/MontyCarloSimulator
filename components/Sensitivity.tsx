@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import Field from "@/components/Field";
 import InfoTip from "@/components/InfoTip";
+import { useChartColors } from "@/lib/chartColors";
 import { formatCurrency, formatCompact, formatPercent } from "@/lib/format";
 import type { TornadoResult, Metric, Fmt } from "@/lib/sensitivity";
 
@@ -58,6 +59,7 @@ export default function Sensitivity() {
   const [data, setData] = useState<TornadoResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const c = useChartColors();
 
   useApplyAllHandler(
     useCallback((key, value) => {
@@ -219,10 +221,10 @@ export default function Sensitivity() {
               <div className="h-[340px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart layout="vertical" data={chartRows} margin={{ top: 8, right: 24, bottom: 4, left: 8 }}>
-                    <CartesianGrid stroke="#1e2a44" strokeDasharray="3 3" horizontal={false} />
+                    <CartesianGrid stroke={c.grid} strokeDasharray="3 3" horizontal={false} />
                     <XAxis
                       type="number"
-                      stroke="#8ea1c0"
+                      stroke={c.axis}
                       tick={{ fontSize: 11 }}
                       domain={["dataMin", "dataMax"]}
                       tickFormatter={(v: number) => (data.metricFormat === "percent" ? formatPercent(v, 0) : formatCompact(v))}
@@ -230,14 +232,14 @@ export default function Sensitivity() {
                     <YAxis
                       type="category"
                       dataKey="label"
-                      stroke="#8ea1c0"
+                      stroke={c.axis}
                       tick={{ fontSize: 11 }}
                       width={130}
                     />
                     <Tooltip
-                      cursor={{ fill: "#ffffff08" }}
-                      contentStyle={{ background: "#0e1626", border: "1px solid #1e2a44", borderRadius: 8, fontSize: 12 }}
-                      labelStyle={{ color: "#8ea1c0" }}
+                      cursor={{ fill: c.muted, fillOpacity: 0.08 }}
+                      contentStyle={{ background: c.tooltipBg, border: `1px solid ${c.tooltipBorder}`, borderRadius: 8, fontSize: 12 }}
+                      labelStyle={{ color: c.axis }}
                       formatter={(_v, _n, item: { payload?: { row?: import("@/lib/sensitivity").TornadoRow } }) => {
                         const r = item?.payload?.row;
                         if (!r) return ["", ""] as [string, string];
@@ -247,7 +249,7 @@ export default function Sensitivity() {
                         ] as [string, string];
                       }}
                     />
-                    <ReferenceLine x={data.baseMetric} stroke="#e6edf7" strokeWidth={1.5} />
+                    <ReferenceLine x={data.baseMetric} stroke={c.text} strokeWidth={1.5} />
                     <Bar dataKey="range" isAnimationActive={false} radius={2}>
                       {chartRows.map((r, i) => (
                         <Cell key={i} fill={r.up ? "#38bdf8" : "#f59e0b"} />

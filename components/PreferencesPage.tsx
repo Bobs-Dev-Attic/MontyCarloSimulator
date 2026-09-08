@@ -68,25 +68,44 @@ export default function PreferencesPage() {
     <div className="mx-auto max-w-3xl space-y-6">
       {/* Color theme */}
       <section className="rounded-2xl border border-line bg-panel p-5">
-        <h2 className="mb-1 text-sm font-semibold text-white">Color theme</h2>
-        <p className="mb-4 text-xs text-muted">Applies instantly across the app and is saved with your profile.</p>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {THEMES.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => prefs.setTheme(t.id)}
-              className={`flex items-center gap-3 rounded-xl border p-3 text-left transition ${
-                prefs.prefs.theme === t.id ? "border-accent bg-accent/10" : "border-line hover:bg-panel2"
-              }`}
-            >
-              <span className="flex -space-x-1">
-                <span className="h-5 w-5 rounded-full border border-ink" style={{ background: t.swatch[0] }} />
-                <span className="h-5 w-5 rounded-full border border-ink" style={{ background: t.swatch[1] }} />
-              </span>
-              <span className="text-sm text-slate-200">{t.name}</span>
-            </button>
-          ))}
+        <div className="mb-1 flex items-center justify-between gap-3">
+          <h2 className="text-sm font-semibold text-white">Color theme</h2>
+          <button
+            onClick={prefs.toggleMode}
+            className="rounded-lg border border-line px-2.5 py-1 text-[11px] text-slate-200 transition hover:bg-panel2"
+            title="Toggle light / dark"
+          >
+            {prefs.mode === "dark" ? "Switch to light" : "Switch to dark"}
+          </button>
         </div>
+        <p className="mb-4 text-xs text-muted">
+          Applies instantly across the app and is saved with your profile. Use the
+          sun / moon toggle in the header for a quick light / dark switch.
+        </p>
+        {(["dark", "light"] as const).map((m) => (
+          <div key={m} className="mb-4 last:mb-0">
+            <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
+              {m === "dark" ? "Dark themes" : "Light themes"}
+            </h3>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {THEMES.filter((t) => t.mode === m).map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => prefs.setTheme(t.id)}
+                  className={`flex items-center gap-3 rounded-xl border p-3 text-left transition ${
+                    prefs.prefs.theme === t.id ? "border-accent bg-accent/10" : "border-line hover:bg-panel2"
+                  }`}
+                >
+                  <span className="flex -space-x-1">
+                    <span className="h-5 w-5 rounded-full border border-ink" style={{ background: t.swatch[0] }} />
+                    <span className="h-5 w-5 rounded-full border border-ink" style={{ background: t.swatch[1] }} />
+                  </span>
+                  <span className="text-sm text-slate-200">{t.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
 
       {/* Parameter ranges & defaults */}
