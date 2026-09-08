@@ -7,6 +7,17 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2026-09-08
+
+### Added
+- **Stress-test comparison across all scenarios** — new "Stress compare" tab.
+  Runs the baseline plus every macro scenario (recession, financial crisis,
+  pandemic, geopolitical conflict, oil shock / stagflation, rate-hike) against
+  the same portfolio on a shared random seed, then ranks them worst → best in a
+  table (median, Δ vs baseline, P5, prob-of-loss, 95% VaR, paths hit), a
+  median-impact bar chart, and an overlaid median-trajectory chart. Respects the
+  real (today's $) toggle.
+
 ## [1.9.0] - 2026-09-08
 
 ### Added
@@ -145,6 +156,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.10.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.10.0
 [1.9.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.9.0
 [1.8.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.8.0
 [1.7.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.7.0
