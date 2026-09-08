@@ -25,6 +25,11 @@ import {
   type Sex,
 } from "./mortality";
 import {
+  simulateCareCosts,
+  type CareParams,
+  type CareResult,
+} from "./careCosts";
+import {
   percentileBands,
   terminalHistogram,
   summaryStats,
@@ -376,6 +381,28 @@ export function runLongevity(req: Partial<LongevityParams>): LongevityResult {
     realReturn: req.realReturn ?? 0.035,
     vol: req.vol ?? 0.1,
     survivorSpend: req.survivorSpend ?? 0.75,
+    nSims: Math.min(Math.max(1000, Math.round(req.nSims ?? 10_000)), 50_000),
+    seed: req.seed ?? null,
+  });
+}
+
+export function runCareCosts(req: Partial<CareParams>): CareResult {
+  return simulateCareCosts({
+    startAge: Math.round(req.startAge ?? 65),
+    startingBalance: req.startingBalance ?? 1_000_000,
+    baseSpend: req.baseSpend ?? 45_000,
+    realReturn: req.realReturn ?? 0.035,
+    vol: req.vol ?? 0.1,
+    actToAssisted: req.actToAssisted ?? 0.03,
+    actToSkilled: req.actToSkilled ?? 0.005,
+    actToDead: req.actToDead ?? 0.012,
+    asstToSkilled: req.asstToSkilled ?? 0.1,
+    asstToDead: req.asstToDead ?? 0.08,
+    asstToActive: req.asstToActive ?? 0.05,
+    skilledToDead: req.skilledToDead ?? 0.25,
+    ageRamp: req.ageRamp ?? 0.05,
+    assistedCost: req.assistedCost ?? 60_000,
+    skilledCost: req.skilledCost ?? 110_000,
     nSims: Math.min(Math.max(1000, Math.round(req.nSims ?? 10_000)), 50_000),
     seed: req.seed ?? null,
   });

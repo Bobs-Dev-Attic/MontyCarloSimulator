@@ -371,6 +371,24 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     href: "https://www.investopedia.com/terms/l/longevityrisk.asp",
     source: "Investopedia",
   },
+  careMarkov: {
+    title: "Health-state model (Markov chain)",
+    body: "Each year you occupy one of four states — Active, Assisted living, Skilled nursing, or Deceased — and move between them with annual probabilities. It captures the sudden, expensive late-life step-ups a flat spending assumption misses.",
+    href: "https://en.wikipedia.org/wiki/Markov_chain",
+    source: "Wikipedia",
+  },
+  careCost: {
+    title: "Long-term care costs",
+    body: "The added annual cost while in a care state. US medians are roughly $50–65k/yr for assisted living and $100k+/yr for skilled nursing — a major, lumpy late-life risk usually not covered by Medicare.",
+    href: "https://www.investopedia.com/how-to-plan-for-long-term-care-costs-5munotes",
+    source: "Investopedia",
+  },
+  careTransition: {
+    title: "Transition probabilities",
+    body: "The annual chance of moving between health states (e.g. Active → Assisted living, Assisted → Skilled nursing) and of dying. Here these rise with age via an acceleration factor after 70.",
+    href: "https://en.wikipedia.org/wiki/Markov_chain",
+    source: "Wikipedia",
+  },
 };
 
 export type GlossaryKey = keyof typeof GLOSSARY;

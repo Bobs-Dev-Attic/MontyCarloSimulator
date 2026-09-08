@@ -18,6 +18,7 @@ import StressCompare from "@/components/StressCompare";
 import DynamicWithdrawal from "@/components/DynamicWithdrawal";
 import SequenceRisk from "@/components/SequenceRisk";
 import Longevity from "@/components/Longevity";
+import CareCosts from "@/components/CareCosts";
 import PreferencesPage from "@/components/PreferencesPage";
 import NavMenu, { type NavItem } from "@/components/NavMenu";
 import ProfileBar from "@/components/ProfileBar";
@@ -88,7 +89,7 @@ const DEFAULT_RETIREMENT: RetirementState = {
   seed: 2026,
 };
 
-type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset" | "glide" | "stress" | "dynwithdraw" | "seqrisk" | "longevity" | "prefs";
+type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset" | "glide" | "stress" | "dynwithdraw" | "seqrisk" | "longevity" | "care" | "prefs";
 
 const NAV_ITEMS: NavItem[] = [
   { id: "gbm", label: "Portfolio forecast (GBM)", hint: "Single-asset growth" },
@@ -96,6 +97,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "dynwithdraw", label: "Dynamic withdrawals", hint: "Guardrails vs. fixed spending" },
   { id: "seqrisk", label: "Sequence risk", hint: "Cash buffer / bond tent sizing" },
   { id: "longevity", label: "Longevity", hint: "Mortality & joint-life tail risk" },
+  { id: "care", label: "Long-term care", hint: "Health transitions & care costs" },
   { id: "reverse", label: "Reverse stress test", hint: "Solve for the failure scenario" },
   { id: "macro", label: "Macro shock", hint: "Geopolitical / market crashes" },
   { id: "sensitivity", label: "Sensitivity", hint: "Tornado chart" },
@@ -300,6 +302,8 @@ export default function Page() {
         <SequenceRisk />
       ) : tab === "longevity" ? (
         <Longevity />
+      ) : tab === "care" ? (
+        <CareCosts />
       ) : (
       <>
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
