@@ -15,6 +15,8 @@ import Sensitivity from "@/components/Sensitivity";
 import MultiAsset from "@/components/MultiAsset";
 import RiskGlidePath from "@/components/RiskGlidePath";
 import StressCompare from "@/components/StressCompare";
+import PreferencesPage from "@/components/PreferencesPage";
+import NavMenu, { type NavItem } from "@/components/NavMenu";
 import ProfileBar from "@/components/ProfileBar";
 import RealToggle, { RealBadge } from "@/components/RealToggle";
 import { usePersistentState } from "@/lib/persist";
@@ -81,7 +83,20 @@ const DEFAULT_RETIREMENT: RetirementState = {
   seed: 2026,
 };
 
-type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset" | "glide" | "stress";
+type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset" | "glide" | "stress" | "prefs";
+
+const NAV_ITEMS: NavItem[] = [
+  { id: "gbm", label: "Portfolio forecast (GBM)", hint: "Single-asset growth" },
+  { id: "retirement", label: "Retirement plan", hint: "Save, withdraw, success rate" },
+  { id: "reverse", label: "Reverse stress test", hint: "Solve for the failure scenario" },
+  { id: "macro", label: "Macro shock", hint: "Geopolitical / market crashes" },
+  { id: "sensitivity", label: "Sensitivity", hint: "Tornado chart" },
+  { id: "multiasset", label: "Multi-asset", hint: "Correlated portfolio" },
+  { id: "glide", label: "Risk glide path", hint: "Risk tolerance over time" },
+  { id: "stress", label: "Stress compare", hint: "All scenarios side by side" },
+  { id: "prefs", label: "Preferences", hint: "Themes, ranges, import/export" },
+];
+const NAV_LABEL: Record<string, string> = Object.fromEntries(NAV_ITEMS.map((i) => [i.id, i.label]));
 
 export default function Page() {
   const [tab, setTab] = usePersistentState<Tab>("ui.tab", "gbm");
@@ -97,7 +112,16 @@ export default function Page() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [comparing, setComparing] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { adjust } = useReal();
+
+  const selectTab = useCallback(
+    (id: string) => {
+      if (id === "gbm" || id === "retirement") setModel(id);
+      setTab(id as Tab);
+    },
+    [setModel, setTab]
+  );
 
   // Receive "apply to all tabs" broadcasts and map them onto both models.
   useApplyAllHandler(
@@ -221,47 +245,21 @@ export default function Page() {
         </div>
       </header>
 
-      {/* Model tabs */}
-      <div className="mb-6 inline-flex flex-wrap rounded-xl border border-line bg-panel p-1">
-        <TabButton
-          active={tab === "gbm"}
-          onClick={() => {
-            setTab("gbm");
-            setModel("gbm");
-          }}
-        >
-          Portfolio forecast (GBM)
-        </TabButton>
-        <TabButton
-          active={tab === "retirement"}
-          onClick={() => {
-            setTab("retirement");
-            setModel("retirement");
-          }}
-        >
-          Retirement plan
-        </TabButton>
-        <TabButton active={tab === "reverse"} onClick={() => setTab("reverse")}>
-          Reverse stress test
-        </TabButton>
-        <TabButton active={tab === "macro"} onClick={() => setTab("macro")}>
-          Macro shock
-        </TabButton>
-        <TabButton active={tab === "sensitivity"} onClick={() => setTab("sensitivity")}>
-          Sensitivity
-        </TabButton>
-        <TabButton active={tab === "multiasset"} onClick={() => setTab("multiasset")}>
-          Multi-asset
-        </TabButton>
-        <TabButton active={tab === "glide"} onClick={() => setTab("glide")}>
-          Risk glide path
-        </TabButton>
-        <TabButton active={tab === "stress"} onClick={() => setTab("stress")}>
-          Stress compare
-        </TabButton>
+      {/* Nav: hamburger + flyout drawer */}
+      <div className="mb-6">
+        <NavMenu
+          open={menuOpen}
+          onOpenChange={setMenuOpen}
+          items={NAV_ITEMS}
+          active={tab}
+          onSelect={selectTab}
+          currentLabel={NAV_LABEL[tab] ?? "Menu"}
+        />
       </div>
 
-      {tab === "reverse" ? (
+      {tab === "prefs" ? (
+        <PreferencesPage />
+      ) : tab === "reverse" ? (
         <ReverseStress />
       ) : tab === "macro" ? (
         <MacroShock />
@@ -607,29 +605,6 @@ export default function Page() {
         </p>
       </footer>
     </main>
-  );
-}
-
-function TabButton({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
-        active
-          ? "bg-accent text-ink"
-          : "text-muted hover:text-slate-200"
-      }`}
-    >
-      {children}
-    </button>
   );
 }
 

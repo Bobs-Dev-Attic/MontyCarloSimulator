@@ -2,14 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Theme tokens as space-separated RGB channels so Tailwind's /opacity
+   modifiers work (rgb(var(--x) / <alpha>)). Overridden at runtime by the
+   selected color theme in Preferences. */
 :root {
+  --ink: 11 18 32;
+  --panel: 17 26 46;
+  --panel2: 14 22 38;
+  --line: 30 42 68;
+  --accent: 245 158 11;
+  --accent2: 56 189 248;
+  --good: 52 211 153;
+  --bad: 248 113 113;
+  --muted: 142 161 192;
+  --text: 230 237 247;
   color-scheme: dark;
 }
 
 html,
 body {
-  background-color: #0b1220;
-  color: #e6edf7;
+  background-color: rgb(var(--ink));
+  color: rgb(var(--text));
 }
 
 body {
@@ -22,7 +35,7 @@ input[type="range"] {
   appearance: none;
   height: 4px;
   border-radius: 999px;
-  background: #1e2a44;
+  background: rgb(var(--line));
   outline: none;
 }
 input[type="range"]::-webkit-slider-thumb {
@@ -31,19 +44,19 @@ input[type="range"]::-webkit-slider-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #f59e0b;
+  background: rgb(var(--accent));
   cursor: pointer;
-  border: 2px solid #0b1220;
+  border: 2px solid rgb(var(--ink));
 }
 input[type="range"]::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #f59e0b;
+  background: rgb(var(--accent));
   cursor: pointer;
-  border: 2px solid #0b1220;
+  border: 2px solid rgb(var(--ink));
 }
 
 .recharts-cartesian-axis-tick-value {
-  fill: #8ea1c0;
+  fill: rgb(var(--muted));
 }

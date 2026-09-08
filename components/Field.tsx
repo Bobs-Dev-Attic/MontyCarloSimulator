@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useBroadcast, type SharedKey } from "@/lib/broadcast";
+import { usePreferences } from "@/lib/preferences";
 import InfoTip from "@/components/InfoTip";
 
 interface FieldProps {
@@ -33,7 +34,14 @@ export default function Field({
   info,
 }: FieldProps) {
   const bc = useBroadcast();
+  const prefs = usePreferences();
   const [flash, setFlash] = useState(false);
+
+  // A user-customized range (from Preferences) overrides the field's own.
+  const override = sharedKey ? prefs?.rangeFor(sharedKey) : null;
+  const effMin = override?.min ?? min;
+  const effMax = override?.max ?? max;
+  const effStep = override?.step ?? step;
 
   return (
     <div>
@@ -70,9 +78,9 @@ export default function Field({
       <input
         type="range"
         className="mt-2 w-full"
-        min={min}
-        max={max}
-        step={step}
+        min={effMin}
+        max={effMax}
+        step={effStep}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
       />

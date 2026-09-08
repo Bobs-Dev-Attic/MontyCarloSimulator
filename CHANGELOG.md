@@ -7,6 +7,25 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.0] - 2026-09-08
+
+### Added
+- **Menu + flyout navigation.** The tab row is replaced by a hamburger menu that
+  opens a slide-out drawer listing every view (and Preferences), with the active
+  view shown on the menu button.
+- **Preferences page** with:
+  - **Color themes** — six palettes (Amber, Ocean, Emerald, Violet, Rose, Slate)
+    applied live via CSS variables and saved with your profile.
+  - **Parameter ranges & defaults** — customize the slider min / max / step and
+    default value for shared inputs (starting amount, expected return,
+    volatility, horizon, simulations); ranges apply everywhere those inputs
+    appear, and "Apply my defaults to all tabs" pushes your defaults out.
+  - **Export / import** — download the full profile as JSON, import it back, or
+    reset all settings.
+
+### Changed
+- Color tokens are now CSS variables, enabling runtime theming.
+
 ## [1.13.0] - 2026-09-08
 
 ### Added
@@ -188,6 +207,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.14.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.14.0
 [1.13.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.13.0
 [1.12.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.12.0
 [1.11.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.11.0
