@@ -446,7 +446,7 @@ export default function Page() {
                 value={ret.startingBalance}
                 onChange={(v) => setRet({ ...ret, startingBalance: v })}
                 min={0}
-                max={2_000_000}
+                max={5_000_000}
                 step={5000}
                 display={formatCurrency(ret.startingBalance)}
                 sharedKey="beginningValue"
@@ -456,7 +456,7 @@ export default function Page() {
                 value={ret.annualContribution}
                 onChange={(v) => setRet({ ...ret, annualContribution: v })}
                 min={0}
-                max={100_000}
+                max={150_000}
                 step={1000}
                 display={formatCurrency(ret.annualContribution)}
               />

@@ -47,7 +47,7 @@ export default function TaxPlanner() {
   const [startAge, setStartAge] = usePersistentState("tax.startAge", 62);
   const [filing, setFiling] = usePersistentState<"single" | "mfj">("tax.filing", "mfj");
   const [years, setYears] = usePersistentState("tax.years", 30);
-  const [taxable, setTaxable] = usePersistentState("tax.taxable", 400_000);
+  const [taxable, setTaxable] = usePersistentState("tax.taxable", 0);
   const [taxableBasisPct, setTaxableBasisPct] = usePersistentState("tax.taxableBasisPct", 0.6);
   const [deferred, setDeferred] = usePersistentState("tax.deferred", 1_200_000);
   const [roth, setRoth] = usePersistentState("tax.roth", 150_000);
