@@ -186,11 +186,11 @@ export default function MacroShock() {
           Shock parameters
         </h3>
         <div className="space-y-4">
-          <Field label="Annual probability" value={annualProb} onChange={setAnnualProb} min={0} max={0.5} step={0.01} display={formatPercent(annualProb)} hint={`≈ ${(annualProb * years).toFixed(1)} expected over ${years}y`} />
-          <Field label="Crash severity" value={severityMean} onChange={setSeverityMean} min={0.02} max={0.8} step={0.01} display={formatPercent(severityMean)} hint="typical instantaneous drop" />
-          <Field label="Recovery turbulence (×vol)" value={volMultiplier} onChange={setVolMultiplier} min={1} max={3} step={0.1} display={`${volMultiplier.toFixed(1)}×`} />
-          <Field label="Recovery window" value={recoveryYears} onChange={setRecoveryYears} min={0} max={5} step={0.5} display={`${recoveryYears} yr`} />
-          <Field label="Persistent drift drag" value={driftDelta} onChange={setDriftDelta} min={-0.06} max={0} step={0.005} display={formatPercent(driftDelta)} hint="e.g. stagflation" />
+          <Field label="Annual probability" info="macroShock" value={annualProb} onChange={setAnnualProb} min={0} max={0.5} step={0.01} display={formatPercent(annualProb)} hint={`≈ ${(annualProb * years).toFixed(1)} expected over ${years}y`} />
+          <Field label="Crash severity" info="macroShock" value={severityMean} onChange={setSeverityMean} min={0.02} max={0.8} step={0.01} display={formatPercent(severityMean)} hint="typical instantaneous drop" />
+          <Field label="Recovery turbulence (×vol)" info="macroShock" value={volMultiplier} onChange={setVolMultiplier} min={1} max={3} step={0.1} display={`${volMultiplier.toFixed(1)}×`} />
+          <Field label="Recovery window" info="macroShock" value={recoveryYears} onChange={setRecoveryYears} min={0} max={5} step={0.5} display={`${recoveryYears} yr`} />
+          <Field label="Persistent drift drag" info="macroShock" value={driftDelta} onChange={setDriftDelta} min={-0.06} max={0} step={0.005} display={formatPercent(driftDelta)} hint="e.g. stagflation" />
         </div>
 
         <div className="my-5 h-px bg-line" />
@@ -199,11 +199,11 @@ export default function MacroShock() {
           Portfolio
         </h3>
         <div className="space-y-4">
-          <Field label="Beginning value" value={beginningValue} onChange={setBeginningValue} min={1000} max={5_000_000} step={1000} display={formatCurrency(beginningValue)} sharedKey="beginningValue" />
-          <Field label="Expected return (μ)" value={mu} onChange={setMu} min={-0.05} max={0.2} step={0.005} display={formatPercent(mu)} sharedKey="mu" />
-          <Field label="Base volatility (σ)" value={sigma} onChange={setSigma} min={0.01} max={0.6} step={0.005} display={formatPercent(sigma)} sharedKey="sigma" />
-          <Field label="Time horizon" value={years} onChange={setYears} min={1} max={40} step={1} display={`${years} yr`} sharedKey="years" />
-          <Field label="Simulations" value={nSims} onChange={setNSims} min={1000} max={50_000} step={1000} display={nSims.toLocaleString()} sharedKey="nSims" />
+          <Field label="Beginning value" info="beginningValue" value={beginningValue} onChange={setBeginningValue} min={1000} max={5_000_000} step={1000} display={formatCurrency(beginningValue)} sharedKey="beginningValue" />
+          <Field label="Expected return (μ)" info="mu" value={mu} onChange={setMu} min={-0.05} max={0.2} step={0.005} display={formatPercent(mu)} sharedKey="mu" />
+          <Field label="Base volatility (σ)" info="sigma" value={sigma} onChange={setSigma} min={0.01} max={0.6} step={0.005} display={formatPercent(sigma)} sharedKey="sigma" />
+          <Field label="Time horizon" info="years" value={years} onChange={setYears} min={1} max={40} step={1} display={`${years} yr`} sharedKey="years" />
+          <Field label="Simulations" info="nSims" value={nSims} onChange={setNSims} min={1000} max={50_000} step={1000} display={nSims.toLocaleString()} sharedKey="nSims" />
         </div>
 
         <button

@@ -126,7 +126,7 @@ export default function ReverseStress() {
         {mode === "gbm" ? (
           <div className="space-y-5">
             <Field
-              label="Beginning value"
+              label="Beginning value" info="beginningValue"
               value={beginningValue}
               onChange={setBeginningValue}
               min={1000}
@@ -136,7 +136,7 @@ export default function ReverseStress() {
               sharedKey="beginningValue"
             />
             <Field
-              label="Time horizon"
+              label="Time horizon" info="years"
               value={years}
               onChange={setYears}
               min={1}
@@ -146,7 +146,7 @@ export default function ReverseStress() {
               sharedKey="years"
             />
             <Field
-              label="Assumed return (μ)"
+              label="Assumed return (μ)" info="mu"
               value={mu}
               onChange={setMu}
               min={-0.05}
@@ -156,7 +156,7 @@ export default function ReverseStress() {
               sharedKey="mu"
             />
             <Field
-              label="Assumed volatility (σ)"
+              label="Assumed volatility (σ)" info="sigma"
               value={sigma}
               onChange={setSigma}
               min={0.01}
@@ -167,7 +167,7 @@ export default function ReverseStress() {
             />
             <div className="rounded-lg border border-bad/30 bg-bad/5 p-3">
               <Field
-                label="Failure: portfolio falls by"
+                label="Failure: portfolio falls by" info="drawdown"
                 value={lossFraction}
                 onChange={setLossFraction}
                 min={0.05}
@@ -180,13 +180,13 @@ export default function ReverseStress() {
           </div>
         ) : (
           <div className="space-y-5">
-            <Field label="Starting balance" value={startingBalance} onChange={setStartingBalance} min={0} max={2_000_000} step={5000} display={formatCurrency(startingBalance)} sharedKey="beginningValue" />
-            <Field label="Annual contribution" value={annualContribution} onChange={setAnnualContribution} min={0} max={100_000} step={1000} display={formatCurrency(annualContribution)} />
-            <Field label="Years until retirement" value={yearsToRetire} onChange={setYearsToRetire} min={0} max={50} step={1} display={`${yearsToRetire} yr`} />
-            <Field label="Years in retirement" value={retirementYears} onChange={setRetirementYears} min={1} max={50} step={1} display={`${retirementYears} yr`} />
-            <Field label="Annual withdrawal (yr 1)" value={annualWithdrawal} onChange={setAnnualWithdrawal} min={0} max={300_000} step={2500} display={formatCurrency(annualWithdrawal)} />
-            <Field label="Inflation" value={inflation} onChange={setInflation} min={0} max={0.1} step={0.0025} display={formatPercent(inflation)} />
-            <Field label="Assumed return" value={meanReturn} onChange={setMeanReturn} min={-0.02} max={0.15} step={0.005} display={formatPercent(meanReturn)} sharedKey="mu" />
+            <Field label="Starting balance" info="beginningValue" value={startingBalance} onChange={setStartingBalance} min={0} max={2_000_000} step={5000} display={formatCurrency(startingBalance)} sharedKey="beginningValue" />
+            <Field label="Annual contribution" info="contribution" value={annualContribution} onChange={setAnnualContribution} min={0} max={100_000} step={1000} display={formatCurrency(annualContribution)} />
+            <Field label="Years until retirement" info="years" value={yearsToRetire} onChange={setYearsToRetire} min={0} max={50} step={1} display={`${yearsToRetire} yr`} />
+            <Field label="Years in retirement" info="years" value={retirementYears} onChange={setRetirementYears} min={1} max={50} step={1} display={`${retirementYears} yr`} />
+            <Field label="Annual withdrawal (yr 1)" info="withdrawal" value={annualWithdrawal} onChange={setAnnualWithdrawal} min={0} max={300_000} step={2500} display={formatCurrency(annualWithdrawal)} />
+            <Field label="Inflation" info="inflation" value={inflation} onChange={setInflation} min={0} max={0.1} step={0.0025} display={formatPercent(inflation)} />
+            <Field label="Assumed return" info="mu" value={meanReturn} onChange={setMeanReturn} min={-0.02} max={0.15} step={0.005} display={formatPercent(meanReturn)} sharedKey="mu" />
           </div>
         )}
 

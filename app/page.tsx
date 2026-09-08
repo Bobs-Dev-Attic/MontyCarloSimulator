@@ -285,7 +285,7 @@ export default function Page() {
           {model === "gbm" ? (
             <div className="space-y-5">
               <Field
-                label="Beginning value"
+                label="Beginning value" info="beginningValue"
                 value={gbm.beginningValue}
                 onChange={(v) => setGbm({ ...gbm, beginningValue: v })}
                 min={1000}
@@ -295,7 +295,7 @@ export default function Page() {
                 sharedKey="beginningValue"
               />
               <Field
-                label="Expected annual return (μ)"
+                label="Expected annual return (μ)" info="mu"
                 value={gbm.mu}
                 onChange={(v) => setGbm({ ...gbm, mu: v })}
                 min={-0.05}
@@ -305,7 +305,7 @@ export default function Page() {
                 sharedKey="mu"
               />
               <Field
-                label="Volatility (σ)"
+                label="Volatility (σ)" info="sigma"
                 value={gbm.sigma}
                 onChange={(v) => setGbm({ ...gbm, sigma: v })}
                 min={0}
@@ -316,7 +316,7 @@ export default function Page() {
                 sharedKey="sigma"
               />
               <Field
-                label="Time horizon"
+                label="Time horizon" info="years"
                 value={gbm.years}
                 onChange={(v) => setGbm({ ...gbm, years: v })}
                 min={1}
@@ -326,7 +326,7 @@ export default function Page() {
                 sharedKey="years"
               />
               <Field
-                label="Simulations"
+                label="Simulations" info="nSims"
                 value={gbm.nSims}
                 onChange={(v) => setGbm({ ...gbm, nSims: v })}
                 min={1000}
@@ -360,7 +360,7 @@ export default function Page() {
                 {gbm.distKind === "t" ? (
                   <div className="mt-4">
                     <Field
-                      label="Degrees of freedom (ν)"
+                      label="Degrees of freedom (ν)" info="nu"
                       value={gbm.nu}
                       onChange={(v) => setGbm({ ...gbm, nu: v })}
                       min={2.5}
@@ -381,7 +381,7 @@ export default function Page() {
           ) : (
             <div className="space-y-5">
               <Field
-                label="Starting balance"
+                label="Starting balance" info="beginningValue"
                 value={ret.startingBalance}
                 onChange={(v) => setRet({ ...ret, startingBalance: v })}
                 min={0}
@@ -391,7 +391,7 @@ export default function Page() {
                 sharedKey="beginningValue"
               />
               <Field
-                label="Annual contribution"
+                label="Annual contribution" info="contribution"
                 value={ret.annualContribution}
                 onChange={(v) => setRet({ ...ret, annualContribution: v })}
                 min={0}
@@ -400,7 +400,7 @@ export default function Page() {
                 display={formatCurrency(ret.annualContribution)}
               />
               <Field
-                label="Years until retirement"
+                label="Years until retirement" info="years"
                 value={ret.yearsToRetire}
                 onChange={(v) => setRet({ ...ret, yearsToRetire: v })}
                 min={0}
@@ -409,7 +409,7 @@ export default function Page() {
                 display={`${ret.yearsToRetire} yr`}
               />
               <Field
-                label="Years in retirement"
+                label="Years in retirement" info="years"
                 value={ret.retirementYears}
                 onChange={(v) => setRet({ ...ret, retirementYears: v })}
                 min={1}
@@ -418,7 +418,7 @@ export default function Page() {
                 display={`${ret.retirementYears} yr`}
               />
               <Field
-                label="Annual withdrawal (yr 1)"
+                label="Annual withdrawal (yr 1)" info="withdrawal"
                 value={ret.annualWithdrawal}
                 onChange={(v) => setRet({ ...ret, annualWithdrawal: v })}
                 min={0}
@@ -428,7 +428,7 @@ export default function Page() {
                 hint="Grown each year by inflation"
               />
               <Field
-                label="Expected return"
+                label="Expected return" info="mu"
                 value={ret.meanReturn}
                 onChange={(v) => setRet({ ...ret, meanReturn: v })}
                 min={-0.02}
@@ -438,7 +438,7 @@ export default function Page() {
                 sharedKey="mu"
               />
               <Field
-                label="Return volatility"
+                label="Return volatility" info="sigma"
                 value={ret.stdReturn}
                 onChange={(v) => setRet({ ...ret, stdReturn: v })}
                 min={0}
@@ -448,7 +448,7 @@ export default function Page() {
                 sharedKey="sigma"
               />
               <Field
-                label="Inflation"
+                label="Inflation" info="inflation"
                 value={ret.inflation}
                 onChange={(v) => setRet({ ...ret, inflation: v })}
                 min={0}
@@ -457,7 +457,7 @@ export default function Page() {
                 display={formatPercent(ret.inflation)}
               />
               <Field
-                label="Simulations"
+                label="Simulations" info="nSims"
                 value={ret.nSims}
                 onChange={(v) => setRet({ ...ret, nSims: v })}
                 min={1000}
