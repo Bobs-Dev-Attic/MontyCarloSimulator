@@ -23,6 +23,7 @@ export const PROFILE_CATEGORIES: ProfileCategory[] = [
   { id: "portfolio", label: "Portfolio forecast", hint: "GBM inputs", match: (k) => k === "gbm.settings" },
   { id: "retirement", label: "Retirement plan", hint: "Accumulation & withdrawal inputs", match: (k) => k === "ret.settings" },
   { id: "dynwithdraw", label: "Dynamic withdrawals", match: (k) => k.startsWith("dyn.") },
+  { id: "seqrisk", label: "Sequence risk", match: (k) => k.startsWith("seq.") },
   { id: "reverse", label: "Reverse stress test", match: (k) => k.startsWith("reverse.") },
   { id: "macro", label: "Macro shock", match: (k) => k.startsWith("macro.") },
   { id: "sensitivity", label: "Sensitivity", match: (k) => k.startsWith("sens.") },

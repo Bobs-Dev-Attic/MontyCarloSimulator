@@ -7,6 +7,20 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.22.0] - 2026-09-08
+
+### Added
+- **Sequence-of-returns vulnerability analysis** — new "Sequence risk" view. It
+  stresses equity returns over the first few years of retirement (an
+  adjustable bear window) — when a downturn does the most lasting damage — and
+  sweeps the size of a cash / short-bond **buffer (bond tent)** to quantify the
+  smallest one that avoids being **forced to sell equities at a trough** during
+  that window. Every buffer size is evaluated on the same stressed paths (common
+  random numbers). Shows the recommended buffer in years and dollars, a
+  vulnerability curve (probability of a forced trough sale and of ruin vs.
+  buffer size), a buffer sweep table, and the median equity path with vs. without
+  the buffer over the bear window. All figures in today's dollars.
+
 ## [1.21.0] - 2026-09-08
 
 ### Added
@@ -321,6 +335,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.22.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.22.0
 [1.21.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.21.0
 [1.20.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.20.0
 [1.19.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.19.0

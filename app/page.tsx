@@ -16,6 +16,7 @@ import MultiAsset from "@/components/MultiAsset";
 import RiskGlidePath from "@/components/RiskGlidePath";
 import StressCompare from "@/components/StressCompare";
 import DynamicWithdrawal from "@/components/DynamicWithdrawal";
+import SequenceRisk from "@/components/SequenceRisk";
 import PreferencesPage from "@/components/PreferencesPage";
 import NavMenu, { type NavItem } from "@/components/NavMenu";
 import ProfileBar from "@/components/ProfileBar";
@@ -85,12 +86,13 @@ const DEFAULT_RETIREMENT: RetirementState = {
   seed: 2026,
 };
 
-type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset" | "glide" | "stress" | "dynwithdraw" | "prefs";
+type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset" | "glide" | "stress" | "dynwithdraw" | "seqrisk" | "prefs";
 
 const NAV_ITEMS: NavItem[] = [
   { id: "gbm", label: "Portfolio forecast (GBM)", hint: "Single-asset growth" },
   { id: "retirement", label: "Retirement plan", hint: "Save, withdraw, success rate" },
   { id: "dynwithdraw", label: "Dynamic withdrawals", hint: "Guardrails vs. fixed spending" },
+  { id: "seqrisk", label: "Sequence risk", hint: "Cash buffer / bond tent sizing" },
   { id: "reverse", label: "Reverse stress test", hint: "Solve for the failure scenario" },
   { id: "macro", label: "Macro shock", hint: "Geopolitical / market crashes" },
   { id: "sensitivity", label: "Sensitivity", hint: "Tornado chart" },
@@ -289,6 +291,8 @@ export default function Page() {
         <StressCompare />
       ) : tab === "dynwithdraw" ? (
         <DynamicWithdrawal />
+      ) : tab === "seqrisk" ? (
+        <SequenceRisk />
       ) : (
       <>
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
