@@ -9,6 +9,11 @@ import { simulateRetirement } from "./retirement";
 import { simulateMultiAsset, type Asset } from "./multiasset";
 import { simulateGlidePath, type Waypoint } from "./glidepath";
 import {
+  simulateDynamicWithdrawal,
+  type DynamicWithdrawalParams,
+  type DynamicWithdrawalResult,
+} from "./dynamicWithdrawal";
+import {
   percentileBands,
   terminalHistogram,
   summaryStats,
@@ -299,6 +304,27 @@ export function runStressCompare(
   });
 
   return { years: req.years, beginningValue: req.beginningValue, nSims, baseline, scenarios };
+}
+
+export function runDynamicWithdrawal(
+  req: Partial<DynamicWithdrawalParams>
+): DynamicWithdrawalResult {
+  const nSims = Math.min(clampSims(req.nSims), 20_000);
+  return simulateDynamicWithdrawal({
+    startingBalance: req.startingBalance ?? 1_000_000,
+    retirementYears: Math.round(req.retirementYears ?? 30),
+    initialRate: req.initialRate ?? 0.05,
+    meanReturn: req.meanReturn ?? 0.06,
+    stdReturn: req.stdReturn ?? 0.12,
+    inflation: req.inflation ?? 0.025,
+    guardBand: req.guardBand ?? 0.2,
+    guardAdjust: req.guardAdjust ?? 0.1,
+    ratchetThreshold: req.ratchetThreshold ?? 0.5,
+    ratchetStep: req.ratchetStep ?? 0.1,
+    ratchetEvery: Math.round(req.ratchetEvery ?? 3),
+    nSims,
+    seed: req.seed ?? null,
+  });
 }
 
 export function runRetirement(req: RetirementRequest): SimulationResponse {

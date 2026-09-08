@@ -7,6 +7,21 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.21.0] - 2026-09-08
+
+### Added
+- **Dynamic withdrawal strategy simulation** — new "Dynamic withdrawals" view.
+  Compares three ways of deciding retirement spending against the *same* market
+  paths (common random numbers): **fixed** inflation-adjusted spending (the
+  classic 4% rule), **Guyton–Klinger guardrails** (freeze the raise after a down
+  year; cut when the withdrawal rate drifts too high, raise when it drifts too
+  low), and a **ratcheting** rule (never cut; step spending up only after strong
+  growth). Shows how much each rule changes the **probability of running out**
+  versus fixed spending, plus the trade-off in spending stability — a comparison
+  table (ruin probability, success, median ending balance, total lifetime
+  spending, average years with a spending cut), a ruin-probability bar chart, and
+  median real spending / balance over time. All figures are in today's dollars.
+
 ## [1.20.0] - 2026-09-08
 
 ### Added
@@ -306,6 +321,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.21.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.21.0
 [1.20.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.20.0
 [1.19.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.19.0
 [1.18.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.18.0
