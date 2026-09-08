@@ -39,6 +39,7 @@ export default function SequenceRisk() {
   const [bearMean, setBearMean] = usePersistentState("seq.bearMean", -0.05);
   const [bearVol, setBearVol] = usePersistentState("seq.bearVol", 0.20);
   const [troughDrawdown, setTroughDrawdown] = usePersistentState("seq.troughDrawdown", 0.1);
+  const [refillBuffer, setRefillBuffer] = usePersistentState("seq.refillBuffer", true);
   const [maxBufferYears, setMaxBufferYears] = usePersistentState("seq.maxBufferYears", 8);
   const [targetSellProb, setTargetSellProb] = usePersistentState("seq.targetSellProb", 0.05);
   const [nSims, setNSims] = usePersistentState("seq.nSims", 6000);
@@ -68,7 +69,7 @@ export default function SequenceRisk() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           startingBalance, retirementYears, annualSpend, inflation, equityMean, equityVol,
-          bufferYield, bearYears, bearMean, bearVol, troughDrawdown, maxBufferYears, targetSellProb,
+          bufferYield, bearYears, bearMean, bearVol, troughDrawdown, refillBuffer, maxBufferYears, targetSellProb,
           nSims, seed: 2026,
         }),
       });
@@ -82,7 +83,7 @@ export default function SequenceRisk() {
       setLoading(false);
       tracker.done();
     }
-  }, [startingBalance, retirementYears, annualSpend, inflation, equityMean, equityVol, bufferYield, bearYears, bearMean, bearVol, troughDrawdown, maxBufferYears, targetSellProb, nSims, progress]);
+  }, [startingBalance, retirementYears, annualSpend, inflation, equityMean, equityVol, bufferYield, bearYears, bearMean, bearVol, troughDrawdown, refillBuffer, maxBufferYears, targetSellProb, nSims, progress]);
 
   useEffect(() => {
     run();
@@ -124,6 +125,28 @@ export default function SequenceRisk() {
         </div>
 
         <div className="my-5 h-px bg-line" />
+        <label className="flex cursor-pointer items-start justify-between gap-3">
+          <span className="min-w-0">
+            <span className="flex items-center gap-1 text-sm font-medium text-slate-200">
+              Refill buffer in good years <InfoTip term="bucketRefill" />
+            </span>
+            <span className="mt-0.5 block text-[11px] text-muted">
+              Rolling bucket: sell equities when they&apos;re up to top the buffer back to target.
+            </span>
+          </span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={refillBuffer}
+            aria-label="Refill buffer in good years"
+            onClick={() => setRefillBuffer(!refillBuffer)}
+            className={`relative mt-0.5 h-5 w-9 shrink-0 rounded-full transition ${refillBuffer ? "bg-accent" : "bg-line"}`}
+          >
+            <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-ink transition-all ${refillBuffer ? "left-[18px]" : "left-0.5"}`} />
+          </button>
+        </label>
+
+        <div className="my-5 h-px bg-line" />
         <div className="space-y-4">
           <Field label="Max buffer to test" info="cashBuffer" value={maxBufferYears} onChange={(v) => setMaxBufferYears(Math.round(v))} min={2} max={15} step={1} display={`${maxBufferYears} yr`} />
           <Field label="Acceptable trough-sale risk" info="sellAtTrough" value={targetSellProb} onChange={setTargetSellProb} min={0.01} max={0.3} step={0.01} display={formatPercent(targetSellProb)} />
@@ -135,9 +158,9 @@ export default function SequenceRisk() {
         </button>
         <p className="mt-3 text-[11px] text-muted">
           Every buffer size is tested on the same stressed market paths, so the
-          curve is comparable. The equity sleeve is all-stock and the buffer is
-          your only safe asset, so the ruin figures reflect an aggressive plan —
-          the focus here is avoiding forced equity sales in the early trough.
+          curve is comparable. With refilling on, the buffer is a rolling bucket
+          that&apos;s replenished from equity gains in good years; with it off, the
+          buffer is a one-time bond tent that&apos;s spent down and not restored.
           Values are in today&apos;s $.
         </p>
       </section>

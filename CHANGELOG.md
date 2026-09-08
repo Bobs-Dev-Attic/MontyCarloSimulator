@@ -7,6 +7,21 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.23.0] - 2026-09-08
+
+### Added
+- **Rolling-bucket buffer refilling** in the Sequence risk model. A new "Refill
+  buffer in good years" toggle (on by default) turns the cash buffer into a
+  rolling bucket: when equities make a new high, some of the gains are moved into
+  the buffer to top it back up to target, so it's replenished for future
+  downturns rather than being a one-time bond tent that's spent down and never
+  restored. Turn it off to model the static bond tent.
+
+### Changed
+- Sequence-risk trough detection now tracks a pure equity **return index**
+  instead of the equity dollar balance, so withdrawals and buffer refills no
+  longer distort when equities are considered "in a trough."
+
 ## [1.22.0] - 2026-09-08
 
 ### Added
@@ -335,6 +350,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.23.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.23.0
 [1.22.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.22.0
 [1.21.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.21.0
 [1.20.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.20.0

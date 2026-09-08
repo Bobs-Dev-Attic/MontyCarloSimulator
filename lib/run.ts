@@ -348,6 +348,7 @@ export function runSequenceRisk(
     bearMean: req.bearMean ?? -0.05,
     bearVol: req.bearVol ?? 0.20,
     troughDrawdown: req.troughDrawdown ?? 0.1,
+    refillBuffer: req.refillBuffer ?? true,
     maxBufferYears: Math.round(req.maxBufferYears ?? 8),
     targetSellProb: req.targetSellProb ?? 0.05,
     nSims,

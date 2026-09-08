@@ -32,6 +32,7 @@ export interface SequenceRiskParams {
   bearMean: number; // stressed equity mean during the window
   bearVol: number; // stressed equity vol during the window
   troughDrawdown: number; // equities are "in a trough" if this far below their peak
+  refillBuffer: boolean; // top the buffer back up (sell equities) in healthy years
   maxBufferYears: number; // sweep 0..maxBufferYears
   targetSellProb: number; // acceptable probability of selling equities at a trough
   nSims: number;
@@ -53,6 +54,7 @@ export interface SequenceRiskResult {
   annualSpend: number;
   nSims: number;
   targetSellProb: number;
+  refillBuffer: boolean;
   sweep: BufferPoint[];
   recommendedBufferYears: number | null;
   recommendedBufferDollars: number | null;
@@ -84,6 +86,7 @@ function simulateOneBuffer(
     bearMean,
     bearVol,
     troughDrawdown,
+    refillBuffer,
     nSims,
     seed,
   } = params;
@@ -107,7 +110,10 @@ function simulateOneBuffer(
   for (let s = 0; s < nSims; s++) {
     let E = equity0;
     let B = bufferDollars;
-    let peakE = E;
+    // A pure equity price index (compounds returns only) drives trough
+    // detection, so it isn't distorted by withdrawals or buffer refills.
+    let idx = 1;
+    let peakIdx = 1;
     let depleted = false;
     let soldAtTrough = false;
     if (equityByYear) equityByYear[0][s] = E; // real at t=0 (deflator 1)
@@ -120,9 +126,11 @@ function simulateOneBuffer(
       if (!depleted) {
         E *= 1 + rE;
         B *= 1 + bufferYield;
+        idx *= 1 + rE;
+        if (idx > peakIdx) peakIdx = idx;
         const deflator = Math.pow(1 + inflation, t);
         let need = annualSpend * Math.pow(1 + inflation, t - 1);
-        const inTrough = E < peakE * (1 - troughDrawdown);
+        const inTrough = idx < peakIdx * (1 - troughDrawdown);
 
         if (inTrough) {
           // Spend from the buffer first to avoid selling equities in the trough.
@@ -151,7 +159,21 @@ function simulateOneBuffer(
         }
 
         if (need > 1e-6) depleted = true; // couldn't fund the withdrawal
-        if (E > peakE) peakE = E;
+
+        // Rolling bucket: when equities make a new high (idx just set peakIdx),
+        // sell some of the gains to top the buffer back up to its target, so
+        // it's ready for the next downturn. Refilling only at highs "sells high"
+        // and avoids converting equities to cash in ordinary (non-trough) dips.
+        const atNewHigh = idx >= peakIdx - 1e-12;
+        if (refillBuffer && atNewHigh && !depleted) {
+          const target = bufferYears * annualSpend * Math.pow(1 + inflation, t - 1);
+          if (B < target) {
+            const move = Math.min(target - B, E);
+            E -= move;
+            B += move;
+          }
+        }
+
         if (equityByYear) equityByYear[t][s] = E / deflator;
       } else if (equityByYear) {
         equityByYear[t][s] = 0;
@@ -211,6 +233,7 @@ export function simulateSequenceRisk(params: SequenceRiskParams): SequenceRiskRe
     annualSpend: params.annualSpend,
     nSims: params.nSims,
     targetSellProb,
+    refillBuffer: params.refillBuffer,
     sweep,
     recommendedBufferYears: rec ? rec.bufferYears : null,
     recommendedBufferDollars: rec ? rec.bufferDollars : null,

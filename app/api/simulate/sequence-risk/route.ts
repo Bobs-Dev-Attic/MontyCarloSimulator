@@ -26,6 +26,7 @@ export async function POST(request: Request) {
       bearMean: num(body.bearMean, -0.05),
       bearVol: num(body.bearVol, 0.20),
       troughDrawdown: num(body.troughDrawdown, 0.1),
+      refillBuffer: body.refillBuffer !== false,
       maxBufferYears: Math.round(num(body.maxBufferYears, 8)),
       targetSellProb: num(body.targetSellProb, 0.05),
       nSims: Math.round(num(body.nSims, 6000)),

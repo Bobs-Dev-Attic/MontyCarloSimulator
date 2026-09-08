@@ -329,6 +329,12 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     href: "https://www.investopedia.com/terms/d/drawdown.asp",
     source: "Investopedia",
   },
+  bucketRefill: {
+    title: "Refilling the buffer (rolling bucket)",
+    body: "In healthy years, sell some equities (while they're up) to top the cash buffer back to its target, so it's ready for the next downturn. This 'sells high', keeps the cash sleeve from being a one-time drag, and protects against later troughs — not just the first one. Turn it off to model a static bond tent that's spent down once and not restored.",
+    href: "https://www.investopedia.com/articles/investing/090815/how-set-cash-bucket-retirement.asp",
+    source: "Investopedia",
+  },
 };
 
 export type GlossaryKey = keyof typeof GLOSSARY;
