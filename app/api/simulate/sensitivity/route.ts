@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { apiError } from "@/lib/apiError";
 import {
   runTornado,
   type SensModel,
@@ -63,7 +64,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(result);
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Sensitivity analysis failed";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return apiError(err);
   }
 }

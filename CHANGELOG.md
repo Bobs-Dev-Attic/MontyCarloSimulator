@@ -7,6 +7,23 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.37.0] - 2026-09-09
+
+### Changed (P3 polish)
+- **Per-view "what this means" line.** Each view now shows a one-line
+  plain-language blurb under its heading, so it's clear what question the view
+  answers before you read the numbers.
+- **Tax view region framing.** The Tax blurb states it's **US federal (2024) —
+  not tax advice**, and the results header carries a "US federal · 2024" tag
+  alongside the existing caveats.
+- **Export gating.** The Monte Carlo exports (Portfolio/Retirement forecast and
+  Sequence risk) are disabled until you've run a simulation; the deterministic
+  Tax & Roth export stays always-on.
+- **Sanitized API errors.** Unexpected server errors now log server-side and
+  return a generic client message (`lib/apiError.ts`) instead of echoing
+  internal error text; deliberate validation messages (zod 400s, explicit range
+  checks) remain specific.
+
 ## [1.36.0] - 2026-09-09
 
 ### Changed (P2 — engineering)
@@ -603,6 +620,7 @@ Excel export's live formulas still reproduce the engine to the dollar.
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.37.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.37.0
 [1.36.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.36.0
 [1.35.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.35.0
 [1.34.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.34.0

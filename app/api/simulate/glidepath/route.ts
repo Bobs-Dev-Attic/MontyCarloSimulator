@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { apiError } from "@/lib/apiError";
 import { runGlidePath, type GlidePathRequest } from "@/lib/run";
 import type { Waypoint } from "@/lib/glidepath";
 
@@ -48,7 +49,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(runGlidePath(req));
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Simulation failed";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return apiError(err);
   }
 }

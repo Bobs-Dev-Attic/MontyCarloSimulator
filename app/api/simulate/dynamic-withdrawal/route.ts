@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { apiError } from "@/lib/apiError";
 import { runDynamicWithdrawal } from "@/lib/run";
 import { DynamicWithdrawalRequestSchema } from "@/lib/schemas";
 
@@ -16,7 +17,6 @@ export async function POST(request: Request) {
     }
     return NextResponse.json(runDynamicWithdrawal(parsed.data));
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Invalid request body";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return apiError(err);
   }
 }

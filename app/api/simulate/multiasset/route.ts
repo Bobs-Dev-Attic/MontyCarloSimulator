@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { apiError } from "@/lib/apiError";
 import { runMultiAsset, type MultiAssetRequest } from "@/lib/run";
 import type { Asset } from "@/lib/multiasset";
 
@@ -64,7 +65,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(runMultiAsset(req));
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Simulation failed";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return apiError(err);
   }
 }

@@ -8,6 +8,8 @@ export interface NavItem {
   id: string;
   label: string;
   hint?: string;
+  /** One-line plain-language "what this view tells you", shown under the heading. */
+  blurb?: string;
 }
 
 interface Props {
