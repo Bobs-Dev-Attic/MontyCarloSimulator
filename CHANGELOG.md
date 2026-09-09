@@ -7,6 +7,23 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.33.0] - 2026-09-09
+
+### Added (the remaining P1 hardening items)
+- **Rate limiting** on the compute endpoints. `middleware.ts` now applies an
+  in-memory sliding-window limiter to `/api/*` (default **60 requests/min per
+  IP**, tunable via `RATE_LIMIT_MAX` / `RATE_LIMIT_WINDOW_MS`, disable with
+  `RATE_LIMIT_DISABLED=1`). Over-limit requests get **429** with `Retry-After`
+  and `X-RateLimit-*` headers. This dampens DoS / serverless-cost amplification;
+  it's per-isolate/best-effort on Edge, so Vercel Firewall or Upstash Redis
+  remain the path to a distributed guarantee (extension point documented).
+- **Test suite (Vitest).** 28 unit tests (`test/*.test.ts`) for the `lib/*`
+  models: RNG determinism + distribution, aggregate percentile/histogram
+  correctness, GBM/retirement determinism and bounds, the tax model's identities
+  / non-negative buckets / RMD timing / conversions / `$0`-taxable edge case /
+  a locked regression value, and sequence-risk, longevity, and care-cost
+  invariants. `npm test` now runs `vitest run`; CI executes it.
+
 ## [1.32.0] - 2026-09-09
 
 ### Added (hardening — the P1 "quick wins" from TODO.md)
@@ -522,6 +539,7 @@ Excel export's live formulas still reproduce the engine to the dollar.
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.33.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.33.0
 [1.32.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.32.0
 [1.31.2]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.31.2
 [1.31.1]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.31.1

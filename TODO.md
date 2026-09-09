@@ -27,16 +27,22 @@ math is validated. The list is about hardening and future-proofing.
 - [x] **State the privacy posture in-app + PRIVACY.md** (S · legal/marketing) —
   _done v1.32.0._ Footer line ("Runs entirely in your browser — no account, no
   tracking…") linking to `PRIVACY.md`. _REVIEW §6.2._
-- [ ] **Rate-limit the compute endpoints** (M · security/founder) — Vercel Firewall
-  rules or `@upstash/ratelimit` keyed on IP for `/api/simulate/*` and
-  `/api/export/excel`; consider lowering the public `nSims` cap. Prevents DoS /
-  cost amplification. _REVIEW §2.1._ **(medium — not a quick win; still open)**
+- [x] **Rate-limit the compute endpoints** (M · security/founder) — _done
+  v1.33.0._ In-memory sliding-window limiter in `middleware.ts` on `/api/*`
+  (default 60 req/min per IP; env-tunable via `RATE_LIMIT_MAX` /
+  `RATE_LIMIT_WINDOW_MS`; returns 429 + `Retry-After`/`X-RateLimit-*`). Verified:
+  the 61st request in a window gets 429. Note: per-isolate/best-effort on Edge —
+  for a distributed guarantee, add Vercel Firewall rules or swap the store for
+  Upstash Redis (extension point documented in the middleware). _REVIEW §2.1._
 - [x] **Cover the export route in `vercel.json`** (S · ops) — _done v1.32.0._
   Added `app/api/export/**` at 1024 MB / 30 s. _REVIEW §2.1._
-- [ ] **Add a test suite** (M · engineering) — **Vitest** for `lib/*` models:
-  known-value checks, invariants (non-negative buckets, `afterTaxGain == smart −
-  naive`), and determinism (seed ⇒ identical output). _REVIEW §1.1._
-  **(medium — not a quick win; still open)**
+- [x] **Add a test suite** (M · engineering) — _done v1.33.0._ **Vitest** (28
+  tests, `test/*.test.ts`) covering rng (determinism + distribution), aggregate
+  (percentile ordering, histogram sums), gbm/retirement (determinism, bounds,
+  monotonic success), tax (identities, non-negative buckets, RMD timing,
+  conversions, `taxable=0`, a locked regression value), and sequence-risk /
+  longevity / care-costs invariants. `npm test` runs `vitest run`; CI executes
+  it. _REVIEW §1.1._
 - [x] **Add CI** (S · engineering) — _done v1.32.0._ GitHub Actions
   (`.github/workflows/ci.yml`) runs `lint` + `test` + `build` on PRs and pushes
   to `main`. Also set up ESLint (`.eslintrc.json`) so `next lint` runs

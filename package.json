@@ -1,6 +1,6 @@
 {
   "name": "monty-carlo-web",
-  "version": "1.32.0",
+  "version": "1.33.0",
   "private": true,
   "description": "Web version of the Monte Carlo financial simulator — deployable to Vercel.",
   "scripts": {
@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --test"
+    "test": "vitest run"
   },
   "dependencies": {
     "exceljs": "^4.4.0",
@@ -27,7 +27,8 @@
     "eslint-config-next": "^14.2.35",
     "postcss": "8.5.23",
     "tailwindcss": "3.4.6",
-    "typescript": "5.5.3"
+    "typescript": "5.5.3",
+    "vitest": "^2.1.8"
   },
   "engines": {
     "node": ">=18.17.0"
