@@ -62,9 +62,10 @@ math is validated. The list is about hardening and future-proofing.
   they can't drift. _REVIEW §1.2._
 - [ ] **Adopt zod for API request validation** (M · engineering) — one schema per
   route; infer request types from it; structured 400s. _REVIEW §1.3._
-- [ ] **Shareable scenario URLs** (M · UX/marketing) — encode view+inputs into a
-  compressed querystring (`lz-string`); add OG image + SEO meta so shared links
-  render nicely. Growth + UX. _REVIEW §3.5, §4._
+- [x] **Shareable scenario URLs** (M · UX/marketing) — _done v1.35.0._ "Share
+  link" button encodes inputs into a compressed `?s=` param (`lib/shareLink.ts`);
+  opening it applies the scenario + lands on the shared view (validated like an
+  import). Added a generated OG image + OG/Twitter metadata. _REVIEW §3.5, §4._
 - [x] **Accessibility pass on inputs** (M · UX) — _done v1.34.0._ Click-to-type
   exact values + `aria-label`/`aria-valuetext` on sliders (`Field`), nav-menu
   focus trap + restore (`NavMenu`), and a global `prefers-reduced-motion` rule.
