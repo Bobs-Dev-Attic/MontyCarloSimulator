@@ -241,8 +241,9 @@ export default function TaxPlanner() {
         {data ? (
           <>
             <div className="rounded-2xl border border-line bg-gradient-to-br from-panel to-panel2 p-5">
-              <div className="flex items-center gap-1 text-xs uppercase tracking-wide text-muted">
-                What tax-smart conversions are worth <InfoTip term="rothConversion" />
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs uppercase tracking-wide text-muted">
+                <span className="flex items-center gap-1">What tax-smart conversions are worth <InfoTip term="rothConversion" /></span>
+                <span className="rounded-full border border-line px-1.5 py-0.5 text-[10px] normal-case tracking-normal text-muted">US federal · 2024</span>
               </div>
               <div className="mt-1 flex flex-wrap items-end gap-3">
                 <span className={`text-4xl font-bold tabular-nums ${data.afterTaxGain >= 0 ? "text-good" : "text-bad"}`}>

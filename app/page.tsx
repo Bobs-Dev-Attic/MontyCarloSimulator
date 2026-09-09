@@ -96,20 +96,20 @@ const DEFAULT_RETIREMENT: RetirementState = {
 type Tab = Model | "reverse" | "macro" | "sensitivity" | "multiasset" | "glide" | "stress" | "dynwithdraw" | "seqrisk" | "longevity" | "care" | "tax" | "prefs";
 
 const NAV_ITEMS: NavItem[] = [
-  { id: "gbm", label: "Portfolio forecast (GBM)", hint: "Single-asset growth" },
-  { id: "retirement", label: "Retirement plan", hint: "Save, withdraw, success rate" },
-  { id: "dynwithdraw", label: "Dynamic withdrawals", hint: "Guardrails vs. fixed spending" },
-  { id: "seqrisk", label: "Sequence risk", hint: "Cash buffer / bond tent sizing" },
-  { id: "longevity", label: "Longevity", hint: "Mortality & joint-life tail risk" },
-  { id: "care", label: "Long-term care", hint: "Health transitions & care costs" },
-  { id: "tax", label: "Tax & Roth", hint: "Conversions, RMDs, bracket management" },
-  { id: "reverse", label: "Reverse stress test", hint: "Solve for the failure scenario" },
-  { id: "macro", label: "Macro shock", hint: "Geopolitical / market crashes" },
-  { id: "sensitivity", label: "Sensitivity", hint: "Tornado chart" },
-  { id: "multiasset", label: "Multi-asset", hint: "Correlated portfolio" },
-  { id: "glide", label: "Risk glide path", hint: "Risk tolerance over time" },
-  { id: "stress", label: "Stress compare", hint: "All scenarios side by side" },
-  { id: "prefs", label: "Preferences", hint: "Themes, display, ranges, import/export" },
+  { id: "gbm", label: "Portfolio forecast (GBM)", hint: "Single-asset growth", blurb: "Where a lump sum might land after years of growth — the full range of outcomes, not one guess." },
+  { id: "retirement", label: "Retirement plan", hint: "Save, withdraw, success rate", blurb: "The chance your savings last through retirement, given contributions, withdrawals, and market swings." },
+  { id: "dynwithdraw", label: "Dynamic withdrawals", hint: "Guardrails vs. fixed spending", blurb: "How adjusting your spending when markets move (guardrails/ratchet) changes the odds vs. a fixed budget." },
+  { id: "seqrisk", label: "Sequence risk", hint: "Cash buffer / bond tent sizing", blurb: "How big a cash/bond buffer avoids selling stocks in an early-retirement crash." },
+  { id: "longevity", label: "Longevity", hint: "Mortality & joint-life tail risk", blurb: "The odds of outliving your money once lifespan itself is uncertain — including both partners." },
+  { id: "care", label: "Long-term care", hint: "Health transitions & care costs", blurb: "How the risk and cost of late-life care could affect whether your plan holds." },
+  { id: "tax", label: "Tax & Roth", hint: "Conversions, RMDs, bracket management", blurb: "US federal (2024): whether Roth conversions now beat larger RMDs and taxes later. Educational, not tax advice." },
+  { id: "reverse", label: "Reverse stress test", hint: "Solve for the failure scenario", blurb: "Works backward: what return, spending, or shock would actually break your plan — and how likely that is." },
+  { id: "macro", label: "Macro shock", hint: "Geopolitical / market crashes", blurb: "What a modeled crash or shock overlay does to your portfolio vs. the calm-markets baseline." },
+  { id: "sensitivity", label: "Sensitivity", hint: "Tornado chart", blurb: "Which input moves your outcome the most, ranked — so you know what to nail down." },
+  { id: "multiasset", label: "Multi-asset", hint: "Correlated portfolio", blurb: "How mixing correlated assets (and rebalancing) changes risk vs. holding them separately." },
+  { id: "glide", label: "Risk glide path", hint: "Risk tolerance over time", blurb: "The effect of gradually shifting from risky to safe assets as your horizon shortens." },
+  { id: "stress", label: "Stress compare", hint: "All scenarios side by side", blurb: "Every scenario in the library run against one portfolio, side by side, on the same random draws." },
+  { id: "prefs", label: "Preferences", hint: "Themes, display, ranges, import/export", blurb: "Themes, real/nominal display, input ranges, and profile import/export." },
 ];
 
 export default function Page() {
@@ -310,15 +310,20 @@ export default function Page() {
       </header>
 
       {/* Active view heading (navigation is via the menu button) */}
-      <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1">
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-panel text-accent2">
-          <NavIcon id={tab} size={20} />
-        </span>
-        <h2 className="text-lg font-semibold text-white">
-          {currentView?.label ?? "View"}
-        </h2>
-        {currentView?.hint ? (
-          <span className="text-xs text-muted">{currentView.hint}</span>
+      <div className="mb-6">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-panel text-accent2">
+            <NavIcon id={tab} size={20} />
+          </span>
+          <h2 className="text-lg font-semibold text-white">
+            {currentView?.label ?? "View"}
+          </h2>
+          {currentView?.hint ? (
+            <span className="text-xs text-muted">{currentView.hint}</span>
+          ) : null}
+        </div>
+        {currentView?.blurb ? (
+          <p className="mt-2 max-w-3xl text-sm text-muted">{currentView.blurb}</p>
         ) : null}
       </div>
 
@@ -552,7 +557,8 @@ export default function Page() {
 
           <button
             onClick={doExport}
-            disabled={exporting}
+            disabled={exporting || !result}
+            title={result ? "Download this run as an Excel workbook" : "Run a simulation first"}
             className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-panel2 px-4 py-2 text-sm font-medium text-slate-200 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>

@@ -91,19 +91,25 @@ math is validated. The list is about hardening and future-proofing.
 
 ## P3 — nice-to-have
 
-- [ ] **Gate Monte Carlo export until after a run** (S · UX) — or relabel "Export
-  current inputs"; Tax (deterministic) can stay always-on. _REVIEW §3.3._
-- [ ] **Sanitize client-facing error messages** (S · security) — generic message
-  to the client, detail to server logs. _REVIEW §1.5._
-- [ ] **Reduce result density** (S · UX) — a one-line "what this means" per view;
-  progressive disclosure of advanced knobs. _REVIEW §3.4._
+- [x] **Gate Monte Carlo export until after a run** (S · UX) — _done v1.37.0._
+  Forecast + Sequence-risk export buttons disabled until a run exists; Tax
+  (deterministic) stays always-on. _REVIEW §3.3._
+- [x] **Sanitize client-facing error messages** (S · security) — _done v1.37.0._
+  `lib/apiError.ts` logs the real error server-side and returns a generic client
+  message; all 13 routes use it (deliberate validation 400s stay specific).
+  _REVIEW §1.5._
+- [x] **Reduce result density** (S · UX) — _done v1.37.0 (partial)._ Each view now
+  shows a one-line "what this means" blurb under its heading (`NavItem.blurb`).
+  Progressive disclosure of advanced knobs was left as an optional deeper pass.
+  _REVIEW §3.4._
 - [ ] **Optional privacy-respecting analytics** (S · marketing) — Plausible /
   Vercel Web Analytics (cookieless), disclosed in PRIVACY.md, only if roadmap data
   is wanted. _REVIEW §4._
 - [ ] **Optional error monitoring** (S · ops) — Sentry with PII scrubbing.
   _REVIEW §1.5._
-- [ ] **Region framing for tax** (S · legal) — label the Tax view "US-focused"
-  and keep the 2024-federal-only caveats on results. _REVIEW §6.3._
+- [x] **Region framing for tax** (S · legal) — _done v1.37.0._ Tax view blurb
+  states "US federal (2024)… not tax advice"; results carry a "US federal · 2024"
+  tag alongside the existing caveats. _REVIEW §6.3._
 
 ---
 

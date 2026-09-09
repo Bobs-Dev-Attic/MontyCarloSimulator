@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { apiError } from "@/lib/apiError";
 import { runRetirement } from "@/lib/run";
 import type { RetirementRequest } from "@/lib/types";
 
@@ -49,7 +50,6 @@ export async function POST(request: Request) {
     const result = runRetirement(req);
     return NextResponse.json(result);
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Simulation failed";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return apiError(err);
   }
 }

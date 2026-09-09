@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { apiError } from "@/lib/apiError";
 import { runMacroShock } from "@/lib/run";
 import type { GbmRequest } from "@/lib/types";
 import type { ShockConfig } from "@/lib/gbm";
@@ -54,7 +55,6 @@ export async function POST(request: Request) {
     const result = runMacroShock(req, shock);
     return NextResponse.json(result);
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Simulation failed";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return apiError(err);
   }
 }

@@ -1,4 +1,5 @@
 import { runSequenceRisk, runGbm, runRetirement } from "@/lib/run";
+import { apiError } from "@/lib/apiError";
 import { writeWorkbookWithCharts } from "@/lib/excel/charts";
 import {
   buildTaxWorkbook,
@@ -80,10 +81,6 @@ export async function POST(request: Request) {
       },
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Export failed";
-    return new Response(JSON.stringify({ error: message }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+    return apiError(err);
   }
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { apiError } from "@/lib/apiError";
 import { runStressCompare, type StressCompareRequest } from "@/lib/run";
 
 export const runtime = "nodejs";
@@ -33,7 +34,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(runStressCompare(req));
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Simulation failed";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return apiError(err);
   }
 }

@@ -226,7 +226,7 @@ export default function SequenceRisk() {
         <button onClick={run} disabled={loading} className="mt-6 w-full rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-ink transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
           {loading ? "Simulating…" : "Analyze sequence risk"}
         </button>
-        <button onClick={doExport} disabled={exporting} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-panel2 px-4 py-2 text-sm font-medium text-slate-200 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
+        <button onClick={doExport} disabled={exporting || !data} title={data ? "Download this run as an Excel workbook" : "Run the analysis first"} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-panel2 px-4 py-2 text-sm font-medium text-slate-200 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           {exporting ? "Building workbook…" : "Export to Excel"}
         </button>
