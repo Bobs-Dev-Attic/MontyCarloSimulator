@@ -26,7 +26,7 @@ npm run dev          # dev server, http://localhost:3000
 npm run build        # production build — this is the type-check gate (tsc runs here)
 npm run start        # serve the production build (needed for API routes)
 npm run lint         # next lint
-npm test             # node --test — NOTE: currently NO test files exist (see TODO)
+npm test             # vitest run — unit tests for the lib/* models (test/*.test.ts)
 ```
 
 There is **no separate `tsc`/typecheck script** — `npm run build` is the
