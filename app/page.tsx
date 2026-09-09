@@ -24,6 +24,7 @@ import PreferencesPage from "@/components/PreferencesPage";
 import NavMenu, { type NavItem } from "@/components/NavMenu";
 import NavIcon from "@/components/NavIcons";
 import { exportToExcel } from "@/lib/excelExport";
+import { applyShareFromUrl, hasShareParam, stripShareParam } from "@/lib/shareLink";
 import ProfileBar from "@/components/ProfileBar";
 import { RealBadge } from "@/components/RealToggle";
 import { usePersistentState } from "@/lib/persist";
@@ -241,6 +242,17 @@ export default function Page() {
       setExporting(false);
     }
   }, [model, gbm, ret]);
+
+  // Apply a shared scenario from the URL (before anything else reads storage).
+  useEffect(() => {
+    if (!hasShareParam()) return;
+    if (applyShareFromUrl()) {
+      // Reload so every persisted-state hook picks up the shared inputs.
+      window.location.replace(window.location.pathname + window.location.hash);
+    } else {
+      stripShareParam();
+    }
+  }, []);
 
   // Load saved history on first mount.
   useEffect(() => {

@@ -7,6 +7,21 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.35.0] - 2026-09-09
+
+### Added (P2 — UX / marketing)
+- **Shareable scenario links.** A new **Share link** button (Profile bar) copies
+  a URL that encodes the current inputs (compressed with `lz-string`). Opening
+  the link applies the scenario and lands on the shared view — great for showing
+  someone a specific what-if, or bookmarking one. It shares the scenario only:
+  **not** the recipient's theme/preferences or run history, and the untrusted URL
+  payload is validated exactly like an imported profile (mcs.-prefix,
+  no prototype-pollution keys, size-capped). The address bar is cleaned after
+  applying.
+- **Social/SEO metadata.** Added a generated Open Graph image
+  (`app/opengraph-image.tsx`) plus Open Graph + Twitter card metadata and a
+  `metadataBase`, so shared links render a proper preview card.
+
 ## [1.34.0] - 2026-09-09
 
 ### Accessibility (P2)
@@ -571,6 +586,7 @@ Excel export's live formulas still reproduce the engine to the dollar.
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.35.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.35.0
 [1.34.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.34.0
 [1.33.1]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.33.1
 [1.33.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.33.0
