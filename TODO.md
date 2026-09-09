@@ -13,31 +13,38 @@ math is validated. The list is about hardening and future-proofing.
 
 ## P1 — do first
 
-- [ ] **Add security headers** (S · security) — `headers()` in `next.config.mjs`:
-  CSP (strict is easy — no third-party/inline scripts), `X-Frame-Options`/
-  `frame-ancestors`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`,
-  `Strict-Transport-Security`, `Permissions-Policy`. _REVIEW §2.2._
-- [ ] **Add legal/baseline docs** (S · legal/founder) — `LICENSE` (MIT if
-  intended), `PRIVACY.md`, `SECURITY.md` (disclosure contact), and a linkable
-  "not advice" Terms note. _REVIEW §6.1._
-- [ ] **State the privacy posture in-app + PRIVACY.md** (S · legal/marketing) —
-  no PII, no tracking, on-device `localStorage` only, exports not stored, how to
-  clear data. It's true today; make it explicit. _REVIEW §6.2._
+- [x] **Add security headers** (S · security) — _done v1.32.0._ CSP +
+  `X-Frame-Options: DENY` + `frame-ancestors 'none'` + `X-Content-Type-Options`
+  + `Referrer-Policy` + `Strict-Transport-Security` + `Permissions-Policy`, via
+  `middleware.ts`. Note: the script policy is `'self' 'unsafe-inline'` (blocks
+  external scripts — the real XSS vector) rather than nonce/strict-dynamic,
+  because these pages are statically prerendered and a nonce CSP would refuse
+  Next's own chunks. A stricter nonce CSP is a follow-up (see P2). _REVIEW §2.2._
+- [x] **Add legal/baseline docs** (S · legal/founder) — _done v1.32.0._ `LICENSE`
+  (MIT, holder `Bobs-Dev-Attic` — change if you want a different license/holder),
+  `PRIVACY.md`, `SECURITY.md` (GitHub private vulnerability reporting, no personal
+  email). _REVIEW §6.1._
+- [x] **State the privacy posture in-app + PRIVACY.md** (S · legal/marketing) —
+  _done v1.32.0._ Footer line ("Runs entirely in your browser — no account, no
+  tracking…") linking to `PRIVACY.md`. _REVIEW §6.2._
 - [ ] **Rate-limit the compute endpoints** (M · security/founder) — Vercel Firewall
   rules or `@upstash/ratelimit` keyed on IP for `/api/simulate/*` and
   `/api/export/excel`; consider lowering the public `nSims` cap. Prevents DoS /
-  cost amplification. _REVIEW §2.1._
-- [ ] **Cover the export route in `vercel.json`** (S · ops) — add
-  `app/api/export/**` with sane `memory`/`maxDuration` (it runs a sim **and**
-  builds a workbook; currently uses defaults). _REVIEW §2.1._
+  cost amplification. _REVIEW §2.1._ **(medium — not a quick win; still open)**
+- [x] **Cover the export route in `vercel.json`** (S · ops) — _done v1.32.0._
+  Added `app/api/export/**` at 1024 MB / 30 s. _REVIEW §2.1._
 - [ ] **Add a test suite** (M · engineering) — **Vitest** for `lib/*` models:
   known-value checks, invariants (non-negative buckets, `afterTaxGain == smart −
   naive`), and determinism (seed ⇒ identical output). _REVIEW §1.1._
-- [ ] **Add CI** (S · engineering) — GitHub Actions running `build` + `lint` +
-  `test` on every PR. _REVIEW §1.1._
-- [ ] **Automate dependency updates & keep Next patched** (S · security) —
-  Dependabot/Renovate; track the Next.js advisory and plan the major upgrade.
-  _REVIEW §2.6._
+  **(medium — not a quick win; still open)**
+- [x] **Add CI** (S · engineering) — _done v1.32.0._ GitHub Actions
+  (`.github/workflows/ci.yml`) runs `lint` + `test` + `build` on PRs and pushes
+  to `main`. Also set up ESLint (`.eslintrc.json`) so `next lint` runs
+  non-interactively, and fixed the one lint error. _REVIEW §1.1._
+- [x] **Automate dependency updates & keep Next patched** (S · security) —
+  _done v1.32.0._ Dependabot (`.github/dependabot.yml`, weekly npm + actions).
+  Next is already on the latest 14.2.x (14.2.35); the advisory's clean fix is a
+  major bump — tracked, not a quick win. _REVIEW §2.6._
 
 ## P2 — next
 
@@ -54,6 +61,10 @@ math is validated. The list is about hardening and future-proofing.
 - [ ] **Accessibility pass on inputs** (M · UX) — click-to-type exact values,
   `aria-valuetext` with the formatted display, nav-menu focus trap + restore,
   honor `prefers-reduced-motion`. _REVIEW §3.2._
+- [ ] **Nonce-based strict CSP** (M · security) — upgrade `middleware.ts` to a
+  nonce + `strict-dynamic` `script-src` (drops `'unsafe-inline'`). Requires
+  switching the app to dynamic rendering so Next can stamp the per-request nonce
+  onto its script tags. _REVIEW §2.2._
 - [ ] **[Strategic] Move simulations to a client-side Web Worker** (L ·
   founder/security) — models are pure TS; running them in a Worker removes the
   serverless DoS/cost surface, improves privacy, and keeps UX identical. Keep the

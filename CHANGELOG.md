@@ -7,6 +7,27 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.32.0] - 2026-09-09
+
+### Added (hardening — the P1 "quick wins" from TODO.md)
+- **Security headers** via `middleware.ts`: a Content-Security-Policy (blocks
+  external scripts, framing, plugins; `default-src 'self'`), plus
+  `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`,
+  `Permissions-Policy`, and `Strict-Transport-Security`. Verified the app still
+  hydrates and runs simulations under the policy (0 CSP violations).
+- **Legal & privacy docs:** `LICENSE` (MIT), `PRIVACY.md` (no accounts, no
+  tracking, on-device storage only, stateless compute), and `SECURITY.md`
+  (private vulnerability reporting). Added an in-app footer privacy line.
+- **Continuous integration:** `.github/workflows/ci.yml` runs lint + test +
+  build on PRs and pushes to `main`. Set up ESLint (`.eslintrc.json`) so linting
+  runs non-interactively; fixed one lint error.
+- **Dependency automation:** `.github/dependabot.yml` (weekly npm + GitHub
+  Actions updates).
+- **Ops:** `vercel.json` now sets memory/duration for the Excel export route,
+  not just the simulate routes.
+
+No behavior changes to the simulations or UI beyond the footer line.
+
 ## [1.31.2] - 2026-09-08
 
 ### Added (documentation)
@@ -501,6 +522,7 @@ Excel export's live formulas still reproduce the engine to the dollar.
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.32.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.32.0
 [1.31.2]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.31.2
 [1.31.1]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.31.1
 [1.31.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.31.0

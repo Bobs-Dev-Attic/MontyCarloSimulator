@@ -664,6 +664,18 @@ export default function Page() {
           </a>
           .
         </p>
+        <p className="mt-2">
+          Runs entirely in your browser — no account, no tracking. Your settings
+          and history stay on this device.{" "}
+          <a
+            className="text-accent2 hover:underline"
+            href="https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/blob/main/PRIVACY.md"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Privacy
+          </a>
+        </p>
         <p className="mt-2 tabular-nums">
           Version {APP_VERSION} —{" "}
           <a

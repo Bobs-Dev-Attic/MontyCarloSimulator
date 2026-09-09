@@ -157,7 +157,7 @@ export default function ProfileDialog({ mode, onClose }: Props) {
           {mode === "import" && !parsed ? (
             <div>
               <p className="mb-3 text-sm text-slate-300">
-                Choose a profile <span className="font-mono text-xs">.json</span> file. It's
+                Choose a profile <span className="font-mono text-xs">.json</span> file. It&apos;s
                 examined for a valid format and anything unexpected before you pick what to import.
               </p>
               <button

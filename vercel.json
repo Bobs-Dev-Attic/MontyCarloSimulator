@@ -4,6 +4,10 @@
     "app/api/simulate/**/route.ts": {
       "memory": 1024,
       "maxDuration": 30
+    },
+    "app/api/export/**/route.ts": {
+      "memory": 1024,
+      "maxDuration": 30
     }
   }
 }

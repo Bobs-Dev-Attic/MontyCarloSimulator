@@ -142,7 +142,15 @@ addresses like `R1`/`TH1` — was caught).
 
 ## 8. Deploy / environment
 
-- Vercel, zero-config Next.js. `vercel.json` sets memory/duration for
-  `app/api/simulate/**` (the **export route is not yet covered** — see TODO).
+- Vercel, zero-config Next.js. `vercel.json` sets memory/duration for both
+  `app/api/simulate/**` and `app/api/export/**`.
 - Version is single-sourced from `package.json` via `next.config.mjs` env
   `NEXT_PUBLIC_APP_VERSION`.
+- **Security headers** (CSP + friends) are set in `middleware.ts`. The CSP uses
+  `script-src 'self' 'unsafe-inline'` (not nonce) because pages are statically
+  prerendered — a nonce/strict-dynamic CSP refuses Next's chunks and breaks
+  hydration (verified). If you touch it, re-run the CSP check (load the app in
+  Playwright and assert 0 console CSP violations + charts render).
+- **CI** (`.github/workflows/ci.yml`) runs `lint` + `test` + `build`. ESLint is
+  configured (`.eslintrc.json`); `npm run lint` must exit clean (warnings OK,
+  errors fail CI).
