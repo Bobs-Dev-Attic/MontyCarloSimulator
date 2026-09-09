@@ -7,6 +7,19 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.38.1] - 2026-09-09
+
+### Changed (UX)
+- **Skew caveats on the forecast stat cards.** For heavily right-skewed
+  distributions (e.g. high-volatility GBM, where volatility drag pushes the
+  median below the start while the mean and maximum are driven by a few rare
+  extreme paths), the **Mean outcome** card now notes "Skewed by rare extreme
+  paths — median is more typical" and the **Maximum** card notes "A single
+  best-case path — not a typical outcome". They only appear when the mean is well
+  above the median, so normal runs stay uncluttered. No numbers changed — the
+  computation was verified correct (matches lognormal theory to <1%); this just
+  keeps the mean/max from being read as "expected".
+
 ## [1.38.0] - 2026-09-09
 
 ### Added (P2 strategic — first step)
@@ -635,6 +648,7 @@ Excel export's live formulas still reproduce the engine to the dollar.
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.38.1]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.38.1
 [1.38.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.38.0
 [1.37.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.37.0
 [1.36.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.36.0
