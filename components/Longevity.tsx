@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { DEFAULTS } from "@/lib/defaults";
 import {
   LineChart,
   Line,
@@ -49,18 +50,18 @@ function SexToggle({ value, onChange }: { value: Sex; onChange: (s: Sex) => void
 }
 
 export default function Longevity() {
-  const [ageA, setAgeA] = usePersistentState("long.ageA", 65);
-  const [sexA, setSexA] = usePersistentState<Sex>("long.sexA", "male");
-  const [couple, setCouple] = usePersistentState("long.couple", true);
-  const [ageB, setAgeB] = usePersistentState("long.ageB", 63);
-  const [sexB, setSexB] = usePersistentState<Sex>("long.sexB", "female");
-  const [longevityAdj, setLongevityAdj] = usePersistentState("long.longevityAdj", 0);
-  const [startingBalance, setStartingBalance] = usePersistentState("long.startingBalance", 1_000_000);
-  const [annualSpend, setAnnualSpend] = usePersistentState("long.annualSpend", 45_000);
-  const [realReturn, setRealReturn] = usePersistentState("long.realReturn", 0.035);
-  const [vol, setVol] = usePersistentState("long.vol", 0.1);
-  const [survivorSpend, setSurvivorSpend] = usePersistentState("long.survivorSpend", 0.75);
-  const [nSims, setNSims] = usePersistentState("long.nSims", 10_000);
+  const [ageA, setAgeA] = usePersistentState("long.ageA", DEFAULTS.longevity.ageA);
+  const [sexA, setSexA] = usePersistentState<Sex>("long.sexA", DEFAULTS.longevity.sexA);
+  const [couple, setCouple] = usePersistentState("long.couple", DEFAULTS.longevity.couple);
+  const [ageB, setAgeB] = usePersistentState("long.ageB", DEFAULTS.longevity.ageB);
+  const [sexB, setSexB] = usePersistentState<Sex>("long.sexB", DEFAULTS.longevity.sexB);
+  const [longevityAdj, setLongevityAdj] = usePersistentState("long.longevityAdj", DEFAULTS.longevity.longevityAdj);
+  const [startingBalance, setStartingBalance] = usePersistentState("long.startingBalance", DEFAULTS.longevity.startingBalance);
+  const [annualSpend, setAnnualSpend] = usePersistentState("long.annualSpend", DEFAULTS.longevity.annualSpend);
+  const [realReturn, setRealReturn] = usePersistentState("long.realReturn", DEFAULTS.longevity.realReturn);
+  const [vol, setVol] = usePersistentState("long.vol", DEFAULTS.longevity.vol);
+  const [survivorSpend, setSurvivorSpend] = usePersistentState("long.survivorSpend", DEFAULTS.longevity.survivorSpend);
+  const [nSims, setNSims] = usePersistentState("long.nSims", DEFAULTS.longevity.nSims);
 
   const [data, setData] = useState<LongevityResult | null>(null);
   const [loading, setLoading] = useState(false);

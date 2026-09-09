@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { DEFAULTS } from "@/lib/defaults";
 import {
   AreaChart,
   Area,
@@ -32,18 +33,18 @@ const SKILLED_COLOR = "#f87171";
 const DEAD_COLOR = "#64748b";
 
 export default function CareCosts() {
-  const [startAge, setStartAge] = usePersistentState("care.startAge", 65);
-  const [startingBalance, setStartingBalance] = usePersistentState("care.startingBalance", 1_000_000);
-  const [baseSpend, setBaseSpend] = usePersistentState("care.baseSpend", 45_000);
-  const [realReturn, setRealReturn] = usePersistentState("care.realReturn", 0.035);
-  const [vol, setVol] = usePersistentState("care.vol", 0.1);
-  const [assistedCost, setAssistedCost] = usePersistentState("care.assistedCost", 60_000);
-  const [skilledCost, setSkilledCost] = usePersistentState("care.skilledCost", 110_000);
-  const [actToAssisted, setActToAssisted] = usePersistentState("care.actToAssisted", 0.03);
-  const [asstToSkilled, setAsstToSkilled] = usePersistentState("care.asstToSkilled", 0.1);
-  const [actToDead, setActToDead] = usePersistentState("care.actToDead", 0.012);
-  const [ageRamp, setAgeRamp] = usePersistentState("care.ageRamp", 0.05);
-  const [nSims, setNSims] = usePersistentState("care.nSims", 10_000);
+  const [startAge, setStartAge] = usePersistentState("care.startAge", DEFAULTS.care.startAge);
+  const [startingBalance, setStartingBalance] = usePersistentState("care.startingBalance", DEFAULTS.care.startingBalance);
+  const [baseSpend, setBaseSpend] = usePersistentState("care.baseSpend", DEFAULTS.care.baseSpend);
+  const [realReturn, setRealReturn] = usePersistentState("care.realReturn", DEFAULTS.care.realReturn);
+  const [vol, setVol] = usePersistentState("care.vol", DEFAULTS.care.vol);
+  const [assistedCost, setAssistedCost] = usePersistentState("care.assistedCost", DEFAULTS.care.assistedCost);
+  const [skilledCost, setSkilledCost] = usePersistentState("care.skilledCost", DEFAULTS.care.skilledCost);
+  const [actToAssisted, setActToAssisted] = usePersistentState("care.actToAssisted", DEFAULTS.care.actToAssisted);
+  const [asstToSkilled, setAsstToSkilled] = usePersistentState("care.asstToSkilled", DEFAULTS.care.asstToSkilled);
+  const [actToDead, setActToDead] = usePersistentState("care.actToDead", DEFAULTS.care.actToDead);
+  const [ageRamp, setAgeRamp] = usePersistentState("care.ageRamp", DEFAULTS.care.ageRamp);
+  const [nSims, setNSims] = usePersistentState("care.nSims", DEFAULTS.care.nSims);
 
   const [data, setData] = useState<CareResult | null>(null);
   const [loading, setLoading] = useState(false);

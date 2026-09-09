@@ -9,6 +9,7 @@ import {
 import type { TaxParams, Filing } from "@/lib/tax";
 import type { SequenceRiskParams } from "@/lib/sequenceRisk";
 import type { GbmRequest, RetirementRequest } from "@/lib/types";
+import { DEFAULTS } from "@/lib/defaults";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,22 +21,24 @@ function num(v: unknown, fallback: number): number {
 const clamp01 = (v: unknown, d: number) => Math.min(1, Math.max(0, num(v, d)));
 
 function taxParams(b: Record<string, unknown>): TaxParams {
-  const filing: Filing = b.filing === "mfj" ? "mfj" : "single";
+  const d = DEFAULTS.tax;
+  const filing: Filing =
+    b.filing === "mfj" ? "mfj" : b.filing === "single" ? "single" : d.filing;
   return {
-    startAge: Math.round(num(b.startAge, 62)),
+    startAge: Math.round(num(b.startAge, d.startAge)),
     filing,
-    years: Math.min(50, Math.max(1, Math.round(num(b.years, 30)))),
-    taxable: Math.max(0, num(b.taxable, 0)),
-    taxableBasisPct: clamp01(b.taxableBasisPct, 0.6),
-    deferred: Math.max(0, num(b.deferred, 1_200_000)),
-    roth: Math.max(0, num(b.roth, 150_000)),
-    annualSpend: Math.max(0, num(b.annualSpend, 60_000)),
-    otherIncome: Math.max(0, num(b.otherIncome, 30_000)),
-    nominalReturn: num(b.nominalReturn, 0.06),
-    inflation: num(b.inflation, 0.025),
-    ltcgRate: clamp01(b.ltcgRate, 0.15),
-    conversionTopRate: clamp01(b.conversionTopRate, 0.12),
-    terminalTaxRate: clamp01(b.terminalTaxRate, 0.24),
+    years: Math.min(50, Math.max(1, Math.round(num(b.years, d.years)))),
+    taxable: Math.max(0, num(b.taxable, d.taxable)),
+    taxableBasisPct: clamp01(b.taxableBasisPct, d.taxableBasisPct),
+    deferred: Math.max(0, num(b.deferred, d.deferred)),
+    roth: Math.max(0, num(b.roth, d.roth)),
+    annualSpend: Math.max(0, num(b.annualSpend, d.annualSpend)),
+    otherIncome: Math.max(0, num(b.otherIncome, d.otherIncome)),
+    nominalReturn: num(b.nominalReturn, d.nominalReturn),
+    inflation: num(b.inflation, d.inflation),
+    ltcgRate: clamp01(b.ltcgRate, d.ltcgRate),
+    conversionTopRate: clamp01(b.conversionTopRate, d.conversionTopRate),
+    terminalTaxRate: clamp01(b.terminalTaxRate, d.terminalTaxRate),
   };
 }
 

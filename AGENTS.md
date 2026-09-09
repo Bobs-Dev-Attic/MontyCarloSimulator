@@ -79,8 +79,14 @@ lib/
 - **Tooltips:** `<InfoTip term="key" />` with the key defined in `lib/glossary.ts`.
 - **Determinism:** models take a `seed`; pass `seed: 2026` for stable UI/exports.
   Comparisons use **common random numbers** (same seed across strategies).
-- **Money defaults live in 3 places** for some views (component default, `run.ts`
-  fallback, route fallback) — keep them in sync (see TODO: consolidate).
+- **Default values are single-sourced in `lib/defaults.ts`** (`DEFAULTS.<view>`)
+  for the scalar-parameter views (tax, care, longevity, seqrisk, dyn). Components,
+  `run.ts` fallbacks, and the Excel export route all import from it — don't
+  reintroduce literal defaults for those views.
+- **API request validation:** those five routes validate with **zod** schemas in
+  `lib/schemas.ts` (coerce + reject malformed → 400); `run.ts` remains the clamp
+  authority. The other routes (gbm, retirement, multiasset, glidepath,
+  sensitivity, stress, macro) still use their own inline validation.
 
 ## 5. Ship workflow (STANDING — follow every change)
 

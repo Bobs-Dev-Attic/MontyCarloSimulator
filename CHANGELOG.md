@@ -7,6 +7,23 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.36.0] - 2026-09-09
+
+### Changed (P2 — engineering)
+- **Single-sourced defaults.** New `lib/defaults.ts` (`DEFAULTS`) is the one place
+  each scalar-parameter view's default inputs live (tax, care, longevity,
+  sequence-risk, dynamic-withdrawal). The view components, the `run.ts`
+  orchestration fallbacks, and the Excel export route now all import from it, so
+  a default can't drift between the UI and the server again.
+- **zod request validation.** Those five API routes now validate/coerce their
+  request bodies with zod schemas (`lib/schemas.ts`) and return structured 400s
+  for malformed input; `run.ts` remains the range-clamping authority. Behavior for
+  valid requests is unchanged (verified: the tax flagship still returns the same
+  figures; string-number bodies coerce; array/`NaN` bodies now 400). The
+  array/complex-shaped routes keep their existing inline validation.
+- Tests: added `test/schemas.test.ts` (coercion, null handling, enum validation,
+  unknown-key stripping, DEFAULTS values). Suite is now 47 tests.
+
 ## [1.35.0] - 2026-09-09
 
 ### Added (P2 — UX / marketing)
@@ -586,6 +603,7 @@ Excel export's live formulas still reproduce the engine to the dollar.
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.36.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.36.0
 [1.35.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.35.0
 [1.34.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.34.0
 [1.33.1]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.33.1

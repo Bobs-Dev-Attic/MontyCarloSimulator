@@ -35,6 +35,7 @@ import {
   type TaxResult,
   type Filing,
 } from "./tax";
+import { DEFAULTS } from "./defaults";
 import {
   percentileBands,
   terminalHistogram,
@@ -331,19 +332,20 @@ export function runStressCompare(
 export function runDynamicWithdrawal(
   req: Partial<DynamicWithdrawalParams>
 ): DynamicWithdrawalResult {
-  const nSims = Math.min(clampSims(req.nSims), 20_000);
+  const d = DEFAULTS.dyn;
+  const nSims = Math.min(clampSims(req.nSims ?? d.nSims), 20_000);
   return simulateDynamicWithdrawal({
-    startingBalance: req.startingBalance ?? 1_000_000,
-    retirementYears: Math.round(req.retirementYears ?? 30),
-    initialRate: req.initialRate ?? 0.05,
-    meanReturn: req.meanReturn ?? 0.06,
-    stdReturn: req.stdReturn ?? 0.12,
-    inflation: req.inflation ?? 0.025,
-    guardBand: req.guardBand ?? 0.2,
-    guardAdjust: req.guardAdjust ?? 0.1,
-    ratchetThreshold: req.ratchetThreshold ?? 0.5,
-    ratchetStep: req.ratchetStep ?? 0.1,
-    ratchetEvery: Math.round(req.ratchetEvery ?? 3),
+    startingBalance: req.startingBalance ?? d.startingBalance,
+    retirementYears: Math.round(req.retirementYears ?? d.retirementYears),
+    initialRate: req.initialRate ?? d.initialRate,
+    meanReturn: req.meanReturn ?? d.meanReturn,
+    stdReturn: req.stdReturn ?? d.stdReturn,
+    inflation: req.inflation ?? d.inflation,
+    guardBand: req.guardBand ?? d.guardBand,
+    guardAdjust: req.guardAdjust ?? d.guardAdjust,
+    ratchetThreshold: req.ratchetThreshold ?? d.ratchetThreshold,
+    ratchetStep: req.ratchetStep ?? d.ratchetStep,
+    ratchetEvery: Math.round(req.ratchetEvery ?? d.ratchetEvery),
     nSims,
     seed: req.seed ?? null,
   });
@@ -352,87 +354,91 @@ export function runDynamicWithdrawal(
 export function runSequenceRisk(
   req: Partial<SequenceRiskParams>
 ): SequenceRiskResult {
-  const nSims = Math.min(clampSims(req.nSims), 15_000);
+  const d = DEFAULTS.seqrisk;
+  const nSims = Math.min(clampSims(req.nSims ?? d.nSims), 15_000);
   return simulateSequenceRisk({
-    startingBalance: req.startingBalance ?? 1_000_000,
-    retirementYears: Math.round(req.retirementYears ?? 30),
-    annualSpend: req.annualSpend ?? 35_000,
-    inflation: req.inflation ?? 0.025,
-    equityMean: req.equityMean ?? 0.07,
-    equityVol: req.equityVol ?? 0.16,
-    bufferYield: req.bufferYield ?? 0.03,
-    bearYears: Math.round(req.bearYears ?? 3),
-    bearMean: req.bearMean ?? -0.05,
-    bearVol: req.bearVol ?? 0.20,
-    troughDrawdown: req.troughDrawdown ?? 0.1,
-    refillBuffer: req.refillBuffer ?? true,
-    maxBufferYears: Math.round(req.maxBufferYears ?? 8),
-    targetSellProb: req.targetSellProb ?? 0.05,
+    startingBalance: req.startingBalance ?? d.startingBalance,
+    retirementYears: Math.round(req.retirementYears ?? d.retirementYears),
+    annualSpend: req.annualSpend ?? d.annualSpend,
+    inflation: req.inflation ?? d.inflation,
+    equityMean: req.equityMean ?? d.equityMean,
+    equityVol: req.equityVol ?? d.equityVol,
+    bufferYield: req.bufferYield ?? d.bufferYield,
+    bearYears: Math.round(req.bearYears ?? d.bearYears),
+    bearMean: req.bearMean ?? d.bearMean,
+    bearVol: req.bearVol ?? d.bearVol,
+    troughDrawdown: req.troughDrawdown ?? d.troughDrawdown,
+    refillBuffer: req.refillBuffer ?? d.refillBuffer,
+    maxBufferYears: Math.round(req.maxBufferYears ?? d.maxBufferYears),
+    targetSellProb: req.targetSellProb ?? d.targetSellProb,
     nSims,
     seed: req.seed ?? null,
   });
 }
 
 export function runLongevity(req: Partial<LongevityParams>): LongevityResult {
-  const sex = (s: unknown, d: Sex): Sex => (s === "male" || s === "female" ? s : d);
+  const d = DEFAULTS.longevity;
+  const sex = (s: unknown, def: Sex): Sex => (s === "male" || s === "female" ? s : def);
   return simulateLongevity({
-    ageA: Math.round(req.ageA ?? 65),
-    sexA: sex(req.sexA, "male"),
+    ageA: Math.round(req.ageA ?? d.ageA),
+    sexA: sex(req.sexA, d.sexA),
     couple: Boolean(req.couple),
-    ageB: Math.round(req.ageB ?? 63),
-    sexB: sex(req.sexB, "female"),
-    longevityAdj: req.longevityAdj ?? 0,
-    startingBalance: req.startingBalance ?? 1_000_000,
-    annualSpend: req.annualSpend ?? 45_000,
-    realReturn: req.realReturn ?? 0.035,
-    vol: req.vol ?? 0.1,
-    survivorSpend: req.survivorSpend ?? 0.75,
-    nSims: Math.min(Math.max(1000, Math.round(req.nSims ?? 10_000)), 50_000),
+    ageB: Math.round(req.ageB ?? d.ageB),
+    sexB: sex(req.sexB, d.sexB),
+    longevityAdj: req.longevityAdj ?? d.longevityAdj,
+    startingBalance: req.startingBalance ?? d.startingBalance,
+    annualSpend: req.annualSpend ?? d.annualSpend,
+    realReturn: req.realReturn ?? d.realReturn,
+    vol: req.vol ?? d.vol,
+    survivorSpend: req.survivorSpend ?? d.survivorSpend,
+    nSims: Math.min(Math.max(1000, Math.round(req.nSims ?? d.nSims)), 50_000),
     seed: req.seed ?? null,
   });
 }
 
 export function runCareCosts(req: Partial<CareParams>): CareResult {
+  const d = DEFAULTS.care;
   return simulateCareCosts({
-    startAge: Math.round(req.startAge ?? 65),
-    startingBalance: req.startingBalance ?? 1_000_000,
-    baseSpend: req.baseSpend ?? 45_000,
-    realReturn: req.realReturn ?? 0.035,
-    vol: req.vol ?? 0.1,
-    actToAssisted: req.actToAssisted ?? 0.03,
-    actToSkilled: req.actToSkilled ?? 0.005,
-    actToDead: req.actToDead ?? 0.012,
-    asstToSkilled: req.asstToSkilled ?? 0.1,
-    asstToDead: req.asstToDead ?? 0.08,
-    asstToActive: req.asstToActive ?? 0.05,
-    skilledToDead: req.skilledToDead ?? 0.25,
-    ageRamp: req.ageRamp ?? 0.05,
-    assistedCost: req.assistedCost ?? 60_000,
-    skilledCost: req.skilledCost ?? 110_000,
-    nSims: Math.min(Math.max(1000, Math.round(req.nSims ?? 10_000)), 50_000),
+    startAge: Math.round(req.startAge ?? d.startAge),
+    startingBalance: req.startingBalance ?? d.startingBalance,
+    baseSpend: req.baseSpend ?? d.baseSpend,
+    realReturn: req.realReturn ?? d.realReturn,
+    vol: req.vol ?? d.vol,
+    actToAssisted: req.actToAssisted ?? d.actToAssisted,
+    actToSkilled: req.actToSkilled ?? d.actToSkilled,
+    actToDead: req.actToDead ?? d.actToDead,
+    asstToSkilled: req.asstToSkilled ?? d.asstToSkilled,
+    asstToDead: req.asstToDead ?? d.asstToDead,
+    asstToActive: req.asstToActive ?? d.asstToActive,
+    skilledToDead: req.skilledToDead ?? d.skilledToDead,
+    ageRamp: req.ageRamp ?? d.ageRamp,
+    assistedCost: req.assistedCost ?? d.assistedCost,
+    skilledCost: req.skilledCost ?? d.skilledCost,
+    nSims: Math.min(Math.max(1000, Math.round(req.nSims ?? d.nSims)), 50_000),
     seed: req.seed ?? null,
   });
 }
 
 export function runTax(req: Partial<TaxParams>): TaxResult {
-  const filing: Filing = req.filing === "mfj" ? "mfj" : "single";
-  const clamp01 = (v: number | undefined, d: number) =>
-    Math.min(1, Math.max(0, v ?? d));
+  const d = DEFAULTS.tax;
+  const filing: Filing = req.filing === "mfj" ? "mfj" : req.filing === "single" ? "single" : d.filing;
+  const clamp01 = (v: number | undefined, def: number) =>
+    Math.min(1, Math.max(0, v ?? def));
   return simulateTax({
-    startAge: Math.round(req.startAge ?? 62),
+    startAge: Math.round(req.startAge ?? d.startAge),
     filing,
-    years: Math.min(50, Math.max(1, Math.round(req.years ?? 30))),
-    taxable: Math.max(0, req.taxable ?? 0),
-    taxableBasisPct: clamp01(req.taxableBasisPct, 0.6),
-    deferred: Math.max(0, req.deferred ?? 1_200_000),
-    roth: Math.max(0, req.roth ?? 150_000),
-    annualSpend: Math.max(0, req.annualSpend ?? 60_000),
-    otherIncome: Math.max(0, req.otherIncome ?? 30_000),
-    nominalReturn: req.nominalReturn ?? 0.06,
-    inflation: req.inflation ?? 0.025,
-    ltcgRate: clamp01(req.ltcgRate, 0.15),
-    conversionTopRate: clamp01(req.conversionTopRate, 0.12),
-    terminalTaxRate: clamp01(req.terminalTaxRate, 0.24),
+    years: Math.min(50, Math.max(1, Math.round(req.years ?? d.years))),
+    taxable: Math.max(0, req.taxable ?? d.taxable),
+    taxableBasisPct: clamp01(req.taxableBasisPct, d.taxableBasisPct),
+    deferred: Math.max(0, req.deferred ?? d.deferred),
+    roth: Math.max(0, req.roth ?? d.roth),
+    annualSpend: Math.max(0, req.annualSpend ?? d.annualSpend),
+    otherIncome: Math.max(0, req.otherIncome ?? d.otherIncome),
+    nominalReturn: req.nominalReturn ?? d.nominalReturn,
+    inflation: req.inflation ?? d.inflation,
+    ltcgRate: clamp01(req.ltcgRate, d.ltcgRate),
+    conversionTopRate: clamp01(req.conversionTopRate, d.conversionTopRate),
+    terminalTaxRate: clamp01(req.terminalTaxRate, d.terminalTaxRate),
   });
 }
 

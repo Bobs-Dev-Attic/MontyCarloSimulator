@@ -57,11 +57,15 @@ math is validated. The list is about hardening and future-proofing.
 - [x] **Cap import size in `parseProfile`** (S · security) — _done v1.33.1._
   Rejects >2 MB files, skips values >256 KB, caps keys at 500, with warnings.
   Covered by `test/profile.test.ts`. _REVIEW §2.3._
-- [ ] **Consolidate per-view default values** (S · engineering) — one
-  `lib/<view>Defaults.ts` imported by the component, `run.ts`, and the route so
-  they can't drift. _REVIEW §1.2._
-- [ ] **Adopt zod for API request validation** (M · engineering) — one schema per
-  route; infer request types from it; structured 400s. _REVIEW §1.3._
+- [x] **Consolidate per-view default values** (S · engineering) — _done v1.36.0._
+  `lib/defaults.ts` (`DEFAULTS`) is the single source for the scalar-parameter
+  views (tax, care, longevity, seqrisk, dyn); components, `run.ts`, and the Excel
+  export route all import from it. _REVIEW §1.2._
+- [x] **Adopt zod for API request validation** (M · engineering) — _done v1.36.0._
+  `lib/schemas.ts` zod schemas validate/coerce those five routes and return
+  structured 400s (`run.ts` stays the clamp authority). The array/complex-shaped
+  routes (gbm, retirement, multiasset, glidepath, sensitivity, stress, macro)
+  keep their existing inline validation. _REVIEW §1.3._
 - [x] **Shareable scenario URLs** (M · UX/marketing) — _done v1.35.0._ "Share
   link" button encodes inputs into a compressed `?s=` param (`lib/shareLink.ts`);
   opening it applies the scenario + lands on the shared view (validated like an
