@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { DEFAULTS } from "@/lib/defaults";
 import {
   BarChart,
   Bar,
@@ -33,18 +34,18 @@ const STRAT_COLOR: Record<WithdrawalStrategy, string> = {
 };
 
 export default function DynamicWithdrawal() {
-  const [startingBalance, setStartingBalance] = usePersistentState("dyn.startingBalance", 1_000_000);
-  const [retirementYears, setRetirementYears] = usePersistentState("dyn.retirementYears", 30);
-  const [initialRate, setInitialRate] = usePersistentState("dyn.initialRate", 0.05);
-  const [meanReturn, setMeanReturn] = usePersistentState("dyn.meanReturn", 0.06);
-  const [stdReturn, setStdReturn] = usePersistentState("dyn.stdReturn", 0.12);
-  const [inflation, setInflation] = usePersistentState("dyn.inflation", 0.025);
-  const [guardBand, setGuardBand] = usePersistentState("dyn.guardBand", 0.2);
-  const [guardAdjust, setGuardAdjust] = usePersistentState("dyn.guardAdjust", 0.1);
-  const [ratchetThreshold, setRatchetThreshold] = usePersistentState("dyn.ratchetThreshold", 0.5);
-  const [ratchetStep, setRatchetStep] = usePersistentState("dyn.ratchetStep", 0.1);
-  const [ratchetEvery, setRatchetEvery] = usePersistentState("dyn.ratchetEvery", 3);
-  const [nSims, setNSims] = usePersistentState("dyn.nSims", 8000);
+  const [startingBalance, setStartingBalance] = usePersistentState("dyn.startingBalance", DEFAULTS.dyn.startingBalance);
+  const [retirementYears, setRetirementYears] = usePersistentState("dyn.retirementYears", DEFAULTS.dyn.retirementYears);
+  const [initialRate, setInitialRate] = usePersistentState("dyn.initialRate", DEFAULTS.dyn.initialRate);
+  const [meanReturn, setMeanReturn] = usePersistentState("dyn.meanReturn", DEFAULTS.dyn.meanReturn);
+  const [stdReturn, setStdReturn] = usePersistentState("dyn.stdReturn", DEFAULTS.dyn.stdReturn);
+  const [inflation, setInflation] = usePersistentState("dyn.inflation", DEFAULTS.dyn.inflation);
+  const [guardBand, setGuardBand] = usePersistentState("dyn.guardBand", DEFAULTS.dyn.guardBand);
+  const [guardAdjust, setGuardAdjust] = usePersistentState("dyn.guardAdjust", DEFAULTS.dyn.guardAdjust);
+  const [ratchetThreshold, setRatchetThreshold] = usePersistentState("dyn.ratchetThreshold", DEFAULTS.dyn.ratchetThreshold);
+  const [ratchetStep, setRatchetStep] = usePersistentState("dyn.ratchetStep", DEFAULTS.dyn.ratchetStep);
+  const [ratchetEvery, setRatchetEvery] = usePersistentState("dyn.ratchetEvery", DEFAULTS.dyn.ratchetEvery);
+  const [nSims, setNSims] = usePersistentState("dyn.nSims", DEFAULTS.dyn.nSims);
 
   const [data, setData] = useState<DynamicWithdrawalResult | null>(null);
   const [loading, setLoading] = useState(false);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { DEFAULTS } from "@/lib/defaults";
 import {
   ComposedChart,
   Line,
@@ -34,21 +35,21 @@ const ON_COLOR = "#34d399"; // refill on (rolling bucket)
 const OFF_COLOR = "#a78bfa"; // refill off (static bond tent)
 
 export default function SequenceRisk() {
-  const [startingBalance, setStartingBalance] = usePersistentState("seq.startingBalance", 1_000_000);
-  const [retirementYears, setRetirementYears] = usePersistentState("seq.retirementYears", 30);
-  const [annualSpend, setAnnualSpend] = usePersistentState("seq.annualSpend", 35_000);
-  const [inflation, setInflation] = usePersistentState("seq.inflation", 0.025);
-  const [equityMean, setEquityMean] = usePersistentState("seq.equityMean", 0.07);
-  const [equityVol, setEquityVol] = usePersistentState("seq.equityVol", 0.16);
-  const [bufferYield, setBufferYield] = usePersistentState("seq.bufferYield", 0.03);
-  const [bearYears, setBearYears] = usePersistentState("seq.bearYears", 3);
-  const [bearMean, setBearMean] = usePersistentState("seq.bearMean", -0.05);
-  const [bearVol, setBearVol] = usePersistentState("seq.bearVol", 0.20);
-  const [troughDrawdown, setTroughDrawdown] = usePersistentState("seq.troughDrawdown", 0.1);
-  const [refillBuffer, setRefillBuffer] = usePersistentState("seq.refillBuffer", true);
-  const [maxBufferYears, setMaxBufferYears] = usePersistentState("seq.maxBufferYears", 8);
-  const [targetSellProb, setTargetSellProb] = usePersistentState("seq.targetSellProb", 0.05);
-  const [nSims, setNSims] = usePersistentState("seq.nSims", 6000);
+  const [startingBalance, setStartingBalance] = usePersistentState("seq.startingBalance", DEFAULTS.seqrisk.startingBalance);
+  const [retirementYears, setRetirementYears] = usePersistentState("seq.retirementYears", DEFAULTS.seqrisk.retirementYears);
+  const [annualSpend, setAnnualSpend] = usePersistentState("seq.annualSpend", DEFAULTS.seqrisk.annualSpend);
+  const [inflation, setInflation] = usePersistentState("seq.inflation", DEFAULTS.seqrisk.inflation);
+  const [equityMean, setEquityMean] = usePersistentState("seq.equityMean", DEFAULTS.seqrisk.equityMean);
+  const [equityVol, setEquityVol] = usePersistentState("seq.equityVol", DEFAULTS.seqrisk.equityVol);
+  const [bufferYield, setBufferYield] = usePersistentState("seq.bufferYield", DEFAULTS.seqrisk.bufferYield);
+  const [bearYears, setBearYears] = usePersistentState("seq.bearYears", DEFAULTS.seqrisk.bearYears);
+  const [bearMean, setBearMean] = usePersistentState("seq.bearMean", DEFAULTS.seqrisk.bearMean);
+  const [bearVol, setBearVol] = usePersistentState("seq.bearVol", DEFAULTS.seqrisk.bearVol);
+  const [troughDrawdown, setTroughDrawdown] = usePersistentState("seq.troughDrawdown", DEFAULTS.seqrisk.troughDrawdown);
+  const [refillBuffer, setRefillBuffer] = usePersistentState("seq.refillBuffer", DEFAULTS.seqrisk.refillBuffer);
+  const [maxBufferYears, setMaxBufferYears] = usePersistentState("seq.maxBufferYears", DEFAULTS.seqrisk.maxBufferYears);
+  const [targetSellProb, setTargetSellProb] = usePersistentState("seq.targetSellProb", DEFAULTS.seqrisk.targetSellProb);
+  const [nSims, setNSims] = usePersistentState("seq.nSims", DEFAULTS.seqrisk.nSims);
 
   const [data, setData] = useState<SequenceRiskResult | null>(null);
   const [loading, setLoading] = useState(false);

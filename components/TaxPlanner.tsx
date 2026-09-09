@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { DEFAULTS } from "@/lib/defaults";
 import {
   AreaChart,
   Area,
@@ -44,20 +45,20 @@ const RATE_OPTIONS = [
 ];
 
 export default function TaxPlanner() {
-  const [startAge, setStartAge] = usePersistentState("tax.startAge", 62);
-  const [filing, setFiling] = usePersistentState<"single" | "mfj">("tax.filing", "mfj");
-  const [years, setYears] = usePersistentState("tax.years", 30);
-  const [taxable, setTaxable] = usePersistentState("tax.taxable", 0);
-  const [taxableBasisPct, setTaxableBasisPct] = usePersistentState("tax.taxableBasisPct", 0.6);
-  const [deferred, setDeferred] = usePersistentState("tax.deferred", 1_200_000);
-  const [roth, setRoth] = usePersistentState("tax.roth", 150_000);
-  const [annualSpend, setAnnualSpend] = usePersistentState("tax.annualSpend", 60_000);
-  const [otherIncome, setOtherIncome] = usePersistentState("tax.otherIncome", 30_000);
-  const [nominalReturn, setNominalReturn] = usePersistentState("tax.nominalReturn", 0.06);
-  const [inflation, setInflation] = usePersistentState("tax.inflation", 0.025);
-  const [ltcgRate, setLtcgRate] = usePersistentState("tax.ltcgRate", 0.15);
-  const [conversionTopRate, setConversionTopRate] = usePersistentState("tax.conversionTopRate", 0.12);
-  const [terminalTaxRate, setTerminalTaxRate] = usePersistentState("tax.terminalTaxRate", 0.24);
+  const [startAge, setStartAge] = usePersistentState("tax.startAge", DEFAULTS.tax.startAge);
+  const [filing, setFiling] = usePersistentState<"single" | "mfj">("tax.filing", DEFAULTS.tax.filing);
+  const [years, setYears] = usePersistentState("tax.years", DEFAULTS.tax.years);
+  const [taxable, setTaxable] = usePersistentState("tax.taxable", DEFAULTS.tax.taxable);
+  const [taxableBasisPct, setTaxableBasisPct] = usePersistentState("tax.taxableBasisPct", DEFAULTS.tax.taxableBasisPct);
+  const [deferred, setDeferred] = usePersistentState("tax.deferred", DEFAULTS.tax.deferred);
+  const [roth, setRoth] = usePersistentState("tax.roth", DEFAULTS.tax.roth);
+  const [annualSpend, setAnnualSpend] = usePersistentState("tax.annualSpend", DEFAULTS.tax.annualSpend);
+  const [otherIncome, setOtherIncome] = usePersistentState("tax.otherIncome", DEFAULTS.tax.otherIncome);
+  const [nominalReturn, setNominalReturn] = usePersistentState("tax.nominalReturn", DEFAULTS.tax.nominalReturn);
+  const [inflation, setInflation] = usePersistentState("tax.inflation", DEFAULTS.tax.inflation);
+  const [ltcgRate, setLtcgRate] = usePersistentState("tax.ltcgRate", DEFAULTS.tax.ltcgRate);
+  const [conversionTopRate, setConversionTopRate] = usePersistentState("tax.conversionTopRate", DEFAULTS.tax.conversionTopRate);
+  const [terminalTaxRate, setTerminalTaxRate] = usePersistentState("tax.terminalTaxRate", DEFAULTS.tax.terminalTaxRate);
 
   const [data, setData] = useState<TaxResult | null>(null);
   const [loading, setLoading] = useState(false);
