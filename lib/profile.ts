@@ -17,6 +17,14 @@ export const PROFILE_VERSION = 1;
 /** Reject keys that could pollute Object.prototype when written back. */
 const DANGEROUS_SEGMENTS = new Set(["__proto__", "prototype", "constructor"]);
 
+/**
+ * Import limits — a profile is user-supplied, so cap it to avoid bloating
+ * localStorage or janking the tab with a crafted/huge file.
+ */
+const MAX_PROFILE_BYTES = 2_000_000; // ~2 MB of JSON text
+const MAX_KEYS = 500; // recognized settings keys
+const MAX_VALUE_BYTES = 256_000; // per-value serialized size
+
 export interface ProfileFile {
   format: string;
   version: number;
@@ -88,6 +96,9 @@ export interface ParsedProfile {
  * `applyProfile`.
  */
 export function parseProfile(text: string): ParsedProfile {
+  if (text.length > MAX_PROFILE_BYTES) {
+    throw new Error("This profile file is too large to import.");
+  }
   let json: unknown;
   try {
     json = JSON.parse(text);
@@ -117,6 +128,7 @@ export function parseProfile(text: string): ParsedProfile {
   const clean: Record<string, unknown> = {};
   let foreign = 0;
   let blocked = 0;
+  let oversized = 0;
   for (const [k, v] of Object.entries(p.data as Record<string, unknown>)) {
     if (!k.startsWith(PERSIST_PREFIX)) {
       foreign++;
@@ -134,6 +146,22 @@ export function parseProfile(text: string): ParsedProfile {
       foreign++;
       continue;
     }
+    // Cap the number of keys and the size of any single value.
+    if (Object.keys(clean).length >= MAX_KEYS) {
+      oversized++;
+      continue;
+    }
+    let valueBytes = 0;
+    try {
+      valueBytes = JSON.stringify(v)?.length ?? 0;
+    } catch {
+      foreign++;
+      continue;
+    }
+    if (valueBytes > MAX_VALUE_BYTES) {
+      oversized++;
+      continue;
+    }
     clean[k] = v;
   }
 
@@ -145,6 +173,9 @@ export function parseProfile(text: string): ParsedProfile {
   }
   if (blocked > 0) {
     warnings.push(`Blocked ${blocked} unsafe key${blocked === 1 ? "" : "s"}.`);
+  }
+  if (oversized > 0) {
+    warnings.push(`Skipped ${oversized} oversized or excess entr${oversized === 1 ? "y" : "ies"}.`);
   }
 
   return {
