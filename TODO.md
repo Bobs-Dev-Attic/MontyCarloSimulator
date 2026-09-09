@@ -78,7 +78,12 @@ math is validated. The list is about hardening and future-proofing.
   nonce + `strict-dynamic` `script-src` (drops `'unsafe-inline'`). Requires
   switching the app to dynamic rendering so Next can stamp the per-request nonce
   onto its script tags. _REVIEW §2.2._
-- [ ] **[Strategic] Move simulations to a client-side Web Worker** (L ·
+- [~] **[Strategic] Move simulations to a client-side Web Worker** (L ·
+  founder/security) — _started v1.38.0._ Portfolio/Retirement forecast now runs in
+  a Web Worker (`lib/worker/`) with an API fallback; verified identical results
+  and zero API calls. Remaining views still use the API — migrate each by routing
+  its `run()` through `useSimWorker` (same pattern). Original note below.
+- [ ] **[Strategic] Move simulations to a client-side Web Worker (remaining views)** (L ·
   founder/security) — models are pure TS; running them in a Worker removes the
   serverless DoS/cost surface, improves privacy, and keeps UX identical. Keep the
   API as an optional fallback. Highest long-term leverage. _REVIEW §2.1, §5._

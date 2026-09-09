@@ -25,6 +25,7 @@ import NavMenu, { type NavItem } from "@/components/NavMenu";
 import NavIcon from "@/components/NavIcons";
 import { exportToExcel } from "@/lib/excelExport";
 import { applyShareFromUrl, hasShareParam, stripShareParam } from "@/lib/shareLink";
+import { useSimWorker } from "@/lib/worker/useSimWorker";
 import ProfileBar from "@/components/ProfileBar";
 import { RealBadge } from "@/components/RealToggle";
 import { usePersistentState } from "@/lib/persist";
@@ -130,6 +131,7 @@ export default function Page() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { adjust } = useReal();
   const progress = useProgress();
+  const runSim = useSimWorker();
 
   const selectTab = useCallback(
     (id: string) => {
@@ -183,8 +185,6 @@ export default function Page() {
       model === "gbm" ? "Running portfolio forecast" : "Running retirement simulation"
     );
     try {
-      const endpoint =
-        model === "gbm" ? "/api/simulate/gbm" : "/api/simulate/retirement";
       const body =
         model === "gbm"
           ? {
@@ -197,14 +197,24 @@ export default function Page() {
               ...(gbm.distKind === "t" ? { stepsPerYear: 1 } : {}),
             }
           : ret;
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Simulation failed");
-      const response = json as SimulationResponse;
+
+      // Prefer the in-browser Web Worker (no server round-trip, no compute cost,
+      // inputs never leave the device); fall back to the API route if it can't run.
+      let response: SimulationResponse;
+      try {
+        response = await runSim(model, body);
+      } catch {
+        const endpoint =
+          model === "gbm" ? "/api/simulate/gbm" : "/api/simulate/retirement";
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error ?? "Simulation failed");
+        response = json as SimulationResponse;
+      }
       setResult(response);
       setElapsed(performance.now() - started);
       // Record the run in history.
@@ -221,7 +231,7 @@ export default function Page() {
       setLoading(false);
       tracker.done();
     }
-  }, [model, gbm, ret, progress]);
+  }, [model, gbm, ret, progress, runSim]);
 
   const doExport = useCallback(async () => {
     setExporting(true);
