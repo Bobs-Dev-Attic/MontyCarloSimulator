@@ -7,6 +7,22 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.34.0] - 2026-09-09
+
+### Accessibility (P2)
+- **Click-to-type inputs.** Every slider value is now a button; click (or
+  keyboard-activate) it to type an exact value, committed on Enter/blur and
+  clamped to range. Precise entry no longer requires dragging.
+- **Screen-reader labels.** Range inputs carry `aria-label` and an
+  `aria-valuetext` with the formatted display (e.g. announces "$60,000", not the
+  raw number).
+- **Focus management.** The navigation menu now traps Tab within the open panel
+  and restores focus to the trigger on close.
+- **Reduced motion.** Honor `prefers-reduced-motion` globally (near-instant
+  animations/transitions).
+
+All shared via the `Field` and `NavMenu` components, so every view benefits.
+
 ## [1.33.1] - 2026-09-09
 
 ### Security / hardening (P2)
@@ -555,6 +571,8 @@ Excel export's live formulas still reproduce the engine to the dollar.
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.34.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.34.0
+[1.33.1]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.33.1
 [1.33.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.33.0
 [1.32.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.32.0
 [1.31.2]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.31.2
