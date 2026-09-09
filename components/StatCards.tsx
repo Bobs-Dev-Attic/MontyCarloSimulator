@@ -42,6 +42,12 @@ function Card({
 export default function StatCards({ data }: { data: SimulationResponse }) {
   const { summary, model } = data;
 
+  // A heavily right-skewed distribution (e.g. high-volatility GBM) makes the
+  // arithmetic mean and the maximum misleading: both are driven by a handful of
+  // rare extreme paths and the mean is statistically unstable. Flag it so those
+  // cards aren't read as "typical".
+  const skewed = summary.median > 0 && summary.mean > summary.median * 1.5;
+
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
       {model === "retirement" ? (
@@ -62,12 +68,21 @@ export default function StatCards({ data }: { data: SimulationResponse }) {
         />
       )}
       <Card label="Median outcome" value={formatCurrency(summary.median)} tone="accent" info="median" />
-      <Card label="Mean outcome" value={formatCurrency(summary.mean)} info="mean" />
+      <Card
+        label="Mean outcome"
+        value={formatCurrency(summary.mean)}
+        info="mean"
+        hint={skewed ? "Skewed by rare extreme paths — median is more typical" : undefined}
+      />
       <Card label="95% VaR" value={formatCurrency(summary.var95)} tone="bad" hint="Loss vs. start at p5" info="var95" />
       <Card label="P5 (worst 5%)" value={formatCurrency(summary.p5)} info="percentile" />
       <Card label="P95 (best 5%)" value={formatCurrency(summary.p95)} info="percentile" />
       <Card label="Minimum" value={formatCurrency(summary.min)} />
-      <Card label="Maximum" value={formatCurrency(summary.max)} />
+      <Card
+        label="Maximum"
+        value={formatCurrency(summary.max)}
+        hint={skewed ? "A single best-case path — not a typical outcome" : undefined}
+      />
     </div>
   );
 }
