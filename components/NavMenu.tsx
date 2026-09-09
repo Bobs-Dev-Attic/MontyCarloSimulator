@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
 import NavIcon from "@/components/NavIcons";
 
@@ -19,11 +19,45 @@ interface Props {
 }
 
 export default function NavMenu({ open, onOpenChange, items, active, onSelect }: Props) {
+  const navRef = useRef<HTMLElement>(null);
+
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onOpenChange(false);
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const focusables = () =>
+      navRef.current
+        ? Array.from(
+            navRef.current.querySelectorAll<HTMLElement>(
+              'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            )
+          ).filter((el) => !el.hasAttribute("disabled"))
+        : [];
+
+    focusables()[0]?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onOpenChange(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const els = focusables();
+      if (els.length === 0) return;
+      const first = els[0];
+      const last = els[els.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      previouslyFocused?.focus?.();
+    };
   }, [open, onOpenChange]);
 
   return (
@@ -43,7 +77,7 @@ export default function NavMenu({ open, onOpenChange, items, active, onSelect }:
       {open ? (
         <div className="fixed inset-0 z-40" role="dialog" aria-modal="true" aria-label="Navigation">
           <div className="absolute inset-0 bg-ink/70 backdrop-blur-sm" onClick={() => onOpenChange(false)} />
-          <nav className="absolute left-0 top-0 flex h-full w-72 max-w-[85vw] flex-col border-r border-line bg-panel shadow-2xl">
+          <nav ref={navRef} className="absolute left-0 top-0 flex h-full w-72 max-w-[85vw] flex-col border-r border-line bg-panel shadow-2xl">
             <div className="flex items-center justify-between border-b border-line px-4 py-3">
               <span className="text-sm font-semibold text-white">Monty Carlo</span>
               <button

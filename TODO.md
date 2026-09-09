@@ -65,9 +65,10 @@ math is validated. The list is about hardening and future-proofing.
 - [ ] **Shareable scenario URLs** (M · UX/marketing) — encode view+inputs into a
   compressed querystring (`lz-string`); add OG image + SEO meta so shared links
   render nicely. Growth + UX. _REVIEW §3.5, §4._
-- [ ] **Accessibility pass on inputs** (M · UX) — click-to-type exact values,
-  `aria-valuetext` with the formatted display, nav-menu focus trap + restore,
-  honor `prefers-reduced-motion`. _REVIEW §3.2._
+- [x] **Accessibility pass on inputs** (M · UX) — _done v1.34.0._ Click-to-type
+  exact values + `aria-label`/`aria-valuetext` on sliders (`Field`), nav-menu
+  focus trap + restore (`NavMenu`), and a global `prefers-reduced-motion` rule.
+  _REVIEW §3.2._
 - [ ] **Nonce-based strict CSP** (M · security) — upgrade `middleware.ts` to a
   nonce + `strict-dynamic` `script-src` (drops `'unsafe-inline'`). Requires
   switching the app to dynamic rendering so Next can stamp the per-request nonce
