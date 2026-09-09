@@ -66,6 +66,14 @@ lib/
 → route validates with `num()`/clamps → `run.ts` wrapper → pure model in `lib/`
 → compact JSON → component renders with Recharts.
 
+**Web Worker path:** the Portfolio/Retirement forecast (`app/page.tsx`) runs its
+simulation in a browser **Web Worker** (`lib/worker/simWorker.ts` via the
+`useSimWorker` hook) instead of the API — same `run.ts` code, so identical
+results, but no server round-trip. It falls back to `/api/simulate/gbm|retirement`
+if a worker can't start. Other views still use the API; migrate one by routing
+its `run()` through `useSimWorker` (add its `kind` to the worker) with the API
+fallback kept.
+
 ## 4. Conventions (match these — do not invent new patterns)
 
 - **Persisted state:** `usePersistentState("<view>.<field>", default)` (key auto-prefixed `mcs.`).

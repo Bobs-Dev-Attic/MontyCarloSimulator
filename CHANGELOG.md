@@ -7,6 +7,21 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.38.0] - 2026-09-09
+
+### Added (P2 strategic — first step)
+- **Client-side Web Worker for simulations.** The Portfolio forecast and
+  Retirement plan now run their Monte Carlo in a browser **Web Worker**
+  (`lib/worker/simWorker.ts` + the `useSimWorker` hook) instead of a serverless
+  API call. It reuses the exact same `run.ts` code, so results are identical, but
+  the computation stays on the device: no network round-trip, no server compute
+  cost, no rate-limit surface, and inputs never leave the browser. The CPU work
+  runs off the main thread, so the UI and progress dialog stay responsive. If a
+  worker can't start, it transparently falls back to the API route.
+  Verified in-browser: zero `/api/simulate/*` calls during a run, and the median
+  matches the API to the dollar (18,209). The remaining views still use the API;
+  they can be migrated to the same pattern incrementally.
+
 ## [1.37.0] - 2026-09-09
 
 ### Changed (P3 polish)
@@ -620,6 +635,7 @@ Excel export's live formulas still reproduce the engine to the dollar.
 - Interactive UI: model tabs, slider inputs, fan chart with percentile bands and
   sample trajectories, terminal-value histogram, and summary stat cards.
 
+[1.38.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.38.0
 [1.37.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.37.0
 [1.36.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.36.0
 [1.35.0]: https://github.com/Bobs-Dev-Attic/MontyCarloSimulator/releases/tag/v1.35.0
