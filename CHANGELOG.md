@@ -7,6 +7,22 @@ the website footer (and header badge) corresponds to the `version` field in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.33.1] - 2026-09-09
+
+### Security / hardening (P2)
+- **Profile import caps.** `parseProfile` now rejects an over-large file
+  (>2 MB), skips any single value over 256 KB, and caps the number of imported
+  keys (500) — with clear warnings — so a crafted profile can't bloat
+  localStorage or jank the tab.
+- **Spreadsheet-injection guard (forward-looking).** Added `sanitizeCell` in the
+  Excel builder (prefixes `= + - @`/tab/CR-leading strings with `'`) and
+  documented that any future free-text cell must use it. Cells are numeric/static
+  today, so nothing is exploitable now.
+- **Tests.** Added `test/profile.test.ts` (import validation, prototype-pollution
+  blocking, size/key caps) and `test/excel.test.ts` (locks the xlsx structure —
+  chart/drawing parts, content types, and sheet→drawing wiring — plus
+  `sanitizeCell`). Suite is now 37 tests.
+
 ## [1.33.0] - 2026-09-09
 
 ### Added (the remaining P1 hardening items)

@@ -54,8 +54,9 @@ math is validated. The list is about hardening and future-proofing.
 
 ## P2 — next
 
-- [ ] **Cap import size in `parseProfile`** (S · security) — limit total bytes,
-  key count, and per-value size; clear message on reject. _REVIEW §2.3._
+- [x] **Cap import size in `parseProfile`** (S · security) — _done v1.33.1._
+  Rejects >2 MB files, skips values >256 KB, caps keys at 500, with warnings.
+  Covered by `test/profile.test.ts`. _REVIEW §2.3._
 - [ ] **Consolidate per-view default values** (S · engineering) — one
   `lib/<view>Defaults.ts` imported by the component, `run.ts`, and the route so
   they can't drift. _REVIEW §1.2._
@@ -75,13 +76,12 @@ math is validated. The list is about hardening and future-proofing.
   founder/security) — models are pure TS; running them in a Worker removes the
   serverless DoS/cost surface, improves privacy, and keeps UX identical. Keep the
   API as an optional fallback. Highest long-term leverage. _REVIEW §2.1, §5._
-- [ ] **Guard against future spreadsheet-injection** (S · security) — when any
-  free-text field reaches an exported cell, prefix `= + - @` values with `'`.
-  Document in `lib/excel/workbooks.ts`. Not exploitable today (numeric-only).
-  _REVIEW §2.4._
-- [ ] **Regression test for Excel output** (S · engineering) — assert emitted
-  chart/drawing XML is well-formed and rels/content-types are wired; keep the
-  API-vs-`formulas` value check. _REVIEW §1.4._
+- [x] **Guard against future spreadsheet-injection** (S · security) — _done
+  v1.33.1._ `sanitizeCell` in `lib/excel/workbooks.ts` (+ doc + test). Not
+  exploitable today (numeric-only). _REVIEW §2.4._
+- [x] **Regression test for Excel output** (S · engineering) — _done v1.33.1._
+  `test/excel.test.ts` locks chart/drawing parts, content types, and
+  sheet→drawing wiring. _REVIEW §1.4._
 
 ## P3 — nice-to-have
 

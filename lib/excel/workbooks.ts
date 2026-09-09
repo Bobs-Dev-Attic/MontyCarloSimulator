@@ -37,6 +37,17 @@ function stamp(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+/**
+ * Guard against CSV/formula injection. Every cell these builders write today is
+ * either a number or a static label, so nothing user-controlled reaches a cell.
+ * But if a free-text field is ever exported, run its value through this: a string
+ * a spreadsheet could execute as a formula (leading `= + - @` or a leading tab /
+ * carriage return) is prefixed with an apostrophe so it's rendered as text.
+ */
+export function sanitizeCell(v: string): string {
+  return /^[=+\-@\t\r]/.test(v) ? `'${v}` : v;
+}
+
 // ---------------------------------------------------------------------------
 // Tax & Roth — live-formula model
 // ---------------------------------------------------------------------------
